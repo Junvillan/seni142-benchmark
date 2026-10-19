@@ -140,6 +140,12 @@ for r in brs:
     Y[j, j] += ys + bs
     Y[i, j] -= ys
     Y[j, i] -= ys
+Y_npz = np.zeros((n, n), dtype=complex)
+for i in range(n):
+    for k in range(d["Ybus_indptr"][i], d["Ybus_indptr"][i + 1]):
+        Y_npz[i, d["Ybus_indices"][k]] = d["Ybus_data"][k]
+gap_ydata = float(np.abs(Y - Y_npz).max())
+chk("matriz Ybus_data (NPZ) ≡ matriz Ybus (CSV) (<1e-9)", gap_ydata < 1e-9, f"{gap_ydata:.2e}")
 P = np.array([list(idx).index(x) for x in d["particion_orden"]])
 rhs = np.zeros((n, 2), dtype=complex)
 sl = [k for k, r in enumerate(rows) if r["Tipo_Barra"] == "SLACK"][0]
@@ -153,8 +159,15 @@ Xi = np.linalg.solve(A, rhsp[:nb] - Bm @ Xb)
 dlt = float(np.abs(Xf[P] - np.vstack([Xi, Xb])).max())
 chk("δ de Schur reproducido desde los CSV (<1e-9)", dlt < 1e-9,
     f"recomputado={dlt:.2e} almacenado={float(d['delta_residual'][0]):.2e}")
+chk("δ almacenado ≡ recomputado (<1e-12)",
+    abs(dlt - float(d["delta_residual"][0])) < 1e-12,
+    f"|{dlt:.2e} - {float(d['delta_residual'][0]):.2e}|")
 chk("κ₂(S) positivo y finito", 0 < float(d["condition_number"][0]) < 1e12,
     f"{float(d['condition_number'][0]):.2f}")
+h_cen = hashlib.sha512(open(PKG / "SENI142_CENSO_CANONICO_BARRAS.csv", "rb").read()).hexdigest()
+h_ram = hashlib.sha512(open(PKG / "SENI142_RAMAS_LINEAS_Y_TRANSFORMADORES.csv", "rb").read()).hexdigest()
+chk("integridad censo CSV ≡ hash NPZ", h_cen == str(d["sha512_censo"][0]))
+chk("integridad ramas CSV ≡ hash NPZ", h_ram == str(d["sha512_ramas"][0]))
 
 # ---------------------------------------------------------------- 4. ARTEFACTO B1
 sols = art["critical_contingencies_solutions"]
