@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # compilar.sh — Compilador unificado y protocolo Scout para fuentes LaTeX (SENI-142)
-# Workspace: /mnt/m2_ia/power-solver-phd/papers_circulo/PAPER_SENI_142_IEEE_TRANSACTIONS
+# Workspace: PAPER_SENI_142_IEEE_TRANSACTIONS
 # ==============================================================================
 set -eu
 

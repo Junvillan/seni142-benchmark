@@ -20,7 +20,7 @@
 \subsection{输电压层与138 kV都市环网}
 \label{sub:strata}
 
-三座战略变电站支撑起整个系统。\textbf{JSAURI}运行于两个电压等级——345~kV与138~kV——其345~kV母线为系统平衡节点（$V = 1.02$~pu），直接接收\textbf{蓬塔卡塔利纳}的注入，后者为全国最大火电厂，$2 \times 376$~MW（752~MW，燃煤），经345~kV干线送出。\textbf{PALA（帕拉马拉）}位于都市区，是主要负荷中心，聚合建模需求1,645~MW，并有三台10.77~MW燃油机组自13.8~kV升压的本地备用。\textbf{SCNU}是西南部的可再生整合枢纽：58.9~MW水电、95~MW光伏与34~MW风电，均自13.8~kV升压。此外，为博士论文脱碳扩展情景设计的可研模块化资产——SCNU的50~MW PEM电解区块，以及分布于JSAURI（$2 \times 400$~MW）与SCNU（$2 \times 300$~MW）的1,400~MW模块化PWR核电试验单元——在基准运行数据集（\texttt{seni\_real\_base}）中一律配置为 \texttt{in\_service = false}，确保基准仿真状态严格代表物理电网，同时为能源转型基准保留模块化就绪能力。全国百分之四十以上的负荷集中在奥萨马（Ozama）都市区，由138~kV环网供电，其冗余是几何性的：JSAURI--PALA--SCNU三角形，线路实长70.5、50.0与22.1~km，并以230~kV JSAURI--SCNU联络增强。三角形的任一回路的损失可由其余两回承担——这正是第~\ref{sub:contingencies}节韧性测试系统化演练的 $N-1$ 属性。带真实走廊距离的完整几何，是经济性证明（第~\ref{sub:zonal}节）与预想事故目录（第~\ref{sub:contingencies}节）的参考区域。
+三座战略变电站支撑起整个系统。\textbf{JSAURI}运行于两个电压等级——345~kV与138~kV——其345~kV母线为系统平衡节点（$V = 1.02$~pu），直接接收\textbf{蓬塔卡塔利纳}的注入，后者为全国最大火电厂，$2 \times 376$~MW（752~MW，燃煤），经345~kV干线送出。\textbf{PALA（帕拉马拉）}位于都市区，是主要负荷中心，聚合建模需求1,645~MW，并有三台10.77~MW燃油机组自13.8~kV升压的本地备用。\textbf{SCN}是西南部的可再生整合枢纽：58.9~MW水电、95~MW光伏与34~MW风电，均自13.8~kV升压。此外，为博士论文脱碳扩展情景设计的可研模块化资产——SCN的50~MW PEM电解区块，以及分布于JSAURI（$2 \times 400$~MW）与SCN（$2 \times 300$~MW）的1,400~MW模块化PWR核电试验单元——在基准运行数据集（\texttt{seni\_real\_base}）中一律配置为 \texttt{in\_service = false}，确保基准仿真状态严格代表物理电网，同时为能源转型基准保留模块化就绪能力。全国百分之四十以上的负荷集中在奥萨马（Ozama）都市区，由138~kV环网供电，其冗余是几何性的：JSAURI--PALA--SCN三角形，线路实长70.5、50.0与22.1~km，并以230~kV JSAURI--SCN联络增强。三角形的任一回路的损失可由其余两回承担——这正是第~\ref{sub:contingencies}节韧性测试系统化演练的 $N-1$ 属性。带真实走廊距离的完整几何，是经济性证明（第~\ref{sub:zonal}节）与预想事故目录（第~\ref{sub:contingencies}节）的参考区域。
 
 \subsection{十个主权领土微电网}
 \label{sub:microgrids}
@@ -57,7 +57,7 @@ Cibao Noroeste（西北锡瓦奥） & $\Omega_{\mathrm{Norte}}$ & Montecristi光
 \begin{figure*}[!t]
 \centering
 \includegraphics[width=0.85\textwidth]{fig_diagrama_2_schur_hbcf.pdf}
-\caption{岛屿电网的HBCF空间网络分块。第368-22号法律的十个领土微电网捆绑为四个电气宏域 $\Omega$（北部/Cibao、南部、东部、都市区）；仅干线边界 $\Gamma$——经Kron化简切割的230/138 kV联络——进入舒尔补 $\mathbf{S} = \mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B}$，在内部/边界排序上呈分块结构 $\mathbf{A}, \mathbf{B}, \mathbf{C}, \mathbf{D}$。硅上关键性能指标：每个国家级交流状态2.65 ms、常驻473 MiB、覆盖87,360小时水平域（10年OC-SENI遥测），相量边界耦合残差 $\delta = 6.35 \times 10^{-12}$ pu。}
+\caption{岛屿电网的HBCF空间网络分块。第368-22号法律的十个领土微电网捆绑为四个电气宏域 $\Omega$（北部/Cibao、南部、东部、都市区）；仅干线边界 $\Gamma$——经Kron化简切割的230/138 kV联络——进入舒尔补 $\mathbf{S} = \mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B}$，在内部/边界排序上呈分块结构 $\mathbf{A}, \mathbf{B}, \mathbf{C}, \mathbf{D}$。硅上关键性能指标：每个国家级交流状态2.65 ms、常驻473 MiB、覆盖87,360小时水平域（10年OC-SENI遥测），相量边界耦合残差 $\delta = 2.788 \times 10^{-14}$ pu。}
 \label{fig:hbcf_schur}
 \end{figure*}
 

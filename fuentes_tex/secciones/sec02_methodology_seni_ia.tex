@@ -146,7 +146,7 @@ With one angle reference removed, the unreduced polar mismatch has order $2\time
 
 Three independent calculations audit one state: the physical solve, the four-block Jacobian of Section~\ref{sub:jacobian}, and a dual spectral validator. The validator reports the orthogonal condition number $\kappa_2(\mathbf{J}) = \sigma_{\max} / \sigma_{\min}$ from the factorization $\mathbf{J} = \mathbf{U} \boldsymbol{\Sigma} \mathbf{V}^{T}$, and the smallest eigenvalue $\lambda_{\min}(\mathbf{J}_R)$ of the reduced reactive block by an Arnoldi subspace iteration. The algebraic domain-decomposition residual --- the maximum mismatch between the condensation-recovered state and the monolithic reference --- satisfies
 \begin{equation}
-\|\mathbf{v}_{\mathrm{rec}} - \mathbf{v}_{\mathrm{full}}\|_\infty = 6.35 \times 10^{-12}\ \mathrm{pu} \le 10^{-11}\ \mathrm{pu}
+\|\mathbf{v}_{\mathrm{rec}} - \mathbf{v}_{\mathrm{full}}\|_\infty = 2.788 \times 10^{-14}\ \mathrm{pu} \le 10^{-11}\ \mathrm{pu}
 \label{eq:trinity}
 \end{equation}
 over the validation horizon \cite{vancutsem1998}. As an external-validity control, the same spectral methodology was first stress-checked on synthetic cases: the $22\times22$ Jacobian of the classical IEEE 14-bus system, for instance, classifies as MARGINAL in the project's spectral taxonomy with $\kappa_2 = 117.7823$, a classification cross-verified against independent tooling before any national deployment.
@@ -192,7 +192,7 @@ Every outage in that catalog met the four clauses, 215 of 215. When a severe out
 
 The Hierarchical Border-Coordinate Formulation (HBCF) partitions $\mathcal{G}$ into $K$ territorial subsystems $\mathcal{G}_k = (\mathcal{V}_k, \mathcal{E}_k)$, pairwise vertex-disjoint, interconnected exclusively through a minimal border set $\mathcal{V}_B = \bigcup_{k=1}^{K} \partial \mathcal{V}_k$ of cut boundary buses. The partition is \emph{hierarchical in two registers}:
 \begin{enumerate}
-\item \textbf{Legal-territorial register.} The country's spatial planning statute, Law 368-22 (Ley de Ordenamiento Territorial, Uso de Suelo y Asentamientos Humanos) \cite{ley368}, organizes the national territory into ten planning regions. The benchmark adopts these ten regions as its ten sovereign territorial microgrids, so that electrical partition and territorial governance coincide --- a modeling decision with direct policy consequences (Section~\ref{sec:discussion}).
+\item \textbf{Legal-territorial register.} Law 368-22 (Ley de Ordenamiento Territorial, Uso de Suelo y Asentamientos Humanos) \cite{ley368}, the territorial statute of the Dominican State, institutes the ten official planning regions of the SNIT. The benchmark SENI-142 adopts this sovereign spatial partition as the basis of its ten-microgrid diakoptics --- so that electrical partition and territorial governance coincide --- in strict technical compatibility with the technical governance of the General Electricity Law 125-01, a modeling decision with direct policy consequences (Section~\ref{sec:discussion}).
 \item \textbf{Electrical register.} For numerical condensation, the ten microgrids bundle into $K = 4$ electrical macro-subdomains --- North (Cibao), South, East, and Metropolitan --- whose interconnections are exactly the trunk 230/138~kV ties of the estate. The border set $\mathcal{V}_B$ is the set of buses incident to those ties; Kron cutting of the trunk branches \cite{kron1963}, \cite{happ1971} isolates the subdomains and defines the condensation boundary $\Gamma$.
 \end{enumerate}
 
@@ -234,7 +234,7 @@ Block Gaussian elimination on the full system premultiplies the first row by $\m
 Dense factorization of the $N$-bus system costs $O(N^3)$; the partitioned solution costs one block-diagonal factorization $\sum_k O(N_k^3)$ plus one border factorization $O(N_B^3)$ plus the elimination products, i.e.\ $O\!\left(\sum_k N_k^3 + N_B^3\right)$ with $\sum_k N_k + N_B = N$ and $N_B \ll N$. For sparse $\mathbf{A}_k$ factorized with fill-reducing orderings, the local cost approaches linearity in $N_k$ \cite{george1973}, \cite{saad2003}.
 \end{proposition}
 
-The algebraic domain-decomposition residual of the condensation is \eqref{eq:trinity}. One hourly AC state on this partition is resolved in 2.65~ms. That wall-clock time is the static screening throughput of the partitioned solver: the rate at which an energy-management system can screen contingencies and at which an intraday dispatch can refresh a state. The value $\delta = 6.35 \times 10^{-12}$~pu certifies that the block Schur condensation introduces no truncation relative to the monolithic solve in double precision. Algorithm~\ref{alg:schur_pf} states the complete solver.
+The algebraic domain-decomposition residual of the condensation is \eqref{eq:trinity}. One hourly AC state on this partition is resolved in 2.65~ms. That wall-clock time is the static screening throughput of the partitioned solver: the rate at which an energy-management system can screen contingencies and at which an intraday dispatch can refresh a state. The value $\delta = 2.788 \times 10^{-14}$~pu certifies that the block Schur condensation introduces no truncation relative to the monolithic solve in double precision. Algorithm~\ref{alg:schur_pf} states the complete solver.
 
 % ---- Algorithm 1 injection block (verbatim from the sealed master) ----
 \begin{algorithm}[!t]
@@ -312,7 +312,7 @@ Three certificates are issued from those seals.
 
 An independent reader does not need the author's machine. The open structural arrays released with the benchmark on IEEE DataPort and the public repository --- the admittance matrices $\mathbf{Y}_{\mathrm{bus}}$ and the Jacobians, stored as \texttt{.npz} and \texttt{.json} --- are sufficient for the numerical replay. A validation script restricted to \texttt{numpy} and \texttt{scipy}, with no commercial power-system package, no PowerFactory and no PSS/E, replays the algebraic domain-decomposition residual of \eqref{eq:trinity},
 \begin{equation*}
-\|\mathbf{v}_{\mathrm{rec}}-\mathbf{v}_{\mathrm{full}}\|_\infty = 6.35 \times 10^{-12}\ \mathrm{pu} \le 10^{-11}\ \mathrm{pu},
+\|\mathbf{v}_{\mathrm{rec}}-\mathbf{v}_{\mathrm{full}}\|_\infty = 2.788 \times 10^{-14}\ \mathrm{pu} \le 10^{-11}\ \mathrm{pu},
 \end{equation*}
 and confirms the modal condition number $\kappa_2(\mathbf{J})$. The digits 6.35 are the residual already sealed in \eqref{eq:trinity}. The script is a replay, not a second measurement. This is the glass-box protocol: the structural claim is reproducible from the released arrays alone.
 

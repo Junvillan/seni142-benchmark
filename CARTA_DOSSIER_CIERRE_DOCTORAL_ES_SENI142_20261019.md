@@ -5,7 +5,7 @@
 **Journal:** *IEEE Transactions on Power Systems*
 **Autor de correspondencia:** Ing. Junior Alexis Villanueva Rosario, Ms.C., Ph.D.(c)
 **Fecha:** 19 de octubre de 2026
-**Estado:** Alineada con la lista taxativa **T1–T5** del dictamen del Editor en Jefe (congelamiento editorial 19-oct-2026). Carta de registro en español: `subir_glm/CARTA_CIERRE_DEFINITIVO_T1_T5_SENI142_20261019.md`. Versión operativa en inglés: `DOSSIER_CLOSING_EN_SENI142_20261019.md`.
+**Estado:** Alineada con la lista taxativa **T1–T5** del dictamen del Editor en Jefe (congelamiento editorial 19-oct-2026). Carta de registro en español: `CARTA_CIERRE_DEFINITIVO_T1_T5_SENI142_20261019.md`. Versión operativa en inglés: `DOSSIER_CLOSING_EN_SENI142_20261019.md`.
 
 ---
 

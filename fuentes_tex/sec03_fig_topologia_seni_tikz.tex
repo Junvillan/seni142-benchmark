@@ -15,13 +15,13 @@
 %% === MAIN TRIANGLE (138 kV ring) ===
 \node[subestacion] (jsauri) at (0, 0.5) {JSAURI\\{\small 138 kV}};
 \node[subestacion] (pala) at (-4.8, -4) {PALA\\{\small 138 kV}};
-\node[subestacion] (scnu) at (4.8, -4) {SCNU\\{\small 138 kV}};
+\node[subestacion] (scn) at (4.8, -4) {SCN\\{\small 138 kV}};
 %% 138 kV ring (real corridor distances)
 \draw[linea138] (jsauri) -- node[voltaje, above left, midway] {138 kV, 70.5 km} (pala);
-\draw[linea138] (jsauri) -- node[voltaje, above right, midway] {138 kV, 50.0 km} (scnu);
-\draw[linea138] (pala) -- node[voltaje, below, midway] {138 kV, 22.1 km} (scnu);
+\draw[linea138] (jsauri) -- node[voltaje, above right, midway] {138 kV, 50.0 km} (scn);
+\draw[linea138] (pala) -- node[voltaje, below, midway] {138 kV, 22.1 km} (scn);
 %% 230 kV reinforcement
-\draw[linea230] (jsauri) -- node[voltaje, pos=0.42, right=2pt, fill=white] {230 kV} (scnu);
+\draw[linea230] (jsauri) -- node[voltaje, pos=0.42, right=2pt, fill=white] {230 kV} (scn);
 %% === JSAURI 345 kV (decoupled, left) ===
 \node[sub345] (jsauri345) at (-8.5, 0.5) {JSAURI\\{\small 345 kV}};
 \draw[transformador] (jsauri345) -- node[voltaje, above, midway] {TR 345/138} (jsauri);
@@ -31,19 +31,19 @@
 \node[genbox, above=8mm of jsauri345] (ptacatalina) {Punta Catalina: $2{\times}376$ MW (coal)};
 \node[genbox, above=2mm of ptacatalina] (nuclear) {Nuclear*: $4{\times}(300{-}400)$ MW};
 %% === RENEWABLES (upper right quadrant, outside the ring) ===
-\node[genbox, minimum width=32mm] (renov) at (7.2, -0.8) {SCNU renewables};
+\node[genbox, minimum width=32mm] (renov) at (7.2, -0.8) {SCN renewables};
 \node[genbox, below=2mm of renov] (hidro) {Hydro: 58.9 MW};
 \node[genbox, below=1mm of hidro] (solar) {Solar PV: 95 MW};
 \node[genbox, below=1mm of solar] (eolica) {Wind: 34 MW};
-\draw[-, thick, seni-gold, dashed] (scnu.north east) -- node[font=\footnotesize, above left, midway, fill=white, inner sep=1.5pt] {13.8 kV} (renov.south west);
+\draw[-, thick, seni-gold, dashed] (scn.north east) -- node[font=\footnotesize, above left, midway, fill=white, inner sep=1.5pt] {13.8 kV} (renov.south west);
 %% PEM electrolyzers (prospective)
-\node[genbox, below=12mm of scnu, minimum width=36mm] (elec) {PEM electrolyzers: 50 MW*};
+\node[genbox, below=12mm of scn, minimum width=36mm] (elec) {PEM electrolyzers: 50 MW*};
 %% === LOAD AND GENERATION AT PALA ===
 \node[genbox, left=2mm of pala, yshift=4mm] (carga) {Total load: 1,645 MW};
 \node[genbox, left=2mm of pala, yshift=-6mm] (fueloil) {Fuel oil: $3{\times}10.77$ MW};
 %% === 13.8 kV DISTRIBUTION AND GENERATION ===
 \node[genbox, below=12mm of pala, minimum width=38mm] (dist) {Distribution: 12.47 kV $\to$ 7.2 kV $\to$ 240/110 V};
-\node[genbox, right=2mm of scnu, yshift=-6mm] (gen13) {Gen: 13.8 kV $\xrightarrow{\text{TR}}$ 138 kV};
+\node[genbox, right=2mm of scn, yshift=-6mm] (gen13) {Gen: 13.8 kV $\xrightarrow{\text{TR}}$ 138 kV};
 %% === LEGEND + NOTES side by side ===
 \node[notebox, below=28mm of pala, anchor=north west, minimum width=68mm] (leyenda) {
     \textbf{Legend:}\\[1mm]
@@ -57,6 +57,6 @@
     *Prospective scenario (not operational in 2026)\\
     JSAURI 345: transmission bus (slack)\\
     PALA: Palamara (metropolitan load center)\\
-    SCNU: renewable hub + H$_2$
+    SCN: renewable hub + H$_2$
 };
 \end{tikzpicture}

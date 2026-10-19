@@ -5,7 +5,7 @@
 **Journal:** *IEEE Transactions on Power Systems*
 **Corresponding author:** Ing. Junior Alexis Villanueva Rosario, Ms.C., Ph.D.(c)
 **Date:** October 19, 2026
-**Status:** Aligned with the **T1–T5** exhaustive checklist of the Editor in Chief's decision (editorial freeze, October 19, 2026). Spanish record letter: `subir_glm/CARTA_CIERRE_DEFINITIVO_T1_T5_SENI142_20261019.md`. This is the operational English version.
+**Status:** Aligned with the **T1–T5** exhaustive checklist of the Editor in Chief's decision (editorial freeze, October 19, 2026). Spanish record letter: `CARTA_CIERRE_DEFINITIVO_T1_T5_SENI142_20261019.md`. This is the operational English version.
 
 ---
 

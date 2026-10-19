@@ -2,7 +2,7 @@
 % fig_diagrama_1_jsauri_345_138.tex
 % DIAGRAMA 1 — Arquitectura nodal y desglose topológico S/E Julio Sauri
 %              (345/138 kV). Informe hito SENI 142 barras (Rep. Dominicana).
-% Enclave Triángulo (GLM) · Supervisor notarial: Cuadrado ■
+% Dossier TPWRS-SENI-142-2026 · Autoría: Ing. J. A. Villanueva Rosario
 % ----------------------------------------------------------------------------
 % Compilación individual (protocolo solucion_error_latex.md):
 %   nice -n 19 pdflatex -interaction=nonstopmode fig_diagrama_1_jsauri_345_138.tex
@@ -86,8 +86,8 @@
   {Barraje 138 kV\\ JULIO SAURI B1 (patio de 138 kV)};
 
 % ---- Bloque derecho: líneas salientes de 138 kV hacia la demanda ----
-\node[demanda] (scnu) at (16.9, 7.1)
-  {LT 138 kV -- San Cristóbal Norte\\ (SCNU: doble circuito L1/L2)};
+\node[demanda] (scn) at (16.9, 7.1)
+  {LT 138 kV -- San Cristóbal Norte\\ (SCN: doble circuito L1/L2)};
 \node[demanda] (plq)  at (16.9, 5.45) {LT 138 kV -- Palenque};
 \node[demanda] (plm)  at (16.9, 3.8)
   {LT 138 kV -- Palamara\\ (anillo de Santo Domingo)};
@@ -120,9 +120,9 @@
 \draw[line width=1.1pt, seniNavy] (t1.south) -- (b138.north);
 \draw[line width=1.1pt, seniNavy] (t2.south) -- (b138.north);
 
-% ---- Salidas de 138 kV hacia la demanda (doble circuito en SCNU) ----
+% ---- Salidas de 138 kV hacia la demanda (doble circuito en SCN) ----
 \draw[->, line width=1.4pt, seniBlue, double, double distance=1.5pt]
-  (b138.east) -- (scnu.west);
+  (b138.east) -- (scn.west);
 \draw[->, line width=1.4pt, seniBlue] (b138.east) -- (plq.west);
 \draw[->, line width=1.4pt, seniBlue] (b138.east) -- (plm.west);
 \draw[->, line width=1.4pt, seniBlue] (b138.east) -- (pzr.west);

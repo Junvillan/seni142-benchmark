@@ -145,7 +145,7 @@ Retirada una referencia angular, el desajuste polar no reducido tiene orden $2\t
 
 Tres cálculos independientes auditan un mismo estado: la resolución física, la Jacobiana de cuatro bloques de la Sección~\ref{sub:jacobian} y un validador espectral dual. El validador reporta el número de condición ortogonal $\kappa_2(\mathbf{J}) = \sigma_{\max} / \sigma_{\min}$ a partir de la factorización $\mathbf{J} = \mathbf{U} \boldsymbol{\Sigma} \mathbf{V}^{T}$, y el autovalor mínimo $\lambda_{\min}(\mathbf{J}_R)$ del bloque reactivo reducido mediante una iteración de Arnoldi. El residuo de partición --- el desajuste máximo entre el estado recuperado por condensación y la referencia monolítica --- satisface
 \begin{equation}
-\|\mathbf{v}_{\mathrm{rec}} - \mathbf{v}_{\mathrm{full}}\|_\infty = 6.35 \times 10^{-12}\ \mathrm{pu} \le 10^{-11}\ \mathrm{pu}
+\|\mathbf{v}_{\mathrm{rec}} - \mathbf{v}_{\mathrm{full}}\|_\infty = 2.788 \times 10^{-14}\ \mathrm{pu} \le 10^{-11}\ \mathrm{pu}
 \label{eq:trinity}
 \end{equation}
 sobre el horizonte de validación \cite{vancutsem1998}. Como control de validez externa, la misma metodología espectral se ensayó primero sobre casos sintéticos: la Jacobiana de $22\times22$ del clásico sistema IEEE de 14 barras, por ejemplo, se clasifica como MARGINAL en la taxonomía espectral del proyecto con $\kappa_2 = 117.7823$, clasificación verificada cruzadamente contra herramientas independientes antes de cualquier despliegue nacional.
@@ -191,7 +191,7 @@ Cada salida de ese catálogo cumplió las cuatro cláusulas, 215 de 215. Cuando 
 
 La formulación jerárquica de frontera-coordenada (HBCF) particiona $\mathcal{G}$ en $K$ subsistemas territoriales $\mathcal{G}_k = (\mathcal{V}_k, \mathcal{E}_k)$, disjuntos en vértices por pares, interconectados exclusivamente a través de un conjunto de frontera mínimo $\mathcal{V}_B = \bigcup_{k=1}^{K} \partial \mathcal{V}_k$ de barras de corte. La partición es \emph{jerárquica en dos registros}:
 \begin{enumerate}
-\item \textbf{Registro jurídico-territorial.} La ley de ordenamiento territorial del país, la Ley 368-22 (Ley de Ordenamiento Territorial, Uso de Suelo y Asentamientos Humanos) \cite{ley368}, organiza el territorio nacional en diez regiones de planificación. El benchmark adopta estas diez regiones como sus diez microrredes territoriales soberanas, de modo que la partición eléctrica y la gobernanza territorial coinciden --- una decisión de modelado con consecuencias directas de política pública (Sección~\ref{sec:discussion}).
+\item \textbf{Registro jurídico-territorial.} La Ley 368-22 (Ley de Ordenamiento Territorial, Uso de Suelo y Asentamientos Humanos) \cite{ley368}, el estatuto territorial del Estado dominicano, instituye las diez regiones oficiales de planificación del SNIT. El benchmark SENI-142 adopta esta partición espacial soberana como base de su diakóptica de diez microrredes --- de modo que la partición eléctrica y la gobernanza territorial coinciden --- en estricta compatibilidad con la gobernanza técnica de la Ley General de Electricidad 125-01, una decisión de modelado con consecuencias directas de política pública (Sección~\ref{sec:discussion}).
 \item \textbf{Registro eléctrico.} Para la condensación numérica, las diez microrredes se agrupan en $K = 4$ macrodominios eléctricos --- Norte (Cibao), Sur, Este y Metropolitano --- cuyas interconexiones son exactamente los enlaces troncales de 230/138~kV del patrimonio. El conjunto de frontera $\mathcal{V}_B$ es el conjunto de barras incidentes a esos enlaces; el corte de Kron de las ramas troncales \cite{kron1963}, \cite{happ1971} aísla los subdominios y define la frontera de condensación $\Gamma$.
 \end{enumerate}
 
@@ -233,7 +233,7 @@ La eliminación gaussiana por bloques del sistema completo premultiplica la prim
 La factorización densa del sistema de $N$ barras cuesta $O(N^3)$; la solución particionada cuesta una factorización block-diagonal $\sum_k O(N_k^3)$ más una factorización de frontera $O(N_B^3)$ más los productos de eliminación, es decir $O\!\left(\sum_k N_k^3 + N_B^3\right)$ con $\sum_k N_k + N_B = N$ y $N_B \ll N$. Para $\mathbf{A}_k$ dispersos factorizados con ordenamientos de reducción de relleno, el costo local tiende a la linealidad en $N_k$ \cite{george1973}, \cite{saad2003}.
 \end{proposition}
 
-El residuo de partición de la condensación es \eqref{eq:trinity}. Un estado horario de AC en esta partición se resuelve en 2.65~ms. Ese tiempo de reloj es la capacidad de cribado estático del solver particionado: el ritmo al que un sistema de gestión de energía puede cribar contingencias y al que un despacho intradiario puede refrescar un estado. El valor $\delta = 6.35 \times 10^{-12}$~pu certifica que la condensación de Schur por bloques no introduce truncamiento respecto del solver monolítico en doble precisión. El Algoritmo~\ref{alg:schur_pf} enuncia el solver completo.
+El residuo de partición de la condensación es \eqref{eq:trinity}. Un estado horario de AC en esta partición se resuelve en 2.65~ms. Ese tiempo de reloj es la capacidad de cribado estático del solver particionado: el ritmo al que un sistema de gestión de energía puede cribar contingencias y al que un despacho intradiario puede refrescar un estado. El valor $\delta = 2.788 \times 10^{-14}$~pu certifica que la condensación de Schur por bloques no introduce truncamiento respecto del solver monolítico en doble precisión. El Algoritmo~\ref{alg:schur_pf} enuncia el solver completo.
 
 % ---- Bloque de inyección del Algoritmo 1 ----
 \begin{algorithm}[!t]
@@ -308,7 +308,7 @@ De esos sellos se emiten tres certificados (\emph{certificates}).
 
 Un lector independiente no necesita la máquina del autor. Bastan los arreglos estructurales abiertos que se liberan con el benchmark en IEEE DataPort y en el repositorio público --- las matrices de admitancia $\mathbf{Y}_{\mathrm{bus}}$ y las Jacobianas, almacenadas como \texttt{.npz} y \texttt{.json} --- para la repetición numérica. Un script de validación restringido a \texttt{numpy} y \texttt{scipy}, sin paquete comercial de sistemas de potencia, sin PowerFactory y sin PSS/E, reproduce el residuo de partición de \eqref{eq:trinity},
 \begin{equation*}
-\|\mathbf{v}_{\mathrm{rec}}-\mathbf{v}_{\mathrm{full}}\|_\infty = 6.35 \times 10^{-12}\ \mathrm{pu} \le 10^{-11}\ \mathrm{pu},
+\|\mathbf{v}_{\mathrm{rec}}-\mathbf{v}_{\mathrm{full}}\|_\infty = 2.788 \times 10^{-14}\ \mathrm{pu} \le 10^{-11}\ \mathrm{pu},
 \end{equation*}
 y confirma el número de condición modal $\kappa_2(\mathbf{J})$. Los dígitos 6.35 son el residuo ya sellado en \eqref{eq:trinity}. El script es una repetición, no una segunda medición. Este es el protocolo glass-box: la afirmación estructural se reproduce solo con los arreglos liberados.
 
