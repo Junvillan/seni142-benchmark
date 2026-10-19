@@ -16,12 +16,11 @@
 \node[subestacion] (jsauri) at (0, 0.5) {JSAURI\\{\small 138 kV}};
 \node[subestacion] (pala) at (-4.8, -4) {PALA\\{\small 138 kV}};
 \node[subestacion] (scn) at (4.8, -4) {SCN\\{\small 138 kV}};
-%% 138 kV ring (real corridor distances)
+%% 138 kV corridor legs + 230 kV tie (calibrated route lengths)
 \draw[linea138] (jsauri) -- node[voltaje, above left, midway] {138 kV, 70.5 km} (pala);
-\draw[linea138] (jsauri) -- node[voltaje, above right, midway] {138 kV, 50.0 km} (scn);
 \draw[linea138] (pala) -- node[voltaje, below, midway] {138 kV, 22.1 km} (scn);
-%% 230 kV reinforcement
-\draw[linea230] (jsauri) -- node[voltaje, pos=0.42, right=2pt, fill=white] {230 kV} (scn);
+%% 230 kV tie (route length per canonical branch table)
+\draw[linea230] (jsauri) -- node[voltaje, pos=0.42, right=2pt, fill=white] {230 kV, 30.86 km} (scn);
 %% === JSAURI 345 kV (decoupled, left) ===
 \node[sub345] (jsauri345) at (-8.5, 0.5) {JSAURI\\{\small 345 kV}};
 \draw[transformador] (jsauri345) -- node[voltaje, above, midway] {TR 345/138} (jsauri);

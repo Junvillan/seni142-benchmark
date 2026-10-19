@@ -8,7 +8,7 @@ This statement sets the official intellectual-property doctrine governing the sc
 
 ### 1. Scope of the Contribution (Benchmark Paper)
 
-The object of this article is the **physical network model** and its **open validation data**: the fully georeferenced 142-bus topology of the Dominican Republic interconnected national system (SENI), the 193 canonical branches (135 lines + 58 power transformers) with 1:1 provenance from the official one-line diagram (DWG), the CSV censuses, the NPZ matrices, and the verification harness **verify_seni142_benchmark.py (41/41 checks PASS)**.
+The object of this article is the **physical network model** and its **open validation data**: the fully georeferenced 142-bus topology of the Dominican Republic interconnected national system (SENI), the 193 canonical branches (135 lines + 58 power transformers) with calibrated single-line CAD survey provenance from the official one-line diagram, the CSV censuses, the NPZ matrices, and the verification harness **verify_seni142_benchmark.py (41/41 checks PASS)**.
 
 The benchmark is conceived to be **neutral and interoperable**: the scientific community can test **its own solvers** (MATPOWER, Pandapower, PyPSA, PowerFactory, PSS/E, or any other) on the released model. Reproducibility of every sealed structural quantity does not depend on proprietary software: the verification harness is restricted to `numpy` and `scipy`, and re-derives the partition residual, the block-diagonal Schur-complement structure, and the eight contingency balances directly from the released arrays.
 

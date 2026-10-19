@@ -8,7 +8,7 @@ La presente nota fija la doctrina oficial de propiedad intelectual que gobierna 
 
 ### 1. Alcance de la Contribución (Benchmark Paper)
 
-El objeto de este artículo es el **modelo de red física** y sus **datos abiertos de validación**: la topología georreferenciada de 142 barras del Sistema Eléctrico Nacional Interconectado de la República Dominicana (SENI), los 193 ramos canónicos (135 líneas + 58 transformadores de potencia) con procedencia 1:1 del unifilar oficial (DWG), los censos CSV, las matrices NPZ y el arnés de verificación **verify_seni142_benchmark.py (41/41 checks PASS)**.
+El objeto de este artículo es el **modelo de red física** y sus **datos abiertos de validación**: la topología georreferenciada de 142 barras del Sistema Eléctrico Nacional Interconectado de la República Dominicana (SENI), los 193 ramos canónicos (135 líneas + 58 transformadores de potencia) con procedencia de levantamiento CAD unifilar calibrado del plano oficial, los censos CSV, las matrices NPZ y el arnés de verificación **verify_seni142_benchmark.py (41/41 checks PASS)**.
 
 El benchmark está concebido para ser **neutral e interoperable**: la comunidad científica puede probar **sus propios solvers** (MATPOWER, Pandapower, PyPSA, PowerFactory, PSS/E, o cualquier otro) sobre el modelo liberado. La reproducibilidad de todas las cantidades estructurales selladas no depende de software propietario: el arnés de verificación está restringido a `numpy` y `scipy`, y reproduce el residuo de partición, la estructura bloque-diagonal del complemento de Schur y los ocho balances de contingencia directamente desde los arreglos liberados.
 
