@@ -1,12 +1,12 @@
-MANIFIESTO SHA-512 — EXPEDIENTE OFICIAL R5 DEFINITIVO (refresco R10-FINAL calibración textual, 2026-10-19)
+MANIFIESTO SHA-512 — EXPEDIENTE OFICIAL R5 DEFINITIVO (refresco R10-FINAL + Agradecimiento In Memoriam Ing. Arturo Lamarche, 2026-10-19)
 Capa de datos reconstruida 1:1 desde el unifilar DWG; artefacto B1 v2; verificador verify_seni142_benchmark.py (41/41 PASS, cobertura anti-mutaciones 12/12).
 Retirados del expediente: DICTAMEN_FINAL_ACEPTACION (simulado), verificar_caja_de_cristal.py, generar_artefacto_b1.py.
 R9 (2026-10-19): erradicación del residuo legacy 6.35e-12 (dígitos 2.788, piso escalado 5.53e-13 pu, hash B1 real a59f0fac…); incorporados NOTA_PROPIEDAD_INTELECTUAL_SOLVER_ES e IP_PATENT_SOLVER_STATEMENT_EN.
 R10 (2026-10-19): arnés endurecido (δ≡recomputado, Ybus_data≡CSV, integridad censo/ramas vs hash NPZ; 41 chequeos); nota PI sin canal NDA; enlace 230 kV JSAURI–SCN armonizado a 30.86 km (route length) 1:1 con el CSV.
-R10-FINAL (2026-10-19): calibración de claims de rendimiento (2.65 ms / 473 MiB = medición experimental del motor C++/Sparse del autor, línea base de comparación; el arnés abierto reproduce 41 controles matemáticos y estructurales), taxonomía canónica (112 recintos cercados → 115 troncales 6/3/106 + 27 puertos 69 kV = 142) y κ₂(S)=2,489.64 definido como condición espectral medida del complemento de Schur de frontera.
-e9e6a460f3626000be03ae8a27eb2ef751aaf0f77c61f3429a10ce6ba5327bbd7396de158b561fc5cd03785a11d3dffc980ea9748c0d89585d932a9df3c2d49b  SENI142_IEEE_2col.pdf
-c6446a8f9020c22952582ebb216076dff552703abdb58b4d5becce548ed764954f38ef6d8a077546208d33f4ae720d2eff7d2495d4e35ee6d494f799c515ee74  SENI142_IEEE_1col.pdf
-e6bc72641cfdc8bd6002dc08cd2d1036b274d9691fd6c61eac0fc96030ae3025a964348e8ee91c10837e0fd1cdb4731c4c4ab226bb3a26365856119e45a94d80  SENI142_IEEE_ES_1col.pdf
+R10-FINAL (2026-10-19): calibración de claims de rendimiento (2.65 ms / 473 MiB = medición experimental del motor C++/Sparse del autor, línea base de comparación; el arnés abierto reproduce 41 controles matemáticos y estructurales), taxonomía canónica (112 recintos cercados → 115 troncales 6/3/106 + 27 puertos 69 kV = 142) y κ₂(S)=2,489.64 definido como condición espectral medida del complemento de Schur de frontera. Incorporada sección In Memoriam Ing. Arturo Lamarche.
+5ab4c30a27f380b857f9f2c0c8b7cdc1b6563634ea0c42242ca2273014a687716f5ec254eebf04ede68d3c78ea3975116fff33331c874b873035f58580293af5  SENI142_IEEE_2col.pdf
+647208af134e993d431c12cad9950debd542cc70b4a3a6857b0aec0dc15ffc5422dc2d1be40008dd39c20b7c61da54e9592db8c3d73de03294915e8d84be4a7c  SENI142_IEEE_1col.pdf
+0a31285523ef9f764a22c08bde575abd33b199749097e4c19a630099f2b0c62b1dd0f67ac89b54648bd51bbb2592104526f7a396063e669016aa3b7ba41b879d  SENI142_IEEE_ES_1col.pdf
 a59f0fac19176d04539bf1fbd823fed2a7e81b290c5b551f30d717798ab632c4059e6c8dd81f8daef73f2bc0e31855dac0cf786a5f6a4a358922e1ce546593da  ARTEFACTO_B1_8_CONTINGENCIAS_CANONICAS_142BARRAS.json
 61e51a7f873fd9da1ef6a665fe77e859a740f8b8822c7a7b1e3346701a39708a4ba4a681630d8775041017d7df82356686db443af98881c8dace829d5283ab6d  CARTA_CIERRE_DEFINITIVO_T1_T5_SENI142_20261019.md
 43d61ab64666a0cb56133ce710932345afec574bb568397718a4ba59e1b624c5c0844b908fce5fc940137428ca54a4abb1c58611402ae0aa11d89507eef10377  CARTA_DOSSIER_CIERRE_DOCTORAL_ES_SENI142_20261019.md
@@ -18,5 +18,5 @@ b6ca09ef24bb770945730f3b18460d4753d2f436964adc433d8d980747ee0e2c013f66a256296f45
 c2a186f936e18aebea60d4ec0afff9c28c2a8453d58dbca2d0d7b9c35b515d3cdffe3d718558fe9032724baefb9668e840cd25e48a05366694b195b1e00f6a10  SENI142_CENSO_CANONICO_BARRAS.csv
 22c81dda2f09f276e78814779cdd614560242a6fe213de11e4b918846a0440a4dc8eec4903b044694be4c7c3ef2eda5b52104b1947928ce8453ead05d0f9b0f3  SENI142_RAMAS_LINEAS_Y_TRANSFORMADORES.csv
 11dda3accb5cba5fc716f9fdbb85612b6a200513706d771a92822e54bbf4962ad3470cfc30472027038f1166efe521452934185798b3655d4cc5cf227025a120  matrices_sistema_seni142.npz
-b292a6e4dfc3cb45d1aea663ce0dde4b5cedb955ad57325cfd418c9541de160692be7ed805344780427469f0ed667ec8345254130549ed4c99b762d21c312773  paper_seni142_ieee_transactions_en.md
+8ba0f9fc265866f02c53d5f3fc50b5c1521e209bf858c809e498fd64833dfa9b2fa6781ad156e3053613af45190da711c1167e85f3ce11ba1a6bd6e2c07ff0ce  paper_seni142_ieee_transactions_en.md
 051f43717a54e3148f277aeb63f0f955ec0583aa1446a1aea56b2be667ae729572ec90cf9686cb304612e30180c2db121b4f4b8d85e5853645e0142a3672c7d4  verify_seni142_benchmark.py
