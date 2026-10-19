@@ -1,0 +1,96 @@
+% =========================================================================
+% secciones_zh/sec03_benchmark_seni142_topology.tex — 第III节，中文版
+% =========================================================================
+\section{多米尼加共和国SENI-142基准拓扑}
+\label{sec:topology}
+
+\subsection{从112座变电站到142个节点}
+\label{sub:substations}
+
+多米尼加输电系统的物理资产包含约112座围栏变电站，而节点模型恰好包含142个节点。差异并非噪声，而是拓扑；图~\ref{fig:jsauri}在该国最关键的变电站上记录了这条规则。围栏变电站是不动产对象，节点则是基尔霍夫对象。凡变电站以自耦变压器组连接两个电压等级，两个场地便是电气上独立的节点，仅通过变压器支路阻抗耦合。胡利奥·萨乌里（JSAURI）场站是典型案例：其345~kV场地——即送出蓬塔卡塔利纳发电综合体的干线线路受端——与其138~kV区域场地经T1/T2自耦变压器组解耦，每个场地各为一个节点。将规则统一应用于所有电压层——345、230与138~kV输电场地，加上经第~\ref{sub:reduction}节等效保留的69~kV接口——恰得142个节点、135条输电线路与58台电力变压器。
+
+% ---- 图3 ----
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.88\textwidth]{fig_diagrama_1_jsauri_345_138.pdf}
+\caption{胡利奥·萨乌里（JSAURI）345/138 kV变电站的基尔霍夫解耦。送出蓬塔卡塔利纳综合体（$2 \times 376$ MW）的345 kV超级干线终止于其专属场地，经T1/T2自耦变压器组阻抗与供电圣克里斯托瓦尔（San Cristóbal）走廊及都市环网的138 kV区域场地解耦。凡存在变压之处，围栏场站即产生两个节点；对所有电压层建模后，网络总计恰好142个节点。}
+\label{fig:jsauri}
+\end{figure*}
+
+\subsection{输电压层与138 kV都市环网}
+\label{sub:strata}
+
+三座战略变电站支撑起整个系统。\textbf{JSAURI}运行于两个电压等级——345~kV与138~kV——其345~kV母线为系统平衡节点（$V = 1.02$~pu），直接接收\textbf{蓬塔卡塔利纳}的注入，后者为全国最大火电厂，$2 \times 376$~MW（752~MW，燃煤），经345~kV干线送出。\textbf{PALA（帕拉马拉）}位于都市区，是主要负荷中心，聚合建模需求1,645~MW，并有三台10.77~MW燃油机组自13.8~kV升压的本地备用。\textbf{SCNU}是西南部的可再生整合枢纽：58.9~MW水电、95~MW光伏与34~MW风电，均自13.8~kV升压。此外，为博士论文脱碳扩展情景设计的可研模块化资产——SCNU的50~MW PEM电解区块，以及分布于JSAURI（$2 \times 400$~MW）与SCNU（$2 \times 300$~MW）的1,400~MW模块化PWR核电试验单元——在基准运行数据集（\texttt{seni\_real\_base}）中一律配置为 \texttt{in\_service = false}，确保基准仿真状态严格代表物理电网，同时为能源转型基准保留模块化就绪能力。全国百分之四十以上的负荷集中在奥萨马（Ozama）都市区，由138~kV环网供电，其冗余是几何性的：JSAURI--PALA--SCNU三角形，线路实长70.5、50.0与22.1~km，并以230~kV JSAURI--SCNU联络增强。三角形的任一回路的损失可由其余两回承担——这正是第~\ref{sub:contingencies}节韧性测试系统化演练的 $N-1$ 属性。带真实走廊距离的完整几何，是经济性证明（第~\ref{sub:zonal}节）与预想事故目录（第~\ref{sub:contingencies}节）的参考区域。
+
+\subsection{十个主权领土微电网}
+\label{sub:microgrids}
+
+第368-22号法律将国家领土组织为十个规划区；基准将其采纳为十个领土微电网，并为数值凝聚捆绑为HBCF的四个电气宏域。表~\ref{tab:microgrids}给出映射及各区域在运行记录中的代表性锚点。
+
+% ---- 表I ----
+\begin{table*}[!t]
+\caption{SENI-142基准的领土微电网（第368-22号法律）及其向四个HBCF宏域的捆绑}
+\label{tab:microgrids}
+\centering
+\footnotesize
+\begin{tabular}{@{}p{0.24\textwidth} l p{0.44\textwidth}@{}}
+\toprule
+\textbf{领土微电网（规划区）} & \textbf{宏域} & \textbf{运行记录中的代表性锚点} \\
+\midrule
+Ozama-Metropolitana（奥萨马都会区） & $\Omega_{\mathrm{Metro}}$ & Palamara、Hainamosa、Herrera —— 全国负荷逾40\% \\
+Valdesia（瓦尔德西亚） & $\Omega_{\mathrm{Sur}}$ & JSAURI、蓬塔卡塔利纳（752 MW）、Baní--Yaguate光伏走廊 \\
+Higuamo（伊瓜莫） & $\Omega_{\mathrm{Este}}$ & San Pedro de Macorís、Quisqueya电厂、AES Andrés（LNG） \\
+Yuma（尤马） & $\Omega_{\mathrm{Este}}$ & La Romana--Punta Cana旅游负荷走廊 \\
+Del Valle（德尔瓦列） & $\Omega_{\mathrm{Sur}}$ & El Valle多枢纽、764 MW可逆抽蓄（Sabaneta / Dos Bocas） \\
+Enriquillo（恩里基略） & $\Omega_{\mathrm{Sur}}$ & Barahona、Los Cocos与Larimar风电、Canoa光伏 \\
+Cibao Norte（北锡瓦奥） & $\Omega_{\mathrm{Norte}}$ & Canabacoa（圣地亚哥），第二负荷中心 \\
+Cibao Sur（南锡瓦奥） & $\Omega_{\mathrm{Norte}}$ & Pueblo Viejo矿业负荷（Cotuí）、Falcondo（Bonao） \\
+Cibao Nordeste（东北锡瓦奥） & $\Omega_{\mathrm{Norte}}$ & 大西洋沿岸火电与风电（Puerto Plata） \\
+Cibao Noroeste（西北锡瓦奥） & $\Omega_{\mathrm{Norte}}$ & Montecristi光伏、Valverde--Mao、Dajabón边境走廊 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+图~\ref{fig:hbcf_schur}展示由此得到的网络分块地图：岛屿地理上的四个宏域 $\Omega$、干线边界 $\Gamma$（经Kron化简切割的230/138~kV联络）以及凝聚求解的硅上关键性能指标。
+
+% ---- 图4 ----
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_diagrama_2_schur_hbcf.pdf}
+\caption{岛屿电网的HBCF空间网络分块。第368-22号法律的十个领土微电网捆绑为四个电气宏域 $\Omega$（北部/Cibao、南部、东部、都市区）；仅干线边界 $\Gamma$——经Kron化简切割的230/138 kV联络——进入舒尔补 $\mathbf{S} = \mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B}$，在内部/边界排序上呈分块结构 $\mathbf{A}, \mathbf{B}, \mathbf{C}, \mathbf{D}$。硅上关键性能指标：每个国家级交流状态2.65 ms、常驻473 MiB、覆盖87,360小时水平域（10年OC-SENI遥测），相量边界耦合残差 $\delta = 6.35 \times 10^{-12}$ pu。}
+\label{fig:hbcf_schur}
+\end{figure*}
+
+\subsection{数据溯源与边界状态清单}
+\label{sub:provenance}
+
+到达主求解器的每一个耦合项——第~\ref{sec:multivector}节灵活性星座的 $(P_g, Q_g)$ 注入——都经过一份边界状态清单传输，其条目以SHA-512链式签名，使任何注入的溯源都可以对照封存运行做事后验证。
+
+变电站物理占地、节点母线拓扑连接与走廊地理走向，直接派生自输电商（ETED）维护的官方CAD单线图。相应的支路电气参数（$R$、$X$、$B$ 与MVA热额定）及运行基准设定值，取自OC-SENI与ETED的官方参考系统数据集\cite{ocseni}、\cite{eted}，并按IEC 61970的通用信息模型（CIM）约定\cite{iec61970}组织。电能质量相关量遵循IEC 61000-4-30\cite{iec61000}与IEEE Std 1459\cite{ieee1459}的测量定义。溯源由此从经核验的公用事业记录与运营商参考，不间断地贯通到求解器输入再到发表的基准图表。
+
+\subsection{合成经典与实测岛屿的对照}
+\label{sub:canon}
+
+SENI-142的科学身份通过对照最易陈述。表~\ref{tab:canon}在可复现科学所关心的轴上，将合成经典与实测岛屿并置。其中两轴值得强调，因为它们在参数表中不可见。其一是\emph{时间深度}：合成算例只有一个运行点或少数场景；SENI-142拥有87,360个连续存档小时，因此其上的每一项统计主张都可以对十年真实天气、需求与调度进行重采样、自助与证伪。其二是\emph{后果}：合成算例中从未有任何东西损坏过；SENI的每条干线都带有停运记录、检修历史以及一次其损失被实际支付过的价格。记得自身遭受过冲击的基准，与无从记忆的基准，是两种不同的科学对象。
+
+% ---- 表II ----
+\begin{table*}[!t]
+\caption{合成经典与实测岛屿}
+\label{tab:canon}
+\centering
+\footnotesize
+\begin{tabular}{@{}l p{0.40\textwidth} p{0.36\textwidth}@{}}
+\toprule
+\textbf{轴} & \textbf{合成经典（IEEE 9/14/30/57/118类）} & \textbf{SENI-142} \\
+\midrule
+起源 & 自1960年代初的制图台式抽象 & 实测的国家输电资产 \\
+地理 & 无（电抗图） & 真实走廊；都市环网70.5 / 50.0 / 22.1 km \\
+时间深度 & 单一运行点或场景集 & 87,360个连续小时级状态（2016--2025） \\
+停运历史 & 无 & 运营商事件与停运记录为 $N-1$ 目录提供种子 \\
+治理耦合 & 无 & 第368-22号法律的十个规划区 \\
+可再生格局 & 无（固定负荷） & 瞬时光伏占比高达36.6\% \\
+溯源 & 仅有出版物 & SHA-512封存的四相数字孪生生命周期 \\
+发布 & 开放（设计使然） & 开放（IEEE DataPort、GitHub），主权档案保留在国内 \\
+\bottomrule
+\end{tabular}
+\end{table*}

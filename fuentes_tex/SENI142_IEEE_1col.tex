@@ -1,0 +1,81 @@
+\documentclass[11pt, journal, onecolumn]{IEEEtran}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath, amssymb, amsthm, mathtools, bm}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\usepackage{siunitx}
+\sisetup{locale = US, detect-all = true, exponent-product = \cdot}
+\usepackage{booktabs, array, tabularx, multirow, makecell, colortbl}
+\usepackage{graphicx}
+\graphicspath{{figuras/}}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc, shapes.geometric}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{cite}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+
+%% --- Paleta cromática institucional SENI-IA ---
+\definecolor{seni-blue}{RGB}{0,45,98}
+\definecolor{seni-red}{RGB}{206,17,38}
+\definecolor{seni-gold}{RGB}{201,168,76}
+\definecolor{seni-green}{RGB}{0,122,51}
+\definecolor{seni-dark}{RGB}{26,26,26}
+
+%% ====================================================================
+%% CUADRO DE TÍTULOS SOBERANOS (4 OPCIONES CANÓNICAS EN PORTADA)
+\title{SENI-142: An Open-Access Resilient Insular Transmission Benchmark of the Dominican Republic with Diakoptic Territorial Decomposition under Spatial Planning Law 368-22}
+
+\author{Junior~Alexis~Villanueva-Rosario,~\IEEEmembership{Ms.C., Ph.D.(c)}\\[0.3em]
+{\normalsize\textnormal{\textbf{V-TECH} \textbar\ \textbf{V-CORE TECH S.R.L.} / \textbf{Villa-Core Technologies, S.L.}}}\\[0.15em]
+{\footnotesize\textnormal{\textit{Department of Electrical Grids and Renewable Energy (EERR) Research}}}\\[0.15em]
+{\footnotesize\textnormal{\textit{Doctoral Chair in Power Systems and Artificial Intelligence}}}\\[0.15em]
+{\footnotesize\textnormal{Santo Domingo, Dominican Republic \textbar\ \texttt{ingjavillanueva@gmail.com}}}%
+\thanks{J. A. Villanueva-Rosario is with the Department of Electrical Grids and Renewable Energy (EERR) Research, V-TECH (V-CORE TECH S.R.L. / Villa-Core Technologies, S.L.), Santo Domingo, Dominican Republic (e-mail: ingjavillanueva@gmail.com).}}
+
+% --- Optimización de ubicación de figuras y tablas flotantes ---
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.95}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.8}
+\renewcommand{\dbltopfraction}{0.95}
+\renewcommand{\dblfloatpagefraction}{0.8}
+\setcounter{topnumber}{4}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{6}
+\setcounter{dbltopnumber}{4}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This paper introduces SENI-142, an open, fully georeferenced benchmark of the complete bulk transmission system of the Dominican Republic. The model comprises 142 nodal buses (derived from 112 transmission-level substations within 171 fenced estates), 135 transmission lines, and 58 power transformers at the 345, 230, and 138\,kV levels; the radial 69\,kV subtransmission layer is condensed into multiport equivalents preserving complex boundary injections and short-circuit impedances. The network is partitioned into ten planning regions aligned with national Law 368-22 and aggregated into four electrical macro-domains. A hierarchical boundary-coordinate formulation (HBCF) is applied, wherein the linear systems arising at each Newton--Raphson iteration are condensed exactly via the Schur complement. On commodity 8-thread hardware, the partitioned solver achieves a full AC state solution in a measured wall-clock time of 2.65\,ms (resident set: 473\,MiB) with an algebraic domain-decomposition residual of $\delta = 6.35 \times 10^{-12}$\,pu relative to a monolithic reference. The structural model is validated across exactly 520 complete consecutive weeks (87\,360 hourly states over 3,640 Monday-to-Sunday days, drawn from the 2016--2025 operational archive) using a 24-hour block bootstrap and evaluated under an official $N-1$ catalogue of 215 contingencies under explicit post-contingency reserve redispatch and bounded slack injection. Multitemporal AC optimal power flow is formulated with power-to-gas, pumped-storage hydro, and biomethanation balances. The dataset, network parameters, and open validation harness are released through IEEE DataPort and a public repository.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Benchmark testing, diakoptics, digital twins, energy storage, hydrogen, insular power systems, optimal power flow, power system resilience, pumped-storage hydroelectricity, Schur complement, spatial planning, transmission networks.
+\end{IEEEkeywords}
+
+\vspace{6pt}
+\section*{Resumen (Espa\~nol)}
+\noindent Este artículo presenta SENI-142, un benchmark abierto y georreferenciado del sistema de transmisión troncal de la República Dominicana. El modelo comprende 142 nodos de cómputo (derivados de 112 subestaciones de transporte dentro de 171 recintos físicos censados), 135 líneas de transmisión y 58 transformadores de potencia en los niveles de 345, 230 y 138\,kV; la capa radial de subtransmisión de 69\,kV se condensa en equivalentes multipuerto que preservan las inyecciones complejas de frontera y las impedancias de cortocircuito. La red se particiona en las diez regiones de planificación de la Ley 368-22, agregadas en cuatro macrodominios eléctricos. Se aplica una formulación jerárquica de coordenadas de frontera (HBCF), donde los sistemas lineales de cada iteración de Newton--Raphson se condensan algebraicamente de forma exacta mediante el complemento de Schur. En hardware estándar de 8 hilos, el solver particionado resuelve el estado AC completo en 2.65\,ms (memoria residente: 473\,MiB) con un residuo de partición de $\delta = 6.35 \times 10^{-12}$\,pu frente a la solución monolítica. El modelo estructural se valida sobre exactamente 520 semanas completas consecutivas (87\,360 estados horarios sobre 3,640 días de lunes a domingo, extraídos del archivo operativo 2016--2025) mediante bootstrap por bloques de 24 horas y se evalúa ante un catálogo oficial $N-1$ de 215 contingencias bajo redespacho explícito de reserva rodante y barra slack acotada. Se formula el flujo óptimo de potencia AC multitemporal con acoplamiento multivectorial (hidrógeno, bombeo hidráulico y biometanación). Los datos estructurales, parámetros de rama y el arnés de validación se liberan abiertamente en IEEE DataPort.
+
+\input{secciones/sec01_introduction.tex}
+\input{secciones/sec02_methodology_seni_ia.tex}
+\input{secciones/sec03_benchmark_seni142_topology.tex}
+\input{secciones/sec04_multivector_flexibility.tex}
+\input{secciones/sec05_silicon_performance_benchmarking.tex}
+\input{secciones/sec06_discussion_policy.tex}
+\input{secciones/sec07_conclusion_future_work.tex}
+
+\bibliographystyle{IEEEtran}
+\bibliography{referencias}
+
+\end{document}

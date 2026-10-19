@@ -1,0 +1,123 @@
+% ============================================================================
+% fig_diagrama_2_schur_hbcf.tex
+% DIAGRAMA 2 — Desacoplo diakóptico HBCF y complemento de Schur en el SENI
+%              insular: 142 barras -> 4 subdominios, fronteras Gamma, KPIs en
+%              silicio. Informe hito SENI 142 barras (Rep. Dominicana).
+% Enclave Triángulo (GLM) · Supervisor notarial: Cuadrado ■
+% ----------------------------------------------------------------------------
+% Compilación individual (protocolo solucion_error_latex.md):
+%   nice -n 19 pdflatex -interaction=nonstopmode fig_diagrama_2_schur_hbcf.tex
+%
+% Cumple: regla 1 (arrows.meta + tip explícito, nunca > ni < crudos),
+% regla 2 (align=center + text width/minimum height + rounded corners),
+% regla 3 (paleta doctoral soberana), regla 4 (cero menciones prohibidas),
+% regla 5 (bloque autocontenido). Cifras: únicamente las del informe hito.
+% ============================================================================
+\documentclass[border=12pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-nodecimaldot,es-noshorthands]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds,babel}
+
+\begin{document}
+% ==================== BLOQUE INSERTABLE EN IEEETRAN: INICIO ====================
+% Requisitos del documento hospedador (p. ej. IEEEtran):
+%   \usepackage{amsmath,amssymb}
+%   \usepackage{tikz}
+%   \usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds,babel}
+\tikzset{>={Stealth[length=2.5mm,width=1.8mm]}}
+\definecolor{seniNavy}{RGB}{26,54,93}   % Azul institucional
+\definecolor{seniBlue}{RGB}{43,108,176} % Azul alta tensión
+\definecolor{seniGold}{RGB}{217,194,130}% Dorado V-Core
+\definecolor{seniRed}{RGB}{155,44,44}   % Rojo 345 kV / fronteras Gamma
+\definecolor{seniGreen}{RGB}{39,103,73} % Verde renovable
+\definecolor{seniBg}{RGB}{247,250,252}  % Fondo de caja
+\begin{tikzpicture}[
+  font=\small,
+  region/.style={align=center, text width=46mm, minimum height=20mm,
+                 rounded corners=3pt, line width=1pt, font=\footnotesize},
+  gamma/.style={midway, fill=white, inner sep=1.2pt, font=\scriptsize\bfseries,
+                text=seniRed},
+  nota/.style={align=center, text width=42mm, minimum height=12mm,
+               rounded corners=2pt, draw=seniRed, line width=0.7pt, dashed,
+               fill=white, font=\tiny, text=seniRed},
+  paso/.style={align=center, text width=44mm, minimum height=16mm,
+               rounded corners=2pt, draw=seniNavy, line width=1pt,
+               fill=seniBg, font=\footnotesize},
+  kpi/.style={align=center, text width=40mm, minimum height=22mm,
+              rounded corners=3pt, draw=seniGold!60!black, line width=1.2pt,
+              fill=seniNavy, text=seniGold, font=\footnotesize},
+  titulo/.style={align=center, text width=176mm, minimum height=8mm,
+                 rounded corners=2pt, draw=seniNavy, fill=seniNavy,
+                 text=white, font=\small\bfseries},
+  rotulo/.style={align=center, font=\scriptsize, text=seniNavy}
+]
+
+% ---- Cintillo de título ----
+\node[titulo] (tit) at (9.5, 12.3)
+  {Desacoplo diakóptico HBCF del SENI insular: 142 barras $\to$ cuatro
+   subdominios $\Omega$, fronteras $\Gamma$ y complemento de Schur};
+
+% ---- Mapa topológico insular: 4 macro-regiones desacopladas ----
+\node[region, draw=seniBlue, fill=seniBlue!8] (norte) at (3.2, 9.9)
+  {$\Omega_{\text{Norte}}$ --- Cibao\\[0.6mm]
+   {\scriptsize Canabacoa · Tavera · Monción\\ Falcondo · Pueblo Viejo}};
+\node[region, draw=seniGreen, fill=seniGreen!8] (este) at (14.9, 9.3)
+  {$\Omega_{\text{Este}}$\\[0.6mm]
+   {\scriptsize San Pedro · Quisqueya · AES Andrés\\ Corredor Turístico Punta Cana}};
+\node[region, draw=seniRed, fill=seniRed!8] (sur) at (3.2, 5.6)
+  {$\Omega_{\text{Sur}}$\\[0.6mm]
+   {\scriptsize Punta Catalina · Julio Sauri · Barahona\\
+    Parques solares/eólicos · PHES El Valle}};
+\node[region, draw=seniNavy, fill=seniNavy!8] (metro) at (11.4, 4.9)
+  {$\Omega_{\text{Metro}}$ --- Gran Santo Domingo\\[0.6mm]
+   {\scriptsize Palamara · Hainamosa · Herrera}\\
+   {\footnotesize\bfseries \textgreater{}40\,\% de la carga}};
+
+% ---- Nota de fronteras diakópticas (hueco central izquierdo) ----
+\node[nota] (notag) at (3.2, 7.75)
+  {$\Gamma$: enlaces troncales 230/138 kV cortados virtualmente
+   (descomposición de Kron)};
+
+% ---- Panel de KPIs en silicio ----
+\node[kpi] (kpi) at (16.6, 5.4)
+  {\textbf{KPIs en silicio}\\[0.8mm]
+   Tiempo: \textbf{2.65 ms}/flujo\\[0.3mm]
+   RAM: \textbf{473 MiB}\\[0.3mm]
+   Horizonte: \textbf{87,360 horas}\\[0.3mm]
+   {\scriptsize (10 años OC-SENI)}};
+
+% ---- Fronteras Gamma entre regiones (cortes de Kron) ----
+\draw[dashed, line width=1.4pt, seniRed] (norte) -- (metro)
+  node[gamma]{$\Gamma$};
+\draw[dashed, line width=1.4pt, seniRed] (norte) -- (este)
+  node[gamma]{$\Gamma$};
+\draw[dashed, line width=1.4pt, seniRed] (sur) -- (metro)
+  node[gamma]{$\Gamma$};
+\draw[dashed, line width=1.4pt, seniRed] (metro) -- (este)
+  node[gamma]{$\Gamma$};
+
+% ---- Flujo algorítmico diakóptico (banda inferior) ----
+\node[paso] (p1) at (2.9, 1.5)
+  {\textbf{1 · Factorización paralela}\\[0.4mm]
+   Jacobianas ralas locales\\ $\mathbf{J}_1,\ \mathbf{J}_2,\ \mathbf{J}_3,\ \mathbf{J}_4$};
+\node[paso] (p2) at (9.5, 1.5)
+  {\textbf{2 · Complemento de Schur en $\Gamma$}\\[0.4mm]
+   $\mathbf{S}=\mathbf{D}-\mathbf{C}\,\mathbf{A}^{-1}\mathbf{B}$};
+\node[paso] (p3) at (16.0, 1.5)
+  {\textbf{3 · Reconstrucción nodal}\\[0.4mm]
+   tensiones completas\\ acople fasorial nulo\\
+   $\delta=6.35\times10^{-12}$};
+
+\draw[->, line width=1.6pt, seniNavy] (p1) -- (p2);
+\draw[->, line width=1.6pt, seniNavy] (p2) -- (p3);
+
+% ---- Las fronteras Gamma alimentan la reducción de Schur ----
+\draw[->, dashed, line width=1.1pt, seniRed] (metro.south) -- (p2.north)
+  node[rotulo, pos=0.45, right=1mm]{fronteras $\Gamma$};
+
+\end{tikzpicture}
+% ===================== BLOQUE INSERTABLE EN IEEETRAN: FIN =====================
+\end{document}

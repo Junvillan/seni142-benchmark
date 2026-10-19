@@ -1,0 +1,179 @@
+% =========================================================================
+% secciones_zh/sec02_methodology_seni_ia.tex — 第II节，中文版（精修版）
+% =========================================================================
+\section{方法论：HBCF网络分块舒尔补列式与失效即闭数字孪生生命周期}
+\label{sec:methodology}
+
+该方法有意组织为两个耦合组件。\textbf{不变列式}——图表示、等效化简、空间划分、精确凝聚、数据协议、确定性生命周期、正则化与优化——与问题无关，可在本平台所支撑的整个研究族中不加修改地迁移。\textbf{领土实例化条款}则将该列式绑定到一个参考现实：按国家自身领土规划法令划分的多米尼加共和国国家电网。这种划分并非出于美学：正是它使基准成为一个可复用的科学仪器，而不是一次性的案例研究。
+
+\subsection{输电网的图论表示}
+\label{sub:graph}
+
+输电系统建模为连通无向图 $\mathcal{G} = (\mathcal{V}, \mathcal{E})$ \cite{newman2010}，其中 $\mathcal{V}$ 为输电节点集（$|\mathcal{V}| = 142$），$\mathcal{E} = \mathcal{E}_{\mathrm{line}} \cup \mathcal{E}_{\mathrm{trafo}}$ 为线路支路与变压器支路之并，$|\mathcal{E}_{\mathrm{line}}| = 135$ 条输电线、$|\mathcal{E}_{\mathrm{trafo}}| = 58$ 台电力变压器。每条支路在100~MVA公共基值下携带标幺串联导纳与半充电电纳；节点导纳矩阵 $\mathbf{Y}_{\mathrm{bus}} \in \mathbb{C}^{142 \times 142}$ 由此编码了20,164个耦合电磁状态的复数元素。节点功率注入遵循标准直角坐标平衡方程
+\begin{equation}
+S_i = P_i + jQ_i = V_i \sum_{j \in \mathcal{V}} Y_{ij}^{*}\, V_j^{*}, \qquad i \in \mathcal{V},
+\label{eq:balance}
+\end{equation}
+节点分为平衡节点（slack）、PV节点与PQ节点\cite{tinney1967}。平衡节点职责——设定相位参考并吸收有功失衡——由胡利奥·萨乌里（JSAURI）变电站的345~kV母线承担，电压保持 $V = 1.02$~pu，直接接收全国最大火电厂的注入（第~\ref{sub:strata}节）。凡物理变电站容纳多个电压等级，每个电压等级即为一个独立节点，其间自耦变压器为一条支路；这一统一应用的单一规则，使网络从约112座围栏场站精确升至142个节点（第~\ref{sub:substations}节）。
+
+\subsection{69 kV配电层的等效化简}
+\label{sub:reduction}
+
+运行于69~kV的辐射式subtransmission与中压子网络被凝聚为戴维南/诺顿型静态多端口等效。对每个保留的边界端口，等效保持（i）被凝聚区域在每个建模小时的聚合复功率注入，以及（ii）从边界看到的短路阻抗 $Z_{\mathrm{cc}}$（经Kron型网络化简获得）。形式上，对边界端口 $p$ 与被凝聚内部 $\Omega_r$：
+\begin{equation}
+V_p = E_{\mathrm{th}}^{(r)} - Z_{\mathrm{th}}^{(r)} I_p, \qquad \sum_{i \in \Omega_r} S_i = V_p I_p^{*},
+\label{eq:thevenin}
+\end{equation}
+因此该化简在潮流意义下\emph{在边界处无损}，同时消除了 $\mathbf{Y}_{\mathrm{bus}}$ 的维度膨胀。化简从资产存档配置重新计算，其本身也是封存工件的一部分，符合工业系统分析的推荐实践\cite{ieee399}与基于CIM的电网模型交换\cite{iec61970}。
+
+\subsection{空间网络分块：HBCF}
+\label{sub:hbcf}
+
+分层边界-坐标列式（HBCF）将 $\mathcal{G}$ 划分为 $K$ 个两两点不相交的领土子系统 $\mathcal{G}_k = (\mathcal{V}_k, \mathcal{E}_k)$，仅通过最小割边集 $\mathcal{V}_B = \bigcup_{k=1}^{K} \partial \mathcal{V}_k$ 互连。该划分\emph{在两个层级上分层}：
+\begin{enumerate}
+\item \textbf{法域-领土层级。}国家领土规划法令——第368-22号法律（领土规划、土地利用与定居点法）\cite{ley368}——将全国领土组织为十个规划区。基准采纳这十个区作为其十个主权领土微电网，使电气划分与领土治理重合——一个具有直接政策后果的建模决策（第~\ref{sec:discussion}节）。
+\item \textbf{电气层级。}为数值凝聚，十个微电网捆绑为 $K = 4$ 个电气宏域——北部（Cibao）、南部、东部与都市区——其间互连恰为资产的230/138~kV干线联络。边界集 $\mathcal{V}_B$ 即这些联络的关联节点集；对干线支路执行Kron切割\cite{kron1963}、\cite{happ1971}即可隔离各子域并定义凝聚边界 $\Gamma$。
+\end{enumerate}
+
+将节点重排为 $(\text{内部} \mid \text{边界})$ 后，任一运行点上的节点雅可比或导纳系统取分块形式
+\begin{equation}
+\begin{bmatrix} \mathbf{A} & \mathbf{B} \\ \mathbf{C} & \mathbf{D} \end{bmatrix} \begin{bmatrix} \mathbf{x}_I \\ \mathbf{x}_B \end{bmatrix} = \begin{bmatrix} \mathbf{u}_I \\ \mathbf{u}_B \end{bmatrix},
+\label{eq:blockform}
+\end{equation}
+其中 $\mathbf{x}_I$ 收集所有子域的内部变量，$\mathbf{x}_B$ 为边界状态。由构造，$\mathbf{A} = \operatorname{diag}(\mathbf{A}_1, \dots, \mathbf{A}_K)$ 为分块对角阵，$\mathbf{A}_k$ 是宏域 $k$ 的内部雅可比块。
+
+\subsection{舒尔补的精确凝聚}
+\label{sub:schur}
+
+凝聚依赖三个初等但影响深远的结果，此处完整陈述，因为它们承载着基准的精确性主张。
+
+\begin{lemma}[分块对角逆]
+\label{lem:blockdiag}
+若 $\mathbf{A} = \operatorname{diag}(\mathbf{A}_1, \dots, \mathbf{A}_K)$ 且各 $\mathbf{A}_k \in \mathbb{R}^{N_k \times N_k}$ 非奇异，则 $\mathbf{A}^{-1} = \operatorname{diag}(\mathbf{A}_1^{-1}, \dots, \mathbf{A}_K^{-1})$。
+\end{lemma}
+\begin{proof}
+显然：对每个块位置 $(k, l)$，当 $l = k$ 时 $\mathbf{A}_k \mathbf{A}_k^{-1} = \mathbf{I}_{N_k}$，否则 $\mathbf{A}_k \cdot \mathbf{0} = \mathbf{0}$；该乘积在内部空间的直和上等于单位阵。
+\end{proof}
+
+\begin{theorem}[舒尔凝聚的精确性]
+\label{thm:schur}
+若完整系统矩阵 $\begin{psmallmatrix} \mathbf{A} & \mathbf{B} \\ \mathbf{C} & \mathbf{D} \end{psmallmatrix}$ 非奇异且 $\mathbf{A}$ 非奇异，则 $\mathbf{x}_B$ 是如下降阶边界系统的唯一解
+\begin{equation}
+\mathbf{S}\, \mathbf{x}_B = \mathbf{u}_B - \mathbf{C}\, \mathbf{A}^{-1} \mathbf{u}_I, \qquad \mathbf{S} = \mathbf{D} - \mathbf{C}\, \mathbf{A}^{-1} \mathbf{B},
+\label{eq:schur}
+\end{equation}
+且 $\mathbf{x}_I = \mathbf{A}^{-1}(\mathbf{u}_I - \mathbf{B}\, \mathbf{x}_B)$ 恢复内部状态。二元组 $(\mathbf{x}_I, \mathbf{x}_B)$ 与未降阶分块系统的唯一解重合。
+\end{theorem}
+\begin{proof}
+对完整系统作分块高斯消元：将第一行左乘 $\mathbf{C}\mathbf{A}^{-1}$ 并从第二行减去，消去 $\mathbf{x}_I$，得到上述边界系统；这些是非奇异行变换，故降阶系统与原系统等价，唯一性由非奇异性假设传递。回代即消元的第二行。当且仅当完整矩阵非奇异时，舒尔补 $\mathbf{S}$ 非奇异\cite{zhang2005}。
+\end{proof}
+
+\begin{proposition}[复杂度]
+\label{prop:complexity}
+$N$ 节点系统的稠密分解代价为 $O(N^3)$；分块求解的代价是一次分块对角分解 $\sum_k O(N_k^3)$ 加一次边界分解 $O(N_B^3)$ 加消元乘积，即 $O\!\left(\sum_k N_k^3 + N_B^3\right)$，其中 $\sum_k N_k + N_B = N$ 且 $N_B \ll N$。对经填充降低排序分解的稀疏 $\mathbf{A}_k$，局部代价趋于 $N_k$ 的线性\cite{george1973}、\cite{saad2003}。
+\end{proposition}
+
+凝聚的数值治理本身即被测量。边界系统的谱条件数 $\kappa_2$ 在每个运行点被监测\cite{vancutsem1998}；相量重建残差——凝聚恢复状态与参考状态之间的最大失配——在整个验证水平域上实测为 $\delta = 6.35 \times 10^{-12}$~pu。作为外部效度控制，同一谱方法学首先在合成算例上进行了压力校验：例如经典IEEE 14节点系统的 $22\times22$ 雅可比矩阵在项目谱分类中被评为MARGINAL（边缘），$\kappa_2 = 117.7823$，该分类在任何国家级部署之前均经独立工具交叉验证。算法~\ref{alg:schur_pf}给出完整求解器。
+
+% ---- 算法1注入块 ----
+\begin{algorithm}[!t]
+\caption{SENI-142 HBCF划分上的边界-舒尔交流潮流}
+\label{alg:schur_pf}
+\begin{algorithmic}[1]
+\Require 划分 $\{\mathcal{G}_k\}_{k=1}^{4}$，边界集 $\mathcal{V}_B$，
+         小时级注入 $(\mathbf{u}_I, \mathbf{u}_B)$，容差 $\varepsilon$
+\Ensure 收敛状态 $(\mathbf{x}_I, \mathbf{x}_B)$，残差 $\rho$
+\State 初始化平启动 $(\mathbf{x}_I^{(0)}, \mathbf{x}_B^{(0)})$
+\State 组装 $\mathbf{J}^{(0)} = \begin{psmallmatrix} \mathbf{A} & \mathbf{B} \\ \mathbf{C} & \mathbf{D} \end{psmallmatrix}$
+\For{$t \gets 0, 1, 2, \dots$ 直至 $\rho \le \varepsilon$}
+  \For{$k \gets 1, \dots, K$} \Comment{并行，内存互不相交}
+     \State $\mathbf{A}_k^{(t)} \gets \partial (\Delta \mathbf{u}_k) / \partial \mathbf{x}_k$
+     \State 以填充降低排序分解 $\mathbf{A}_k^{(t)} = \mathbf{L}_k \mathbf{U}_k$
+  \EndFor
+  \State $\mathbf{W}^{(t)} \gets \bigl(\mathbf{A}^{(t)}\bigr)^{-1} \mathbf{B}^{(t)}$ \Comment{$K$ 次局部回代}
+  \State $\mathbf{S}^{(t)} \gets \mathbf{D}^{(t)} - \mathbf{C}^{(t)} \mathbf{W}^{(t)}$
+  \State 分解 $\mathbf{S}^{(t)}$
+  \State $\Delta \mathbf{x}_B^{(t)} \gets \bigl(\mathbf{S}^{(t)}\bigr)^{-1} \Bigl( \mathbf{u}_B - \mathbf{C}^{(t)} \bigl(\mathbf{A}^{(t)}\bigr)^{-1} \mathbf{u}_I \Bigr)$
+  \For{$k \gets 1, \dots, K$} \Comment{并行恢复}
+     \State $\Delta \mathbf{x}_k^{(t)} \gets \bigl(\mathbf{A}_k^{(t)}\bigr)^{-1} \bigl( \mathbf{u}_k - \mathbf{B}_k^{(t)} \Delta \mathbf{x}_B^{(t)} \bigr)$
+  \EndFor
+  \State $\mathbf{x}^{(t+1)} \gets \mathbf{x}^{(t)} + \Delta \mathbf{x}^{(t)}$
+  \State $\rho \gets \lVert (\Delta P, \Delta Q) \rVert_{\infty}$
+\EndFor
+\State \Return $(\mathbf{x}_I, \mathbf{x}_B)$, $\rho$ \Comment{相量审计：$\delta$ 对比参考}
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{实证数据协议}
+\label{sub:dataprotocol}
+
+本基准不是对假设进行校准，而是以存档的运行现实为食粮；协议语句作为数据层的契约核心被逐字引用：
+\begin{quote}
+\itshape “结构求解器由一个预先存在、连续的实证地面真值数据库供数，包含多米尼加共和国系统运营商（Organismo Coordinador del SENI）提供的87,360个连续运行小时（2016--2025年），捕获真实SCADA遥测、调度指令、光伏与风电的时变出力曲线以及历史停运记录。”（译文；英文原文为契约条款）
+\end{quote}
+
+四类变量从该存储库进入求解器：（i）输电节点的有功与无功需求；（ii）火电、水电、光伏与风电机组的逐机组调度；（iii）与气象耦合的光伏与风电出力曲线；（iv）为预想事故目录提供种子的历史停运记录。水平域以小时分辨率横跨2016--2025十年，无任何插值小时。由于数据库连续，验证层可以诚实地重采样：\textbf{24小时块自助法}（block bootstrap）抽取完整的运行日，保持辐照、温度、需求与调度之间的日内相关性，而非会使稳定裕度误差统计显得过于乐观的去相关小时级重采样。
+
+\subsection{数字孪生的确定性验证生命周期}
+\label{sub:lifecycle}
+
+本文报告的每一项数字，都处于一个密码学溯源已被证明的软件状态之下。生命周期共四相，图~\ref{fig:gemelo_fases}完整给出其图示：
+\begin{enumerate}
+\item \textbf{第1相 —— 密封宏沙箱飞地。}打包的求解器在bubblewrap级的POSIX命名空间沙箱中执行，文件系统只读、内存包络低于200~MiB，并必须通过十四道校验门 $G_0$--$G_{13}$ 的失效即闭级联：任何无法执行的门一律计为失败，绝不计为默认通过。
+\item \textbf{第2相 —— 动态科研测试台 $N-1$ 压力。}经验证的包在动态科研测试台上对215个预想事故规范目录进行测试，以系统运营商遥测为地面真值，并与商业桌面研究平台交叉对账。
+\item \textbf{第3相 —— 黄金主版本（Golden Master）。}全级联复验通过后，每个工件以分离式SHA-512清单封存；封存证明的是一个确切的软件状态，而非一族版本。
+\item \textbf{第4相 —— 工业生产。}晋升是内核级原子切换（\texttt{renameat2} 配合 \texttt{RENAME\_EXCHANGE}）：生产与候选在单一不可分操作中互换，封存状态与部署状态之间的回归增量为零。
+\end{enumerate}
+
+三条公证人不变量治理该循环：被证状态跨相位逐位保持；遇疑即失效即闭；以及观测的原子性，任何观察者都不可能目睹半更新的系统。由此得到的运行定理——\emph{若部署工件逐位等于封存工件且切换为原子，则测试与生产之间的任何行为差异均由构造排除，而非由统计排除}——正是将求解器遥测用作证据而非轶事的凭据。
+
+% ---- 图1注入块（英文图形，中文图注）----
+\begin{figure*}[!t]
+\centering
+\resizebox{0.88\textwidth}{!}{\input{sec01_fig_gemelo_fases_tikz}}
+\caption{带失效即闭校验门级联的四相数字孪生生命周期。第1相密封飞地（POSIX命名空间、只读文件系统、${<}200$ MiB内存包络）必须通过十四道校验门 $G_0$--$G_{13}$（14/14，失效即闭）；第2相（动态科研测试台）承受针对215个预想事故目录的 $N-1$ 压力，并以运营商遥测和跨工具对账为支撑；第3相黄金主版本以分离式SHA-512清单封存；向工业生产的晋升为原子内核切换（renameat2, RENAME\_EXCHANGE），回归为零。任何校验门失败或未解释的偏差都会将软件包连同取证报告退回第1相：不存在可接受的中间状态。}
+\label{fig:gemelo_fases}
+\end{figure*}
+
+\subsection{无功限值的连续正则化}
+\label{sub:regularization}
+
+当运行点围绕限值振荡时，发电机无功限值处的PV--PQ硬切换会在牛顿型迭代中诱发极限环——这是商业软件的经典抖振。基准以带自适应斜率的连续激活替代二值切换：
+\begin{equation}
+Q_g^{\mathrm{eff}}(V_i) = Q_g^{\lim} \cdot \sigma\!\left(\alpha\,(V_i^{\mathrm{ref}} - V_i)\right), \qquad \sigma(z) = \frac{1}{1 + e^{-z}},
+\label{eq:sigmoid}
+\end{equation}
+其解析导数 $\partial Q_g^{\mathrm{eff}} / \partial V_i = -\alpha\, Q_g^{\lim} \sigma(\cdot)(1 - \sigma(\cdot))$ 被注入雅可比矩阵，在端电压逼近限值时平滑地劣化无功能力的同时，保持迭代的二次收敛。该控制器在验证水平域上的实测正则化误差为 $5.32 \times 10^{-12}$，即连续控制器在数值上与理想不连续策略不可区分，同时消除了引发振荡的不连续性。
+
+\subsection{耦合电转气的多时段AC-OPF}
+\label{sub:opf}
+
+在收敛的网络模型上，基准构建多时段AC-OPF\cite{molzahn2019}。对每个小时 $t$ 与节点 $i$，等式约束为节点平衡，并增补电转气耦合项：
+\begin{equation}
+\sum_{g \in \mathcal{G}_i} P_{g,i,t} + \sum_{r \in \mathcal{R}_i} P_{r,i,t} + P_{i,t}^{\mathrm{FC}} - P_{i,t}^{\mathrm{EL}} + P_{i,t}^{\mathrm{shed}} - P_{i,t}^{\mathrm{load}} = P_i(\mathbf{V}_t, \boldsymbol{\theta}_t),
+\label{eq:opf_balance}
+\end{equation}
+其无功对应允许逆变器耦合的吸收/注入处于视在功率能力限值之内。跨时段耦合由氢缓冲动态强制：
+\begin{equation}
+E_{h,t+1} = E_{h,t} + \left(\eta_{\mathrm{EL}}\, P_{h,t}^{\mathrm{EL}} - \frac{P_{h,t}^{\mathrm{FC}}}{\eta_{\mathrm{FC}}}\right) \Delta t, \qquad E_h^{\min} \le E_{h,t} \le E_h^{\max},
+\label{eq:h2_storage}
+\end{equation}
+其中 $\eta_{\mathrm{EL}}$ 与 $\eta_{\mathrm{FC}}$ 为电解与再转换效率：过剩的不可调度可再生能源成为跨时段能量库存，在过剩小时作为柔性电解负荷吸收，在亏缺小时由燃料电池再注入。抽水蓄能服从具有独立泵/轮机效率的水库类比，为第~\ref{sub:phes}节的764~MW可逆机组群划定边界。完整问题——因交流等式约束而非凸——由横跨牛顿-拉夫逊\cite{tinney1967}、Iwamoto最优乘子步长控制、快速解耦BX迭代\cite{stott1974}与高斯-赛德尔回退的三十二种牛顿型配置的级联求解，使任何单一代数病态都无法阻断扫描。最优性在KKT条件处认证：拉格朗日函数对所有原始变量的平稳性、等式与不等式的原始可行性、乘子的对偶可行性以及互补乘积的消失；乘子符号与互补残差是封存验证输出的组成部分\cite{nocedal2006}、\cite{dommel1968}、\cite{wood2013}。图~\ref{fig:p2g_h2}给出电化学耦合的图示。
+
+% ---- 图2注入块（英文图形，中文图注）----
+\begin{figure*}[!t]
+\centering
+\resizebox{0.85\textwidth}{!}{\input{sec02_fig_p2g_h2_tikz}}
+\caption{绿氢向量与交流电网的电化学电转气耦合。电解槽以柔性负荷吸收可再生能源过剩（$P^{\mathrm{EL}}_{h,t} \ge 0$，效率 $\eta_{\mathrm{EL}}$）；储能缓冲施加跨时段库存 $E_{h,t+1} = E_{h,t} + (\eta_{\mathrm{EL}} P^{\mathrm{EL}}_{h,t} - P^{\mathrm{FC}}_{h,t}/\eta_{\mathrm{FC}})\,\Delta t$ 及箱式约束；燃料电池在亏缺期再注入功率（$P^{\mathrm{FC}}_{h,t} \ge 0$，效率 $\eta_{\mathrm{FC}}$）。两个变换器项均进入节点交流平衡。实线为电气潮流；金色虚线为氢流。}
+\label{fig:p2g_h2}
+\end{figure*}
+
+\subsection{模块化条款：依第368-22号法律的实例化}
+\label{sub:clause}
+
+不变列式以如下规范性收尾条款（逐字引用）绑定到参考现实：
+\begin{quote}
+\itshape “在本参考基准中，结构载荷以多米尼加共和国142节点岛屿输电网实例化，并依据《第368-22号法律：领土规划、土地利用与定居点法》划分为十个主权领土微电网。”（译文；英文原文为契约条款）
+\end{quote}
+
+该条款同时完成三件事。它固定主张的范围（一个国家、完整、非抽样）；它将划分绑定到国家规划法令，使每个计算区域同时是一个治理区域；它将领土条款标记为可替换——任何其他岛屿或领土系统都可以通过替换该条款来实例化，而不触动不变列式。

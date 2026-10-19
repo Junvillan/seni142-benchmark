@@ -1,0 +1,72 @@
+\documentclass[tikz,border=5pt]{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc, shapes.geometric}
+
+\definecolor{seni-blue}{RGB}{0,45,98}
+\definecolor{seni-red}{RGB}{206,17,38}
+\definecolor{seni-gold}{RGB}{201,168,76}
+\definecolor{seni-green}{RGB}{0,122,51}
+\definecolor{seni-dark}{RGB}{26,26,26}
+
+\begin{document}
+\begin{tikzpicture}[
+    subestacion/.style={circle, draw=seni-blue, fill=seni-blue!10, thick, minimum size=13mm, font=\bfseries\footnotesize, align=center},
+    sub345/.style={circle, draw=seni-red, fill=seni-red!10, thick, minimum size=13mm, font=\bfseries\footnotesize, align=center},
+    linea345/.style={-, ultra thick, seni-red},
+    linea138/.style={-, thick, seni-blue},
+    linea230/.style={-, thick, seni-green, dashed},
+    transformador/.style={-, thick, seni-gold, dashed},
+    voltaje/.style={font=\footnotesize},
+    genbox/.style={rectangle, draw=seni-gold, fill=seni-gold!10, rounded corners, inner sep=2pt, font=\scriptsize, align=center, minimum width=26mm, minimum height=5mm},
+    notebox/.style={rectangle, draw=gray!40, fill=gray!5, rounded corners, inner sep=2pt, font=\scriptsize, align=left}
+]
+%% === TRIÁNGULO PRINCIPAL (anillo 138 kV) ===
+\node[subestacion] (jsauri) at (0, 0.5) {JSAURI\\{\small 138 kV}};
+\node[subestacion] (pala) at (-4.8, -4) {PALA\\{\small 138 kV}};
+\node[subestacion] (scnu) at (4.8, -4) {SCNU\\{\small 138 kV}};
+%% Anillo 138 kV (distancias reales)
+\draw[linea138] (jsauri) -- node[voltaje, above left, midway] {138 kV, 70.5 km} (pala);
+\draw[linea138] (jsauri) -- node[voltaje, above right, midway] {138 kV, 50.0 km} (scnu);
+\draw[linea138] (pala) -- node[voltaje, below, midway] {138 kV, 22.1 km} (scnu);
+%% Refuerzo 230 kV
+\draw[linea230] (jsauri) -- node[voltaje, pos=0.35, right] {230 kV} (scnu);
+%% === JSAURI 345 kV (desacoplada a la izquierda) ===
+\node[sub345] (jsauri345) at (-8.5, 0.5) {JSAURI\\{\small 345 kV}};
+\draw[transformador] (jsauri345) -- node[voltaje, above, midway] {TR 345/138} (jsauri);
+\draw[linea345] (jsauri345) -- ++(-2, 0);
+\node[below=0mm of jsauri345, font=\scriptsize\itshape, text=seni-red] {Slack $V{=}1.02$};
+%% Generación en JSAURI 345
+\node[genbox, above=8mm of jsauri345] (ptacatalina) {Punta Catalina: $2{\times}376$ MW (carb\'{o}n)};
+\node[genbox, above=2mm of ptacatalina] (nuclear) {Nuclear*: $4{\times}(300{-}400)$ MW};
+%% === RENOVABLES (cuadrante superior derecho, fuera del anillo) ===
+\node[genbox, minimum width=32mm] (renov) at (7.2, -0.8) {Renovables SCNU};
+\node[genbox, below=2mm of renov] (hidro) {Hidro: 58.9 MW};
+\node[genbox, below=1mm of hidro] (solar) {Solar FV: 95 MW};
+\node[genbox, below=1mm of solar] (eolica) {E\'{o}lica: 34 MW};
+\draw[-, thick, seni-gold, dashed] (scnu.north east) -- node[font=\footnotesize, above left, midway] {13.8 kV} (renov.south west);
+%% Electrolizadores (prospectivo)
+\node[genbox, below=12mm of scnu, minimum width=36mm] (elec) {Electrolizadores PEM: 50 MW*};
+%% === CARGA Y GENERACIÓN EN PALA ===
+\node[genbox, left=2mm of pala, yshift=4mm] (carga) {Carga total: 1,645 MW};
+\node[genbox, left=2mm of pala, yshift=-6mm] (fueloil) {Fuel oil: $3{\times}10.77$ MW};
+%% === DISTRIBUCIÓN Y GENERACIÓN 13.8 kV ===
+\node[genbox, below=12mm of pala, minimum width=38mm] (dist) {Distribuci\'{o}n: 12.47 kV $\to$ 7.2 kV $\to$ 240/110 V};
+\node[genbox, right=2mm of scnu, yshift=-6mm] (gen13) {Gen: 13.8 kV $\xrightarrow{\text{TR}}$ 138 kV};
+%% === LEYENDA + NOTAS lado a lado ===
+\node[notebox, below=28mm of pala, anchor=north west, minimum width=68mm] (leyenda) {
+    \textbf{Leyenda:}\\[1mm]
+    {\color{seni-red}\rule{6mm}{2pt}} 345 kV (transmisi\'{o}n)\\
+    {\color{seni-blue}\rule{6mm}{1.5pt}} 138 kV (subtransmisi\'{o}n)\\
+    {\color{seni-green}\rule{6mm}{1pt} \footnotesize---} 230 kV (refuerzo)\\
+    {\color{seni-gold}\rule{6mm}{1pt} \footnotesize---} Transformador
+};
+\node[notebox, right=2mm of leyenda, anchor=north west, minimum width=68mm] (notas) {
+    \textbf{Notas:}\\[1mm]
+    *Escenario prospectivo (no operativo 2026)\\
+    JSAURI 345: barra de transmisi\'{o}n (slack)\\
+    PALA: Palamara (centro de carga metro)\\
+    SCNU: hub renovable + H$_2$
+};
+\end{tikzpicture}
+\end{document}

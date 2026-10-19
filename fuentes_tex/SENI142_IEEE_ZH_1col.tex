@@ -1,0 +1,79 @@
+\documentclass[11pt, journal, onecolumn]{IEEEtran}
+
+\usepackage{amsmath, amssymb, amsthm, mathtools, bm}
+\newtheorem{lemma}{引理}
+\newtheorem{theorem}{定理}
+\newtheorem{proposition}{命题}
+\usepackage{booktabs, array, tabularx, multirow, makecell, colortbl}
+\usepackage{graphicx}
+\graphicspath{{figuras/}}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc, shapes.geometric}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{cite}
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Serif CJK SC}
+\setCJKsansfont{Noto Sans CJK SC}
+\setCJKmonofont{Noto Sans Mono CJK SC}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+
+%% Cabeceras de clase en idioma nativo (adenda menor de cierre pulcro)
+\renewcommand\abstractname{摘要}
+\renewcommand\IEEEkeywordsname{关键词}
+
+%% --- Paleta cromática institucional SENI-IA ---
+\definecolor{seni-blue}{RGB}{0,45,98}
+\definecolor{seni-red}{RGB}{206,17,38}
+\definecolor{seni-gold}{RGB}{201,168,76}
+\definecolor{seni-green}{RGB}{0,122,51}
+\definecolor{seni-dark}{RGB}{26,26,26}
+
+%% ====================================================================
+%% EDICIÓN EN CHINO MANDARÍN (1 columna, xeCJK/xelatex)
+%% El texto canónico internacional es la edición inglesa.
+\title{SENI-142：依据第368-22号领土规划法实施对角分块划分的多米尼加共和国开放、高韧性岛屿输电基准}
+
+\author{Junior~Alexis~Villanueva-Rosario,~\IEEEmembership{Ms.C., Ph.D.(c)}\\[0.3em]
+{\normalsize\textnormal{\textbf{V-TECH} \textbar\ \textbf{V-CORE TECH S.R.L.} / \textbf{Villa-Core Technologies, S.L.}}}\\[0.15em]
+{\footnotesize\textnormal{\textit{Department of Electrical Grids and Renewable Energy (EERR) Research}}}\\[0.15em]
+{\footnotesize\textnormal{\textit{电力系统与人工智能博士讲席（Doctoral Chair）}}}\\[0.15em]
+{\footnotesize\textnormal{多米尼加共和国圣多明各 \textbar\ \texttt{ingjavillanueva@gmail.com}}}%
+\thanks{J. A. Villanueva-Rosario 任职于 Department of Electrical Grids and Renewable Energy (EERR) Research, V-TECH (V-CORE TECH S.R.L. / Villa-Core Technologies, S.L.)，多米尼加共和国圣多明各（电子邮箱：ingjavillanueva@gmail.com）。}}
+
+% --- Optimización de ubicación de figuras y tablas flotantes ---
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.95}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.8}
+\renewcommand{\dbltopfraction}{0.95}
+\renewcommand{\dblfloatpagefraction}{0.8}
+\setcounter{topnumber}{4}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{6}
+\setcounter{dbltopnumber}{4}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+孤立电力系统是能源转型中最严苛的试验场：它们无法输入惯量、旋备或邻网支援，而多米尼加共和国近期经历的全国性停电已在全国尺度上暴露了这种脆弱性。本文贡献\textbf{SENI-142}：一个覆盖整个加勒比国家输电网络的开放、全面地理配准的基准——多米尼加共和国142节点互联系统（SENI），包含约112座物理变电站、135条输电线路与58台电力变压器，横跨345、230与138~kV电压层，辐射状69~kV配电层经等效多端口化简。该基准按国家领土规划法令（第368-22号法律）划分为十个主权领土微电网，并以分层边界-坐标列式（HBCF）凝聚，其精确舒尔补凝聚在消费级硬件上以\textbf{2.65~ms}、\textbf{473~MiB}常驻内存求解完整国家电网的每个小时级交流状态，相量边界耦合残差为 $\delta = 6.35 \times 10^{-12}$~pu。结构求解器以87,360个连续运行小时（2016--2025年）的真实系统运营商遥测、经保持日间气候相关性的24小时块自助法进行校准与验证，并以215个预想事故的 $N-1$ 目录进行压力测试。确定性的四相数字孪生生命周期——密封飞地、动态科研测试台压测、SHA-512黄金主版本、原子化内核晋升——使每项报告数字逐位可复现。多向量灵活性（电转气氢能、764~MW可逆抽蓄、ADM1生物甲烷化）耦合到多时段AC-OPF，并以分区CAPEX/OPEX证明加以验证。数据集、拓扑与验证工具经IEEE DataPort与GitHub开放发布。
+\end{abstract}
+
+\begin{IEEEkeywords}
+AC最优潮流，数字孪生，储能，孤立电力系统，节点导纳矩阵，氢能，网络分块（diakoptics），区间微电网划分，舒尔补，输电网络，弹性电力系统，领土空间规划。
+\end{IEEEkeywords}
+
+\input{secciones_zh/sec01_introduction.tex}
+\input{secciones_zh/sec02_methodology_seni_ia.tex}
+\input{secciones_zh/sec03_benchmark_seni142_topology.tex}
+\input{secciones_zh/sec04_multivector_flexibility.tex}
+\input{secciones_zh/sec05_silicon_performance_benchmarking.tex}
+\input{secciones_zh/sec06_discussion_policy.tex}
+\input{secciones_zh/sec07_conclusion_future_work.tex}
+
+\bibliographystyle{IEEEtran}
+\bibliography{referencias}
+
+\end{document}

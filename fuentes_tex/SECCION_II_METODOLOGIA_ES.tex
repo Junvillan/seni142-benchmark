@@ -1,0 +1,73 @@
+\documentclass[11pt, journal, onecolumn]{IEEEtran}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot,es-noshorthands]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath, amssymb, amsthm, mathtools, bm}
+\newtheorem{lemma}{Lema}
+\newtheorem{theorem}{Teorema}
+\newtheorem{proposition}{Proposición}
+\usepackage{siunitx}
+\sisetup{locale = US, detect-all = true, exponent-product = \cdot}
+\usepackage{booktabs, array, tabularx, multirow, makecell, colortbl}
+\usepackage{graphicx}
+\graphicspath{{figuras/}}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc, shapes.geometric}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{cite}
+\usepackage{hyperref}
+\usepackage{xr-hyper}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+\externaldocument[full-]{../auxiliares/SENI142_IEEE_ES_1col}
+\makeatletter
+\newcommand{\seniSetupExternalRefs}{%
+  \let\seni@localref\ref
+  \renewcommand{\ref}[1]{\@ifundefined{r@##1}{\seni@localref{full-##1}}{\seni@localref{##1}}}%
+}
+\makeatother
+\AddToHook{begindocument/end}{\seniSetupExternalRefs}
+
+%% --- Paleta cromática institucional SENI-IA ---
+\definecolor{seni-blue}{RGB}{0,45,98}
+\definecolor{seni-red}{RGB}{206,17,38}
+\definecolor{seni-gold}{RGB}{201,168,76}
+\definecolor{seni-green}{RGB}{0,122,51}
+\definecolor{seni-dark}{RGB}{26,26,26}
+
+\title{SENI-142: Sección II — Metodología Completa\\Formulación Diakóptica HBCF por Complemento de Schur y Ciclo de Vida Determinista del Gemelo Digital}
+
+\author{Junior~Alexis~Villanueva-Rosario,~\IEEEmembership{Ms.C., Ph.D.(c)}\\[0.3em]
+{\normalsize\textnormal{\textbf{V-TECH} \textbar\ \textbf{V-CORE TECH S.R.L.} / \textbf{Villa-Core Technologies, S.L.}}}\\[0.15em]
+{\footnotesize\textnormal{\textit{Departamento de Investigación en Redes Eléctricas y Energías Renovables (EERR)}}}\\[0.15em]
+{\footnotesize\textnormal{\textit{Cátedra Doctoral en Sistemas de Potencia e Inteligencia Artificial}}}\\[0.15em]
+{\footnotesize\textnormal{Santo Domingo, República Dominicana \textbar\ \texttt{ingjavillanueva@gmail.com}}}%
+\thanks{J. A. Villanueva-Rosario pertenece al Departamento de Investigación en Redes Eléctricas y Energías Renovables (EERR), V-TECH (V-CORE TECH S.R.L. / Villa-Core Technologies, S.L.), Santo Domingo, República Dominicana (correo: ingjavillanueva@gmail.com).}}
+
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.95}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.8}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Este artículo presenta SENI-142, un benchmark abierto y georreferenciado del sistema de transmisión troncal de la República Dominicana. El modelo comprende 142 nodos de cómputo (derivados de 112 subestaciones de transporte dentro de 171 recintos físicos censados), 135 líneas de transmisión y 58 transformadores de potencia en los niveles de 345, 230 y 138\,kV; la capa radial de subtransmisión de 69\,kV se condensa en equivalentes multipuerto que preservan las inyecciones complejas de frontera y las impedancias de cortocircuito. La red se particiona en las diez regiones de planificación de la Ley 368-22, agregadas en cuatro macrodominios eléctricos. Se aplica una formulación jerárquica de coordenadas de frontera (HBCF), donde los sistemas lineales de cada iteración de Newton--Raphson se condensan algebraicamente de forma exacta mediante el complemento de Schur. En hardware estándar de 8 hilos, el solver particionado resuelve el estado AC completo en 2.65\,ms (memoria residente: 473\,MiB) con un residuo de partición de $\delta = 6.35 \times 10^{-12}$\,pu frente a la solución monolítica. El modelo estructural se valida sobre 87\,360 estados horarios (2016--2025) mediante bootstrap por bloques de 24 horas y se evalúa ante un catálogo oficial $N-1$ de 215 contingencias bajo redespacho explícito de reserva rodante y barra slack acotada. Se formula el flujo óptimo de potencia AC multitemporal con acoplamiento multivectorial (hidrógeno, bombeo hidráulico y biometanación). Los datos estructurales, parámetros de rama y el arnés de validación se liberan abiertamente en IEEE DataPort.
+\end{abstract}
+
+\begin{IEEEkeywords}
+AC-OPF, benchmark, complemento de Schur, diakóptica, gemelos digitales, hidrógeno, Ley 368-22, ordenamiento territorial, resiliencia, sistemas insulares.
+\end{IEEEkeywords}
+
+\vspace{10pt}
+
+\input{secciones_es/sec02_methodology_seni_ia.tex}
+
+\bibliographystyle{IEEEtran}
+\bibliography{referencias}
+
+\end{document}

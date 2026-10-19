@@ -1,0 +1,85 @@
+% =========================================================================
+% sec07_conclusion_future_work.tex — Section VII, Nomenclature and
+% Appendix A of the sealed master paper_seni142_ieee_transactions_en.md
+% editorial injection pass 2026-10-17.
+% =========================================================================
+\section{Conclusion and Future Work}
+\label{sec:conclusion}
+
+This article contributed SENI-142: an open-access, measured, and deterministically reproducible benchmark of an entire national transmission system --- 142 buses, approximately 112 substations, 135 lines, 58 transformers, ten territorial microgrids under Law 368-22 --- with an exact diakoptic condensation that resolves each hourly national AC state in 2.65~ms and 473~MiB at fasorial residual $\delta = 6.35 \times 10^{-12}\ \mathrm{pu}$, validated against a decade of continuous operational telemetry and sealed by a four-phase digital-twin lifecycle. The benchmark, the validation harness, and the resilience record are released openly through IEEE DataPort and GitHub.
+
+Four research routes follow directly. First, \textbf{sub-second physics-informed neural surrogates}: the 87,360-state horizon is the training ground for learned accelerators of the classical sweep, with the exact solver retained as the falsification oracle \cite{misyris2020}. Second, \textbf{grid-forming EMT co-simulation}: embedding converter control-level dynamics of grid-forming resources \cite{rosso2021}, \cite{ieee2800} inside the partitioned envelope to study frequency formation, not only frequency containment. Third, \textbf{electrolyzer membrane degradation under transient dispatch}: the power-to-gas block's intertemporal operation is the natural load profile for aging studies of PEM stacks \cite{irena2020}, \cite{iea2023}. Fourth, \textbf{distributed hourly settlement in silicon}: the settlement-grade hourly horizon, the signed manifests, and the Merkle-style provenance chain \cite{merkle1987}, \cite{fips180} outline a settlement architecture in which every priced hour reconciles against a cryptographically attested physical state. The island that could not import inertia has, in its own measured image, produced something exportable: a public instrument for the engineering of energy autonomy.
+
+% ---- Nomenclature (verbatim content of the sealed master, tabular form) ----
+\begin{table*}[!t]
+\caption{Nomenclature}
+\label{tab:nomenclature}
+\centering
+\footnotesize
+\begin{tabular}{@{}p{0.24\textwidth} p{0.64\textwidth}@{}}
+\toprule
+$\mathcal{G} = (\mathcal{V}, \mathcal{E})$ & Connected undirected graph of the transmission network \\
+$\mathcal{V}$, $|\mathcal{V}| = 142$ & Set of transmission buses \\
+$\mathcal{E}_{\mathrm{line}}$, $\mathcal{E}_{\mathrm{trafo}}$ & Line branches (135), transformer branches (58) \\
+$\mathbf{Y}_{\mathrm{bus}}$ & Nodal admittance matrix, $\mathbb{C}^{142 \times 142}$ \\
+$S_i = P_i + j Q_i$ & Complex power injection at bus $i$ \\
+$Z_{\mathrm{cc}}$ & Short-circuit impedance of a reduced area \\
+$\mathcal{G}_k$, $\Omega_k$ & Territorial microgrid $k$ and its macro-subdomain \\
+$\mathcal{V}_B$, $\Gamma$ & Border bus set and condensation boundary \\
+$\mathbf{A}, \mathbf{B}, \mathbf{C}, \mathbf{D}$ & Interior/border blocks of the reordered system matrix \\
+$\mathbf{S} = \mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B}$ & Schur complement of the interior block \\
+$\mathbf{x}_I$, $\mathbf{x}_B$, $\mathbf{u}_I$, $\mathbf{u}_B$ & Interior/border states and right-hand sides \\
+$N$, $N_k$, $N_B$ & System, subdomain, and border dimensions \\
+$\kappa_2(\cdot)$ & Spectral condition number \\
+$\delta$ & Fasorial border-coupling residual (pu) \\
+$P_i(\mathbf{V}_t, \boldsymbol{\theta}_t)$ & Nodal real-power injection from the network state \\
+$P^{\mathrm{EL}}_{h,t}$, $P^{\mathrm{FC}}_{h,t}$ & Electrolyzer / fuel-cell electrical power of unit $h$ \\
+$\eta_{\mathrm{EL}}$, $\eta_{\mathrm{FC}}$ & Electrolysis / reconversion efficiencies \\
+$E_{h,t}$, $E_h^{\min}$, $E_h^{\max}$ & Hydrogen buffer inventory and bounds \\
+$\Delta t$ & Time-step duration (1 h) \\
+$C_p(\lambda, \beta)$ & Wind turbine power coefficient \\
+$\sigma(\cdot)$, $\alpha$ & Sigmoidal activation and its adaptive slope \\
+$Q_g^{\lim}$, $Q_g^{\mathrm{eff}}$ & Generator reactive limit and regularized capability \\
+PHES & Pumped-storage hydroelectricity (764 MW reversible fleet) \\
+ADM1 & Anaerobic Digestion Model No. 1 \\
+PEM & Proton-exchange membrane (electrolysis) \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+% ---- Appendix A (technical parameters table, editorial refinement directive) ----
+\appendix
+\section{Consolidated Topological and Electrical Parameters of the SENI-142 Insular Benchmark}
+\label{app:parameters}
+
+Table~\ref{tab:parameters} consolidates the structural and electrical parameters of the released benchmark as they are instantiated in the nodal model, so that the topology arithmetic of Sections~\ref{sec:topology}--\ref{sec:benchmarking} can be verified at a glance against the released dataset.
+
+\begin{table*}[!t]
+\caption{Consolidated Topological and Electrical Parameters of the SENI-142 Insular Benchmark. The upper block is the single-line CAD survey recovered in this work and constitutes the paper's own measured contribution; the lower block is the condensed nodal compute model on which all reported simulations run.}
+\label{tab:parameters}
+\centering
+\footnotesize
+\begin{tabular}{@{}l r@{}}
+\toprule
+\textbf{Quantity} & \textbf{Value} \\
+\midrule
+\multicolumn{2}{@{}l}{\textit{CAD single-line survey (this work, measured)}} \\
+Fenced substations resolved & 171 \\
+Physical busbars, 345~kV & 6 \\
+Physical busbars, 230~kV & 3 \\
+Physical busbars, 138~kV & 106 \\
+Physical busbars, 69~kV & 90 \\
+\textbf{Total physical busbars} & \textbf{205} \\
+\midrule
+\multicolumn{2}{@{}l}{\textit{SENI-142 nodal compute model (derived, condensed)}} \\
+Bulk transmission nodes, 345/230/138~kV & 115 \\
+\textbf{Total compute buses} & \textbf{142} \\
+Transmission lines & 135 \\
+Power autotransformers & 58 \\
+Installed generation capacity (nominal) & 5,420~MW \\ % 5,420 MW
+Maximum hourly demand (SCADA record) & 3,450~MW \\ % 3,450 MW
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The bus census follows the nodal rule of Section~\ref{sub:substations}: one bus per voltage level per fenced estate, with transformer banks as branches. The upper block of Table~\ref{tab:parameters} is the single-line CAD survey recovered in this work and is the paper's own measured contribution: 205 physical busbars across 171 fenced substations, of which 115 lie in the 345, 230, and 138~kV bulk strata. The lower block is the condensed compute model actually exercised by the solver, in which the 69~kV subtransmission layer is replaced by the injection-preserving nodal equivalents of Section~\ref{sub:reduction}, giving a condensed model of 142 compute buses. The two blocks are reported separately and deliberately: the first is a measurement, the second is a modelling decision. The two verbatim protocol clauses of Section~\ref{sub:dataprotocol} and Section~\ref{sub:clause} remain the contractual core of the data layer and of the territorial instantiation, respectively, and are preserved character-for-character in this camera-ready text.

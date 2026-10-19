@@ -1,0 +1,24 @@
+% Figure 2 tikzpicture — English edition (editorial refinement per
+% GUIA_BUENAS_PRACTICAS_LATEX_IEEE: white-filled annotations, no line-through
+% text; palette seni-* defined in the host preamble).
+\begin{tikzpicture}[
+  bloque/.style={rectangle, rounded corners=5pt, draw, thick, align=center, font=\small, text width=3.6cm, minimum height=13mm, inner sep=4pt},
+  flujo/.style={-{Stealth[length=3mm]}, very thick},
+  flujoh2/.style={-{Stealth[length=2.6mm]}, thick, seni-gold!80!black, dash pattern=on 4pt off 2pt},
+  nota/.style={font=\scriptsize, align=center, text=seni-dark!85, fill=white, inner sep=2pt},
+]
+\node[bloque, fill=seni-blue!88, text=white] (red) at (0, 0) {\textbf{AC GRID}\\[2pt] {\scriptsize nodal AC balance\\$Q$ injection/absorption within\\apparent-power capability limits}};
+\node[bloque, fill=seni-gold, text=seni-dark] (el) at (5.8, 1.85) {\textbf{ELECTROLYZER}\\[2pt] {\scriptsize $P^{EL}_{h,t} \ge 0$ $\cdot$ efficiency $\eta_{EL}$}};
+\node[bloque, fill=seni-gold!45, draw=seni-gold!80!black, text=seni-dark] (buf) at (11.4, 0) {\textbf{H$_2$ BUFFER}\\[2pt] {\scriptsize inventory $E_{h,t}$\\$E^{\min}_h \le E_{h,t} \le E^{\max}_h$}};
+\node[bloque, fill=seni-green!82, text=white] (fc) at (5.8, -1.85) {\textbf{FUEL CELL}\\[2pt] {\scriptsize $P^{FC}_{h,t} \ge 0$ $\cdot$ efficiency $\eta_{FC}$}};
+%% --- Electric flows: grid <-> converters ---
+\draw[flujo, seni-blue!80] (red.north east) .. controls (1.5,1.85) .. (el.west);
+\node[nota] at (2.45, 2.72) {electrolysis: $P^{EL}_{h,t} \ge 0$ (absorbs renewable surplus)};
+\draw[flujo, seni-green!70!black] (fc.west) .. controls (1.5,-1.85) .. (red.south east);
+\node[nota] at (2.45, -2.72) {reconversion: $P^{FC}_{h,t} \ge 0$ (injects during deficit)};
+%% --- Hydrogen flows: converters <-> buffer ---
+\draw[flujoh2] (el.east) -- node[nota, above, pos=0.55] {$\eta_{EL}\, P^{EL}_{h,t}\, \Delta t$} (buf.north west);
+\draw[flujoh2] (buf.south west) -- node[nota, below, pos=0.55] {$P^{FC}_{h,t}\, \Delta t\, /\, \eta_{FC}$} (fc.east);
+%% --- Intertemporal coupling ---
+\node[nota, text=seni-gold!60!black] at (11.4, -1.35) {intertemporal coupling $\Delta t$};
+\end{tikzpicture}

@@ -1,0 +1,140 @@
+% ============================================================================
+% fig_diagrama_1_jsauri_345_138.tex
+% DIAGRAMA 1 — Arquitectura nodal y desglose topológico S/E Julio Sauri
+%              (345/138 kV). Informe hito SENI 142 barras (Rep. Dominicana).
+% Enclave Triángulo (GLM) · Supervisor notarial: Cuadrado ■
+% ----------------------------------------------------------------------------
+% Compilación individual (protocolo solucion_error_latex.md):
+%   nice -n 19 pdflatex -interaction=nonstopmode fig_diagrama_1_jsauri_345_138.tex
+%
+% El bloque delimitado como BLOQUE INSERTABLE EN IEEETRAN es autónomo: puede
+% copiarse tal cual al cuerpo de un documento IEEEtran que cargue en su
+% preámbulo (ver comentarios dentro del bloque).
+% Cumple: regla 1 (arrows.meta + tip explícito, nunca > ni < crudos),
+% regla 2 (align=center + text width/minimum height + rounded corners),
+% regla 3 (paleta doctoral soberana), regla 4 (cero menciones prohibidas),
+% regla 5 (bloque autocontenido). Cifras: únicamente las del informe hito.
+% ============================================================================
+\documentclass[border=12pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-nodecimaldot,es-noshorthands]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds,babel}
+
+\begin{document}
+% ==================== BLOQUE INSERTABLE EN IEEETRAN: INICIO ====================
+% Requisitos del documento hospedador (p. ej. IEEEtran):
+%   \usepackage{amsmath,amssymb}
+%   \usepackage{tikz}
+%   \usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds,babel}
+% Regla 1 del protocolo: punta de flecha definida explícitamente con
+% arrows.meta; jamás se escriben > ni < crudos en las opciones de flecha.
+\tikzset{>={Stealth[length=2.5mm,width=1.8mm]}}
+% Regla 3: paleta doctoral soberana (idempotente al insertar en el hospedador).
+\definecolor{seniNavy}{RGB}{26,54,93}   % Azul institucional
+\definecolor{seniBlue}{RGB}{43,108,176} % Azul alta tensión (138 kV regional)
+\definecolor{seniGold}{RGB}{217,194,130}% Dorado V-Core
+\definecolor{seniRed}{RGB}{155,44,44}   % Rojo 345 kV (super-autopista)
+\definecolor{seniGreen}{RGB}{39,103,73} % Verde renovable
+\definecolor{seniBg}{RGB}{247,250,252}  % Fondo de caja
+\begin{tikzpicture}[
+  font=\small,
+  planta/.style={align=center, text width=34mm, minimum height=24mm,
+                 rounded corners=2pt, draw=seniNavy, line width=1pt, fill=seniBg},
+  bus345/.style={align=center, text width=54mm, minimum height=13mm,
+                 rounded corners=2pt, draw=seniRed, line width=1.2pt,
+                 fill=seniRed!12, font=\small\bfseries},
+  bus138/.style={align=center, text width=54mm, minimum height=13mm,
+                 rounded corners=2pt, draw=seniGold!65!black, line width=1.2pt,
+                 fill=seniGold!28, font=\small\bfseries},
+  trafo/.style={align=center, circle, minimum size=13mm, inner sep=0.6pt,
+                draw=seniNavy, line width=1pt, fill=white,
+                font=\footnotesize\bfseries},
+  demanda/.style={align=center, text width=40mm, minimum height=12mm,
+                  rounded corners=2pt, draw=seniBlue, line width=0.8pt,
+                  fill=seniBg, font=\footnotesize},
+  titulo/.style={align=center, text width=180mm, minimum height=8mm,
+                 rounded corners=2pt, draw=seniNavy, fill=seniNavy,
+                 text=white, font=\small\bfseries},
+  leyenda/.style={align=center, text width=180mm, minimum height=12mm,
+                  rounded corners=2pt, draw=seniNavy, line width=0.8pt,
+                  fill=seniBg, font=\footnotesize},
+  rotulo/.style={align=center, font=\scriptsize, text=seniNavy}
+]
+
+% ---- Cintillo de título (la figura habla sola) ----
+\node[titulo] (tit) at (9.8, 8.7)
+  {De $\approx$112 recintos físicos a 142 barras nodales: desglose topológico
+   de la S/E Julio Sauri (345/138 kV)};
+
+% ---- Bloque izquierdo: fuente de generación (alineada con el patio 345) ----
+\node[planta] (pc) at (2.7, 6.55)
+  {\textbf{Central Termoeléctrica\\ Punta Catalina}\\[1mm]
+   {\small 752 MW}\\ {\scriptsize $2\times376$ MW · carbón}};
+% Subtítulo de la troncal, bajo la planta (hueco libre, sin cruces)
+\node[rotulo, text width=40mm] at (2.7, 4.45)
+  {Línea troncal Punta Catalina -- Julio Sauri\\ (evacuación de 752 MW)};
+
+% ---- Recinto físico central (S/E Julio Sauri) ----
+\node[bus345] (b345) at (10.6, 6.55)
+  {Barraje 345 kV\\ JULIO SAURI B1 (patio de 345 kV)};
+\node[trafo] (t1) at (9.3, 4.95)  {T1\\[-2pt]{\tiny 345/138}};
+\node[trafo] (t2) at (11.9, 4.95) {T2\\[-2pt]{\tiny 345/138}};
+\node[bus138] (b138) at (10.6, 3.35)
+  {Barraje 138 kV\\ JULIO SAURI B1 (patio de 138 kV)};
+
+% ---- Bloque derecho: líneas salientes de 138 kV hacia la demanda ----
+\node[demanda] (scnu) at (16.9, 7.1)
+  {LT 138 kV -- San Cristóbal Norte\\ (SCNU: doble circuito L1/L2)};
+\node[demanda] (plq)  at (16.9, 5.45) {LT 138 kV -- Palenque};
+\node[demanda] (plm)  at (16.9, 3.8)
+  {LT 138 kV -- Palamara\\ (anillo de Santo Domingo)};
+\node[demanda] (pzr)  at (16.9, 2.15) {LT 138 kV -- Pizarrete};
+
+% ---- Rótulo de la columna de demanda ----
+\node[rotulo, text width=42mm] at (16.9, 8.05)
+  {Hacia la demanda (red regional de 138 kV)};
+
+% ---- Recinto físico: caja ajustada detrás de las dos barras y los bancos;
+%      el rótulo de los bancos va debajo de la caja (hueco libre) ----
+\begin{scope}[on background layer]
+  \node[draw=seniNavy, line width=1pt, rounded corners=2pt, fill=white,
+        inner sep=4mm, fit=(b345)(t1)(t2)(b138),
+        label={[font=\footnotesize\bfseries, text=seniNavy]
+               above:Recinto físico S/E Julio Sauri (JSAURI)},
+        label={[font=\scriptsize, text=seniNavy]
+               below:bancos de autotransformadores de potencia T1/T2 (345/138 kV)}]
+    (recinto) {};
+\end{scope}
+
+% ---- Línea troncal 345 kV (horizontal; etiquetas cortas arriba y abajo) ----
+\draw[->, line width=2.4pt, seniRed] (pc.east) -- (b345.west)
+  node[rotulo, pos=0.5, above=1.2mm]{LT 345 kV}
+  node[rotulo, pos=0.5, below=1.2mm]{super-autopista};
+
+% ---- Acople interno barra 345 / bancos T1-T2 / barra 138 ----
+\draw[line width=1.1pt, seniNavy] (b345.south) -- (t1.north);
+\draw[line width=1.1pt, seniNavy] (b345.south) -- (t2.north);
+\draw[line width=1.1pt, seniNavy] (t1.south) -- (b138.north);
+\draw[line width=1.1pt, seniNavy] (t2.south) -- (b138.north);
+
+% ---- Salidas de 138 kV hacia la demanda (doble circuito en SCNU) ----
+\draw[->, line width=1.4pt, seniBlue, double, double distance=1.5pt]
+  (b138.east) -- (scnu.west);
+\draw[->, line width=1.4pt, seniBlue] (b138.east) -- (plq.west);
+\draw[->, line width=1.4pt, seniBlue] (b138.east) -- (plm.west);
+\draw[->, line width=1.4pt, seniBlue] (b138.east) -- (pzr.west);
+
+% ---- Leyenda nodal (regla del desglose recinto -> barras) ----
+\node[leyenda] (leg) at (9.8, 0.95)
+  {\textbf{Leyenda nodal.} Recinto físico = 1 subestación. Kirchhoff = 2 barras
+   eléctricas nodales desacopladas por la impedancia de los autotransformadores.
+   Cada patio de tensión es una barra distinta: al modelar los niveles de
+   345, 230 y 138 kV con sus transformadores, la red suma con exactitud
+   \textbf{142 barras nodales}.};
+
+\end{tikzpicture}
+% ===================== BLOQUE INSERTABLE EN IEEETRAN: FIN =====================
+\end{document}

@@ -1,0 +1,41 @@
+% =========================================================================
+% secciones_zh/sec04_multivector_flexibility.tex — 第IV节，中文版
+% =========================================================================
+\section{多向量灵活性与经济性验证}
+\label{sec:multivector}
+
+\subsection{灵活性星座}
+\label{sub:constellation}
+
+多向量层组织为六个专责物理求解器构成的星座，经签名边界状态清单向142节点主求解器供数：（i）光伏发电，采用连续S形 $Q$--$V$ 控制以抑制鸭子曲线；（ii）风电，采用气动 $C_p(\lambda, \beta)$ 建模与合成惯量；（iii）氢向量——电解、压缩至700~bar，以及规划模型中全国740座加氢站网络；（iv）生化转化，经由一号厌氧消化模型（ADM1）\cite{batstone2002}，将马尾藻与酒糟废液底物消化为可调度生物甲烷；（v）火电，采用热耗曲线与同步 $P$--$Q$ 调度；（vi）764~MW可逆抽水蓄能机组群（Sabaneta / Dos Bocas）。零信任调度监督器在受保护的状态总线上编排该星座：任何求解器都不得读取他者内存，所有交换均由封存清单承载。图~\ref{fig:constellation}给出星座图示。
+
+% ---- 图5 ----
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_diagrama_3_constelacion_microsolvers.pdf}
+\caption{多向量灵活性星座。六个专责物理求解器——光伏（S形 $Q$--$V$ 控制）、风电（带合成惯量的 $C_p(\lambda,\beta)$）、氢能（电解、700 bar压缩、740座加氢站）、生化（马尾藻与酒糟废液的ADM1消化）、火电（热耗调度）与可逆抽蓄（764 MW，Sabaneta/Dos Bocas）——经零信任调度监督器与SHA-512签名的边界状态清单，向国家电网的142节点主求解器交付其净注入 $(P_g, Q_g)$。}
+\label{fig:constellation}
+\end{figure*}
+
+\subsection{电转气的电化学运行}
+\label{sub:p2g}
+
+在运行层面，第~\ref{sub:opf}节的电转气区块表现为一对带记忆的互逆柔性负荷。在过剩小时——即瞬时光伏渗透率达36.6\%、午间价格崩塌的增长性格局——电解槽吸收本会被弃置的电力并转化为加压库存；在亏缺小时，燃料电池以效率比 $\eta_{\mathrm{EL}} \cdot \eta_{\mathrm{FC}}$ 送回保供电力。缓冲约束使跨时段机会集显式且可审计，耦合项在不放松任何电网物理的前提下进入交流平衡。耦合资产的互联遵循IEEE Std 2800-2022的逆变器型资源要求\cite{ieee2800}与IEEE Std 1547-2018的分布式能源接口\cite{ieee1547}。
+
+\subsection{可逆抽蓄与生物甲烷化缓冲}
+\label{sub:phes}
+
+El Valle多枢纽（Sabaneta / Dos Bocas电厂）的764~MW可逆抽水蓄能机组群在系统尺度上扮演互补角色：它把夜间与过剩能量转换为亏缺小时的同步带惯量容量，其水库动态与氢缓冲类似，且调度服从同一经KKT认证的最优性。ADM1生化层添加了具有不同时间常数的第三种缓冲：消化器状态动态将马尾藻与酒糟废液流入转化为进入火电调度的可存储可再生燃料——在定义划分的同一领土法令下，闭合一个与土地利用直接相关的养分-能量循环。
+
+\subsection{分区CAPEX/OPEX经济性证明}
+\label{sub:zonal}
+
+经济层以分区平衡验证灵活性栈：对参考区域（第~\ref{sub:strata}节的都市138~kV三角形），已发布工具对每一小时、每一灵活性资产核算分区福利恒等式的四项：
+\begin{equation}
+\begin{aligned}
+\Delta C^{\mathrm{zone}}_t = {}& \underbrace{c^{\mathrm{curt}} E^{\mathrm{abs}}_t}_{\text{避免弃电}} + \underbrace{c^{\mathrm{fuel}} E^{\mathrm{displ}}_t}_{\text{燃料置换}} \\
+& + \underbrace{c^{\mathrm{ss}} N^{\mathrm{avoid}}_t}_{\text{避免启停}} + \underbrace{\big(R^{\mathrm{base}}_t - R^{\mathrm{flex}}_t\big)}_{\text{网损差额}},
+\end{aligned}
+\label{eq:zonal}
+\end{equation}
+其中 $E^{\mathrm{abs}}_t$ 为由电解与抽水吸收、否则将被弃置的可再生能源，$E^{\mathrm{displ}}_t$ 为被燃料电池与生物甲烷再注入置换的火电能量，$N^{\mathrm{avoid}}_t$ 为避免的火电启停次数，$R^{\mathrm{base}}_t - R^{\mathrm{flex}}_t$ 为灵活与非灵活调度之间的网损差额；恒等式逐区逐时强制成立，使每一条经济结论都与物理状态对账。单位成本与资本费用从国家规划及国际氢能参考文献\cite{cne2022}、\cite{irena2020}、\cite{iea2023}透明参数化，平衡恒等式对运行记录的自助包络闭合。定性结论在整个包络上稳定：灵活性栈吸收了相当比例的本会被弃置的光伏过剩、降低了燃煤锚点的火电启停循环，并在参考区域推迟了保供容量的新增——所有数量均可从已发布数据集复现，而非凭断言。

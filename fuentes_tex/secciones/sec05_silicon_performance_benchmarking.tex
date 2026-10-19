@@ -1,0 +1,118 @@
+% =========================================================================
+% sec05_silicon_performance_benchmarking.tex — Section V of the sealed
+% master paper_seni142_ieee_transactions_en.md sealed master; editorial injection pass 2026-10-17.
+% =========================================================================
+\section{Computational Performance, Accuracy, and Numerical Benchmarking}
+\label{sec:benchmarking}
+
+\subsection{Measurement validity through digital-twin determinism}
+\label{sub:determinism}
+
+Section~\ref{sub:lifecycle} established that promotion to the production state is atomic and bit-identical to a SHA-512-sealed Golden Master. The performance figures below describe that tested software state and the released validation artifacts. Algorithm~\ref{alg:n1_seal} states the resilience-and-sealing pipeline used to produce the reported record.
+
+% ---- Algorithm 2 injection block (verbatim from the sealed master) ----
+\begin{algorithm}[!t]
+\caption{$N$--$1$ resilience sweep with 24-hour block bootstrap and SHA-512 sealing}
+\label{alg:n1_seal}
+\begin{algorithmic}[1]
+\Require sealed solver state $\Sigma$, contingency catalog $\mathcal{C}$
+         ($|\mathcal{C}| = 215$), horizon $\mathcal{H}$ (87,360 h; 520 weekly cycles)
+\Ensure resilience record $\mathcal{R}$, seal $\sigma$
+\State $\mathcal{R} \gets \emptyset$
+\For{$c \in \mathcal{C}$} \Comment{deterministic order, fail-closed}
+   \For{$b \in \text{bootstrap}(\mathcal{H}, 24\,\mathrm{h})$} \Comment{whole-day blocks}
+      \State inject contingency $c$ on block $b$
+      \State run Algorithm 1 at every hour of the block
+      \State record $\rho$, $\kappa_2$, voltage and branch-loading margins into $\mathcal{R}[c, b]$
+   \EndFor
+\EndFor
+\State aggregate margins over the bootstrap envelope per contingency
+\State $\sigma \gets \mathrm{SHA512}\text{-chain}(\Sigma, \mathcal{C}, \mathcal{R})$ \Comment{detached manifest}
+\State \Return $\mathcal{R}$, $\sigma$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Convergence speed and memory}
+\label{sub:speed}
+
+On standard consumer hardware (an 8-thread laptop of the Dell Inspiron 5570 class), the partitioned solver converges each hourly AC state of the complete 142-bus national network in \textbf{2.65~ms} with a resident footprint of \textbf{473~MiB} for the validation horizon. The horizon comprises 87,360 consecutive operating hours corresponding to 520 complete 168-hour weeks (3,640 days grouped into Monday-to-Sunday weeks) within 2016--2025, preserving weekly dispatch periodicity; the 13 excluded civil days of the decade (6 calendar-boundary orphan days plus the 7 days of the excluded holiday week) are omitted by construction (Section~\ref{sub:dataprotocol}). The full sweep completes in minutes on this setup, consistent with the $O(N^3)$-to-$O(\sum_k N_k^3 + N_B^3)$ asymptotics of Proposition~\ref{prop:complexity} and with fill-reducing sparse practice \cite{george1973}, \cite{saad2003}. The measured 2.65~ms solve is a static AC-state screening result; it does not model dynamic fault clearing, protection response, or closed-loop control. The per-state throughput supports large multiscenario screening workloads under the stated model and hardware conditions.
+
+These measurements characterize computational cost for steady-state AC feasibility checks. They support repeated parameter, bootstrap, and contingency screening on the stated hardware; they do not establish deployment of a dynamic protection or closed-loop control system.
+
+\subsection{Accuracy and numerical conditioning}
+\label{sub:accuracy}
+
+Three measured quantities bound the numerical fidelity of the condensed solution. First, the fasorial border-coupling residual --- the mismatch between the Schur-recovered state and an independent reference state --- measures $\delta = 6.35 \times 10^{-12}\ \mathrm{pu}$ across the validation horizon, i.e.\ the condensation-recovered state and the monolithic reference agree to a residue that sits two orders of magnitude above the double-precision rounding floor scaled by the base-case conditioning ($\varepsilon_{\mathrm{mach}}\kappa_2 \approx 8 \times 10^{-14}$, the signature of two distinct factorization trajectories) and over three orders of magnitude below the $10^{-8}$~pu stopping tolerance of the cascade. Second, the sigmoidal reactive-limit controller of Section~\ref{sub:regularization} contributes a regularization error of $5.32 \times 10^{-12}$ while eliminating the PV--PQ limit cycle. Third, the spectral condition number $\kappa_2$ of every reduced border system is monitored and archived; the governance threshold machinery was validated on synthetic references before national deployment (the IEEE 14-bus $22\times22$ Jacobian classifies MARGINAL at $\kappa_2 = 117.7823$), so that a degradation of conditioning on the real grid would be detected against a calibrated scale rather than an ad-hoc one.
+
+\subsection{Contingency resilience on the reference topology}
+\label{sub:contingencies}
+
+The resilience battery evaluates the 215-contingency $N-1$ catalog --- the transmission operator's own outage list, screened under the automatic branch-selection doctrine of \cite{ejebe1979} --- on the reference topology, concentrated on the metropolitan 138~kV ring whose corridor distances (70.5~km, 50.0~km, 22.1~km) fix the electrical geometry, as shown in Figure~\ref{fig:topologia_seni}. The outage of the Punta Catalina complex ($2 \times 376 = 752$~MW), the largest common contingency in the system, is solved under the preventive criterion of Section~\ref{sub:n1}: the active power deficit is covered through the redispatch of co-optimized spinning reserve ($\sum r_g^+ \ge 752$~MW), preserving post-event steady-state voltage and power-flow feasibility without load shedding ($P_{\mathrm{shed}} = 0$). The campaign's anomaly log also records severe voltage depression with reactive-margin depletion --- $\lambda_{\min}(\mathbf{J}_R) < 10^{-2}$ on the reduced reactive block \eqref{eq:jr} --- in the JSAURI--Palamara--Haina 138~kV loop under specific $N-1$ states; these findings were added to the contingency catalog and drive the shunt-support bisection of Section~\ref{sub:n1}. All margins are reported under the 24-hour block-bootstrap envelope of Algorithm~\ref{alg:n1_seal}.
+
+The four-clause PASS is a reportable numerical result, not a narrative claim. Table~\ref{tab:worstcase} reports, for the eight most severe elements of the catalog --- ranked by post-event voltage margin and thermal loading --- the complete dispatch and verification row: pre-event flow or generation, worst post-event voltage, worst post-event branch loading, slack deviation after reserve deployment, co-optimized reserve redispatched, and unserved load. The Punta Catalina rows deserve emphasis. The unit-level trip (GEN-PC1, 376~MW) is the worst unitary $N-1$; the complex-level trip (GEN-PC-COMPLEX, $2 \times 376 = 752$~MW) is the worst common-mode event of the island, covered preventively by the reserve sizing of \eqref{eq:reserve}; both rows close with every retained bus inside $[0.95, 1.05]$~pu, worst branch loading below 92.4\% of thermal rating, bounded slack deviation, and zero unserved load. 
+
+LINE-138-CUM-SPMI is the corridor whose 2025 in-service failure is documented in the national press record \cite{listin2025}; its catalog row demonstrates that the modeled transmission grid carries the loss of that circuit without shedding ($P_{\mathrm{shed}} = 0$) under static AC feasibility. This analytical decoupling between steady-state deliverability and historical national blackouts is corroborated by primary forensic records: independent engineering investigations of the November 11, 2025 collapse \cite{uasdInformeSPM1_2025} established that the blackout was initiated by maintenance switching in S/E SPM1, which lacked bus differential protection, triggering an uncoordinated cascade of distance protections that tripped 10 transmission circuits in 680~ms; the executive forensic report of the Universidad Aut\'onoma de Santo Domingo (IEUASD) \cite{uasdInformeSPM1_2025} and the System Operator (OC-SENI hourly metrology log, window 13:15--13:30 \cite{ocseniScadaP15_2025}) record a 15-minute (P15) window mean frequency of 55.11~Hz during the collapse, with 99.89\% of the window outside the normal operating band. Similarly, the May 16, 2015 national blackout (1,782.65~MW disconnected) originated in a 138~kV busbar fault at Itabo Gas compounded by circuit breaker failure with clearing times exceeding $10\times$ nominal \cite{listinItaboGas_2015}. The empirical benchmark confirms that the Dominican transmission estate possesses sufficient post-contingency thermal and voltage deliverability under $N-1$; historical vulnerabilities are transient, dynamic, and protection-coordination failures that belong strictly to the dynamic domain.
+
+The two most scrutinized rows admit an explicit physical reading. For the PALA--SCNU double-circuit corridor (ACSR 795~kcmil Drake conductor, 26/7 stranding, 988~A continuous at $75^{\circ}$C, $S^{\max} = 236.2$~MVA per circuit and 472.4~MVA for the aggregate corridor), the pre-event state carries 412.7~MW --- 206.4~MW per circuit, an 87.4\% initial loading; after one circuit trips, the surviving twin assumes 206.7~MW, the reported 87.6\% loading, while the surplus redistributes through the meshed metropolitan ring: the 50.0~km 230~kV JSAURI--SCNU tie picks up about 142~MW (83.3\% loading) and the 70.5~km JSAURI--PALA 138~kV circuit absorbs about 64~MW (89.2\%), with no steady-state thermal violation. For the complex-level Punta Catalina trip, the co-optimized reserve redispatch replaces the lost injection exactly ($\Delta P_g = 752.0$~MW, deployed across geographically remote thermal, hydroelectric, and renewable units), so the residual deviation at the reference bus is physically the incremental transport loss of rerouting 752~MW across the 142-bus estate: $\Delta P_{\mathrm{slack}} = \Delta P_{\mathrm{loss}} = +24.8$~MW, a 0.72\% increase over the 3,450~MW reference national demand. In the LINE-345-PC-JS row, the 752~MW deficit closes exactly through two separate dispatch variables of the multi-vector formulation: $\Delta P_g = 687.40$~MW of conventional thermal/hydro redispatch (Quisqueya~I--II 180.0, AES Andr\'es CC 145.0, Estrella del Mar~III 110.0, Barahona coal/CEPP 95.0, Valdesia--Tavera hydro 82.4, Monte Plata solar reserve 75.0) and $\Delta P_{\mathrm{storage}} = 58.50$~MW of fast storage discharge (reversible PHES Sabaneta/Dos Bocas 35.0~MW; metropolitan BESS 23.5~MW), with the residual $\Delta P_{\mathrm{slack}} = +6.10$~MW of marginal transport losses closing the balance at exactly 752.00~MW (zero error). The resulting 0.89\% loss ratio --- versus 2.5--3.3\% for purely remote redispatch --- follows from injecting the storage in direct electrical proximity to the metropolitan load ring, bypassing the long-distance 345/230~kV trunks. Newton--Raphson convergence was verified at $\|\Delta P, \Delta Q\|_{\infty} \le 10^{-8}$~pu in at most four iterations per state, with exact nodal balance, inside the sealed validation output of the canonical suite.
+
+% ---- Table VI: worst-case critical contingencies (blindaje R3, EJE 4) ----
+\begin{table*}[!t]
+\caption{Worst-Case Critical Contingencies: Dispatch and Post-Event Static Verification Report. Selection of the eight most severe catalog elements by post-event voltage margin and thermal loading; the complete 215-element ledger is archived in the sealed validation output of the canonical 142-bus suite. Pre-event flows correspond to the reference peak state; voltages and loadings are worst-case post-event values over retained buses and surviving branches.}
+\label{tab:worstcase}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4.5pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lllrrrrrr@{}}
+\toprule
+\textbf{Contingency ID} & \textbf{Asset} & \textbf{Type} &
+\textbf{Pre-event} & \textbf{min $V_i$} & \textbf{max $|S|/S_{\max}$} &
+\textbf{$\Delta P_{\mathrm{slack}}$} & \textbf{$\Delta P_g$} & \textbf{$P_{\mathrm{shed}}$} \\
+ & & & \textbf{flow/gen (MW)} & \textbf{(pu)} & \textbf{(\%)} &
+\textbf{(MW)} & \textbf{(MW)} & \textbf{(MW)} \\
+\midrule
+GEN-PC1 & Punta Catalina Unit 1 (376 MW) & Unit $N-1$ & 376.0 & 0.9612 & 91.7 & $+12.4$ & 376.0 & 0.00 \\
+GEN-PC-COMPLEX & Punta Catalina complex ($2 \times 376$ MW) & Common mode & 752.0 & 0.9581 & 92.4 & $+24.8$ & 752.0 & 0.00 \\
+LINE-345-PC-JS & 345 kV trunk Punta Catalina--JSAURI & Line $N-1$ & 748.3 & 0.9703 & 89.2 & $+6.1$ & 687.4 & 0.00 \\
+XFMR-345-138-JS & JSAURI 345/138 kV autotransformer bank (600 MVA) & Transformer $N-1$ & 521.7 & 0.9748 & 88.5 & $+4.7$ & 186.2 & 0.00 \\
+LINE-138-CUM-SPMI & 138 kV SPM--Cumayasa (2025 in-service failure \cite{listin2025}) & Line $N-1$ & 172.1 & 0.9802 & 84.1 & $+2.9$ & 96.4 & 0.00 \\
+CORR-138-PALA-SCNU & 138 kV PALA--SCNU double-circuit corridor, 22.1 km (one circuit loss) & Corridor $N-1$ & 206.4 & 0.9755 & 87.6 & $+5.2$ & 158.3 & 0.00 \\
+LINE-230-JS-SCNU & 230 kV JSAURI--SCNU tie & Line $N-1$ & 356.2 & 0.9790 & 83.3 & $+3.8$ & 141.7 & 0.00 \\
+GEN-AES-ANDRES & AES Andr\'es combined cycle (319 MW) & Unit $N-1$ & 319.0 & 0.9846 & 78.5 & $+8.3$ & 319.0 & 0.00 \\
+\midrule
+\multicolumn{9}{@{}p{0.98\textwidth}@{}}{\scriptsize All rows satisfy the four-clause PASS of Section~\ref{sub:n1}: convergence $\|\Delta P, \Delta Q\|_{\infty} \le 10^{-8}$~pu; $V_i \in [0.95, 1.05]$~pu; $|S_\ell| \le S_\ell^{\max}$; $|\Delta P_{\mathrm{slack}}| \le \varepsilon_{\mathrm{slack}}$ with $P_{\mathrm{shed}} = 0$. $\Delta P_g$ is the co-optimized reserve deployed after the event; $\Delta P_{\mathrm{slack}}$ is the residual deviation of the reference bus after that deployment. Static post-contingency AC feasibility verification states computed on the complete canonical 142-bus transmission model under the multi-temporal dispatch baseline. The outage GEN-PC-COMPLEX ($2 \times 376 = 752$~MW) represents the common-mode benchmark reference for spinning reserve dimensioning ($R^{\mathrm{req}}$), treated as an external sizing event beyond the 215 single outage ($N-1$) catalog. For the PALA--SCNU double-circuit corridor, the pre-event flow is the 206.4~MW carried by the tripped circuit within a 412.7~MW aggregate corridor flow; the reported 87.6\% post-event loading refers to the surviving circuit and adjacent ties, within actual conductor thermal ratings. Conductor: ACSR 795~kcmil Drake (26/7), 988~A continuous at $75^{\circ}$C, $S^{\max} = 236.2$~MVA per circuit (472.4~MVA aggregate).}
+\end{tabular}}%
+\end{table*}
+
+% ---- Figure 6 injection block (verbatim from the sealed master) ----
+% Graphic source: sec03_topologia_redes_ieee_y_seni_tikz.tex, figure environment
+% at L152--217 (styles: subestacion/sub345/linea*/transformador/genbox/notebox).
+% The tikzpicture is extracted verbatim from that source at injection time.
+\begin{figure*}[!t]
+\centering
+\resizebox{0.85\textwidth}{!}{\input{sec03_fig_topologia_seni_tikz}} % extracted verbatim, sec03 L155--213
+\caption{Real subtransmission triangle of the SENI 138 kV ring. JSAURI--PALA--SCNU with geodesic line lengths of 70.5, 50.0, and 22.1 km, the 230 kV JSAURI--SCNU reinforcement (dashed), the 345 kV transmission bar decoupled to the left as system slack ($V = 1.02$ pu) receiving Punta Catalina ($2 \times 376$ MW), the SCNU renewable hub (58.9 MW hydro, 95 MW solar, 34 MW wind) and the prospective 50 MW PEM electrolysis block (non-operational, 2026, asterisked), and the PALA load center (1,645 MW aggregate). The 215-contingency $N-1$ catalog of the validation battery is defined on this topology.}
+\label{fig:topologia_seni}
+\end{figure*}
+
+% ---- Table III (verbatim content of the sealed master) ----
+\begin{table*}[!t]
+\caption{Computational Performance and Validation Metrics of the SENI-142 Benchmark}
+\label{tab:telemetry}
+\centering
+\footnotesize
+\begin{tabular}{@{}p{0.30\textwidth} p{0.18\textwidth} p{0.34\textwidth}@{}}
+\toprule
+\textbf{Metric} & \textbf{Value} & \textbf{Condition} \\
+\midrule
+Convergence time per hourly national AC state & 2.65 ms & 142-bus full model, consumer laptop (8 threads) \\
+Resident memory, full horizon & 473 MiB & 87,360 hourly states (520 complete weeks) \\
+Fasorial border-coupling residual $\delta$ & $6.35 \times 10^{-12}$ pu & Schur reconstruction vs.\ reference state \\
+Reactive-limit regularization error & $5.32 \times 10^{-12}$ & Sigmoidal controller, analytic Jacobian injection \\
+Static screening capacity (EMS) & 2.65~ms / state & Inside the 1--5~s EMS state-estimation cycle; large-scale multiscenario screening \\
+Contingency catalog & 215 $N-1$ scenarios & Phase-2 testbed campaign (static post-event verification) \\
+Spectral cross-check (IEEE 14-bus, $22\times22$) & $\kappa_2 = 117.7823$ (MARGINAL) & External validity control \\
+Largest single contingency & Punta Catalina trip, 752 MW & Feasible in steady state with spinning reserve redispatch ($P_{\mathrm{shed}} = 0$) \\
+\bottomrule
+\end{tabular}
+\end{table*}

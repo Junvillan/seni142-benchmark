@@ -1,0 +1,43 @@
+% =========================================================================
+% sec04_multivector_flexibility.tex — Section IV of the sealed master
+% sealed master paper_seni142_ieee_transactions_en.md; editorial injection pass 2026-10-17.
+% =========================================================================
+\section{Multi-Vector Flexibility and Economic Validation}
+\label{sec:multivector}
+
+\subsection{The flexibility constellation}
+\label{sub:constellation}
+
+The multi-vector layer is organized as a constellation of six physics-dedicated solvers feeding the 142-bus master solver through the signed boundary-state manifest: (i) photovoltaic production with continuous sigmoidal $Q$--$V$ control for duck-curve suppression; (ii) wind production with aerodynamic $C_p(\lambda, \beta)$ modeling and synthetic inertia; (iii) the hydrogen vector --- electrolysis, compression to 700~bar, and a national refuelling network of 740 hydrogen stations in the planning model; (iv) biochemical conversion through the Anaerobic Digestion Model No.~1 (ADM1) \cite{batstone2002}, digesting sargasso and vinasse substrates into dispatchable biomethane; (v) thermal production with heat-rate curves and synchronous $P$--$Q$ dispatch; and (vi) the reversible pumped-hydro fleet of 764~MW (Sabaneta / Dos Bocas). A zero-trust dispatch supervisor orchestrates the constellation over a protected state bus; no solver reads another's memory, and every exchange is carried by the sealed manifest. Figure~\ref{fig:constellation} diagrams the constellation.
+
+% ---- Figure 5 injection block (verbatim from the sealed master;
+%      resolved through \graphicspath{{figuras/}} in the host preamble) ----
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_diagrama_3_constelacion_microsolvers.pdf}
+\caption{Multi-vector flexibility constellation. Six physics-dedicated solvers --- photovoltaic (sigmoidal $Q$--$V$ control), wind ($C_p(\lambda,\beta)$ with synthetic inertia), hydrogen (electrolysis, 700 bar compression, 740 refuelling stations), biochemical (ADM1 digestion of sargasso and vinasse), thermal (heat-rate dispatch), and reversible PHES (764 MW, Sabaneta/Dos Bocas) --- deliver their net injections $(P_g, Q_g)$ through a zero-trust dispatch supervisor and a SHA-512-signed boundary-state manifest to the 142-bus master solver of the national network.}
+\label{fig:constellation}
+\end{figure*}
+
+\subsection{Electrochemical power-to-gas operation}
+\label{sub:p2g}
+
+Operationally, the power-to-gas block of Section~\ref{sub:opf} behaves as a pair of opposing flexible loads with memory. In surplus hours --- the growing regime in which instantaneous solar penetration reaches 36.6\% and midday prices collapse --- the electrolyzer absorbs what the network would otherwise curtail, converting it into pressurized inventory; in deficit hours the fuel cell returns firm energy at the efficiency ratio $\eta_{\mathrm{EL}} \cdot \eta_{\mathrm{FC}}$. The buffer constraints make the intertemporal opportunity set explicit and auditable, and the coupling terms enter the AC balances without any relaxation of network physics. Interconnection of the coupled assets follows the inverter-based-resource requirements of IEEE Std 2800-2022 \cite{ieee2800} and the distributed-energy interface of IEEE Std 1547-2018 \cite{ieee1547}.
+
+\subsection{Pumped storage and biomethanation buffers}
+\label{sub:phes}
+
+The reversible 764~MW pumped-storage fleet of the El Valle multihub (Sabaneta / Dos Bocas plants) plays the complementary role at system scale: it converts nocturnal and surplus energy into synchronized inertia-bearing capacity for the deficit hours, with reservoir dynamics analogous to the hydrogen buffer and dispatch subject to the same KKT-certified optimality. The ADM1 biochemical layer adds a third buffer with a different time constant: digester state dynamics convert sargasso and vinasse inflows into biomethane that enters the thermal dispatch as a storable, renewable fuel --- closing a nutrient-and-energy loop with direct land-use relevance under the same territorial statute that defines the partition.
+
+\subsection{The zonal CAPEX/OPEX economic proof}
+\label{sub:zonal}
+
+The economic layer validates the flexibility stack by zonal balancing: for the reference zone (the metropolitan 138~kV triangle of Section~\ref{sub:strata}), the released harness accounts, per hour and per flexibility asset, four terms of the zonal welfare identity,
+\begin{equation}
+\begin{aligned}
+\Delta C^{\mathrm{zone}}_t = {}& \underbrace{c^{\mathrm{curt}} E^{\mathrm{abs}}_t}_{\text{curtailment avoided}} + \underbrace{c^{\mathrm{fuel}} E^{\mathrm{displ}}_t}_{\text{fuel displaced}} \\
+& + \underbrace{c^{\mathrm{ss}} N^{\mathrm{avoid}}_t}_{\text{start-stop avoided}} + \underbrace{\big(R^{\mathrm{base}}_t - R^{\mathrm{flex}}_t\big)}_{\text{loss differential}},
+\end{aligned}
+\label{eq:zonal}
+\end{equation}
+where $E^{\mathrm{abs}}_t$ is the renewable energy absorbed by electrolysis and pumping instead of being curtailed, $E^{\mathrm{displ}}_t$ the thermal energy displaced by fuel-cell and biomethane re-injection, $N^{\mathrm{avoid}}_t$ the avoided thermal unit start-stop events, and $R^{\mathrm{base}}_t - R^{\mathrm{flex}}_t$ the network-loss differential between the flexible and inflexible dispatches; the identity is enforced per zone and per hour so that every economic conclusion reconciles with a physical state. Unit costs and capital charges are parameterized transparently from national planning and international hydrogen references \cite{cne2022}, \cite{irena2020}, \cite{iea2023}, and the balancing identity is closed against the bootstrap envelope of the operational record. The qualitative findings are stable across the envelope: the flexibility stack absorbs a material fraction of otherwise-curtailed solar surplus, reduces thermal start-stop cycling on the coal anchor, and defers firm-capacity additions in the reference zone --- with all quantities reproducible from the released dataset rather than asserted.

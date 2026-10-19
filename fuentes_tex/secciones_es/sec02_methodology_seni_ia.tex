@@ -1,0 +1,550 @@
+% =========================================================================
+% secciones_es/sec02_methodology_seni_ia.tex — Sección II, edición español
+% Expansión metodológica 2026-10-18: etapas 0--7, mismo orden que el inglés.
+% =========================================================================
+\section{Metodología: formulación diakóptica HBCF por complemento de Schur y ciclo de vida determinista del gemelo digital}
+\label{sec:methodology}
+
+La metodología se organiza deliberadamente en dos componentes acoplados. La \textbf{formulación invariante} --- representación de grafos, reducción por equivalentes, partición espacial, condensación exacta, protocolo de datos, ciclo de vida determinista, regularización y optimización --- es independiente del problema y se transfiere sin modificación a través de la familia de estudios construidos sobre esta plataforma. La \textbf{cláusula de instanciación territorial} liga esta formulación a una realidad de referencia: la red nacional de la República Dominicana, particionada según la propia ley de ordenamiento territorial del país. Esta división convierte al benchmark en un instrumento científico reutilizable. Las subsecciones siguen esa formulación a lo largo del pipeline numérico: ingesta sellada, persistencia columnar, física nodal y reducción, Jacobiana de cuatro bloques, verificación numérica en varios niveles, batería de contingencias, condensación diakóptica, tres estados de red y custodia SHA-512.
+
+\subsection{Alcance de factibilidad AC de régimen permanente}
+\label{sub:scope}
+
+SENI-142 es estrictamente un benchmark de factibilidad AC de régimen permanente. Cada estado resuelto es un equilibrio algebraico $F(\mathbf{x})=\mathbf{0}$ sobre la red de transmisión. Es un punto de operación, y la formulación no integra una trayectoria temporal. La formulación explícitamente no simula transitorios electromagnéticos rápidos (EMT), dinámica de frecuencia, inercia sintética, tasa de cambio de la frecuencia (RoCoF), nádir de frecuencia (\emph{frequency nadir}) ni la actuación de esquemas de deslastre por subfrecuencia (UFLS/EDAC). La salida del mayor bloque de generación, Punta Catalina (752~MW, cerca del 21.8\% de la demanda pico nacional de referencia de 3,450~MW documentada en la Tabla~\ref{tab:regbalance}), se evalúa únicamente en términos de márgenes de tensión en régimen permanente y de solvabilidad térmica de rama post-contingencia bajo reserva rodante co-optimizada; en el plano dinámico es un evento de estabilidad de frecuencia fuera de la frontera estática de este artículo.
+
+\subsection{Ingesta sellada, censo físico y tamiz normativo}
+\label{sub:intake}
+
+El solver no admite un archivo suelto. La entrada es un manifiesto sellado cuyo digest se comprueba antes de instanciar cualquier barra, y el manifiesto selecciona el caso físico. En el modo de patrimonio medido, las tecnologías prospectivas que no están en operación comercial quedan fuera del despacho resuelto, de modo que el caso base es el sistema dominicano tal como se opera. En el modo de escenario doctoral completo esos activos prospectivos pueden instanciarse; permanecen etiquetados y no se mezclan en silencio con el registro medido.
+
+El censo físico es el levantamiento unifilar ya consolidado en la Tabla~\ref{tab:parameters}: 171 subestaciones cercadas y 205 barras físicas, estratificadas en 6 a 345~kV, 3 a 230~kV, 106 a 138~kV y 90 a 69~kV, junto con 482 ramas del patrimonio no reducido. Esas 482 ramas pertenecen al unifilar. No son las 135 líneas y 58 autotransformadores del modelo de cómputo condensado.
+
+Antes de ensamblar cualquier admitancia, un tamiz normativo rechaza un registro que viole la aridad de subestación de IEEE C37 o las restricciones de intercambio CIM de IEC 61970 \cite{iec61970}. Las reactancias serie deben cumplir $X > 0$, las susceptancias en derivación $B \ge 0$, y los transformadores de dos y de tres devanados deben cerrar su propio balance. Un registro que no supera el tamiz aborta el caso. No se repara con un valor por defecto.
+
+El mismo tamiz es una homologación contra los catálogos comerciales vigentes, no un parche sintáctico. La reactancia serie $X>0$, la susceptancia en derivación $B\ge 0$ y la capacidad térmica $I_{\max}$ se toman de los commercial catalogs de conductores ACSR y AAAC, de transformadores de potencia y de bancos de compensación reactiva de hasta 250~MVAr. La aridad de bahías y las clases de protección siguen IEEE C37. El objeto de red intercambiado sigue IEC 61970 (CIM) \cite{iec61970}. Ninguno de estos valores es un valor sintético por defecto: un campo de catálogo que no supera el tamiz aborta el caso.
+
+
+\subsection{Persistencia columnar y despacho por orden de mérito}
+\label{sub:columnar}
+
+Los registros validados se disponen como columnas contiguas en memoria para que un único flujo de instrucciones opere sobre muchas magnitudes nodales sin copiar cada registro a un marco relacional. La disposición es un rol arquitectónico. Sobre esas columnas el parque térmico se ordena por mérito de tasa de calor, y cada hora aporta el par de demanda nodal $(P_d, Q_d)$ que luego entra en el balance de potencia.
+
+\subsection{Representación teórico-gráfica de la red de transporte}
+\label{sub:graph}
+
+El sistema de transmisión se modela como un grafo no dirigido conexo $\mathcal{G} = (\mathcal{V}, \mathcal{E})$ \cite{newman2010}, donde $\mathcal{V}$ es el conjunto de barras de transmisión ($|\mathcal{V}| = 142$) y $\mathcal{E} = \mathcal{E}_{\mathrm{line}} \cup \mathcal{E}_{\mathrm{trafo}}$ es la unión de ramas de línea y transformador, con $|\mathcal{E}_{\mathrm{line}}| = 135$ líneas de transmisión y $|\mathcal{E}_{\mathrm{trafo}}| = 58$ transformadores de potencia. Cada rama porta una admitancia serie en por unidad y una susceptancia de carga mitad sobre una base común de 100~MVA; la matriz de admitancia nodal $\mathbf{Y}_{\mathrm{bus}} \in \mathbb{C}^{142 \times 142}$ codifica por tanto 20,164 entradas complejas de estado electromagnético acoplado. Las inyecciones nodales de potencia siguen el balance rectangular estándar
+\begin{equation}
+S_i = P_i + jQ_i = V_i \sum_{j \in \mathcal{V}} Y_{ij}^{*}\, V_j^{*}, \qquad i \in \mathcal{V},
+\label{eq:balance}
+\end{equation}
+con las barras clasificadas como barra de referencia (\emph{slack}), PV o PQ \cite{tinney1967}. La referencia angular es la barra de 345~kV de la subestación Julio Sauri (JSAURI), mantenida en $V = 1.02$~pu. Su potencia activa es la variable acotada de \eqref{eq:slackbox} y no es un depósito ilimitado del desbalance. Esa barra recibe directamente la inyección de la mayor planta térmica del país (Sección~\ref{sub:strata}). Donde una subestación física alberga más de un nivel de tensión, cada nivel de tensión es una barra distinta y el autotransformador intermediario es una rama. La reconciliación de la Sección~\ref{sub:crosswalk} es la que lleva 112 subestaciones de transporte, dentro de 171 recintos cercados, a los 142 nodos de cómputo (Sección~\ref{sub:substations}).
+
+La Figura~\ref{fig:topologia142} sitúa los 142 nodos resueltos en los cuatro macrodominios eléctricos de la Ley 368-22 ($\Omega_1$ Norte, $\Omega_2$ Sur, $\Omega_3$ Este, $\Omega_4$ Metropolitano). Los patios de transporte conservan el color de su tensión nominal medida, 345~kV, 230~kV o 138~kV. Los 27 bornes de frontera retenidos permanecen en los 69~kV medidos y se dibujan en verde. El modelo de cómputo cuenta 135 líneas de transmisión. La figura dibuja un trazo por cada par que el censo cierra: un registro de patio que nombra ambos bornes, o un trazo colineal del unifilar que llega a una segunda barra resuelta de la misma tensión. Se omite el registro cuyo borne lejano no es una barra del censo.
+
+\input{sec03_fig_topologia_seni_142_tikz_es}
+
+
+\subsection{Reducción por equivalentes de la capa de subtransmisión de 69 kV}
+\label{sub:reduction}
+
+Sesenta y tres laterales radiales de la capa de 69~kV se condensan en equivalentes multipuerto estáticos de tipo Th\'evenin/Norton. Para cada borne de frontera retenido, que permanece en sus 69~kV medidos, el equivalente preserva (i) la inyección compleja agregada del área condensada en cada hora modelada y (ii) la impedancia de cortocircuito $Z_{\mathrm{cc}}$ vista desde ese borne, obtenida por reducción de red tipo Kron. Formalmente, para el puerto de frontera $p$ con interior condensado $\Omega_r$,
+\begin{equation}
+V_p = E_{\mathrm{th}}^{(r)} - Z_{\mathrm{th}}^{(r)} I_p, \qquad \sum_{i \in \Omega_r} S_i = V_p I_p^{*} + \Delta S_{\mathrm{loss}},
+\label{eq:thevenin}
+\end{equation}
+de modo que el balance de potencia en frontera contabiliza explícitamente las pérdidas internas representadas por $\Delta S_{\mathrm{loss}}$, mientras el equivalente conserva las variables del borne retenido y elimina la inflación dimensional de $\mathbf{Y}_{\mathrm{bus}}$. La reducción se recalcula desde la configuración archivada del patrimonio y es en sí misma parte del artefacto sellado, en consonancia con la práctica recomendada para análisis de sistemas industriales \cite{ieee399} y con el intercambio de modelos de red basado en CIM \cite{iec61970}.
+
+De las noventa barras de 69~kV, sesenta y tres son los laterales radiales retirados arriba. Las otras veintisiete permanecen como barras resueltas a los 69~kV medidos. Cada una de esas veintisiete es un borne de frontera retenido. Los 115 nodos de masa de la Tabla~\ref{tab:parameters} son las barras del censo a 345, 230 y 138~kV. El modelo que realmente se resuelve tiene 142 barras: esos 115 nodos de masa más estos 27 bornes a 69~kV. Retirar los sesenta y tres laterales es también la razón de que el flujo desacoplado rápido y Gauss--Seidel converjan en este patrimonio: las ramas cuya relación $R/X$ singularizaría la Jacobiana ya no son nodos del sistema resuelto. Las unidades síncronas conservan su curva completa $P$--$Q$. Las plantas renovables estáticas no son máquinas síncronas; su soporte reactivo es el mapa continuo de la Sección~\ref{sub:regularization}.
+
+
+\subsection{Escalado de la conectividad por búsqueda en anchura}
+\label{sub:bfs}
+
+Sea $\mathcal{G}_Y=(\mathcal{V},\mathcal{E}_Y)$ el grafo de dispersión de $\mathbf{Y}_{\mathrm{bus}}$: existe una arista no dirigida allí donde una rama retenida tiene admitancia distinta de cero. La búsqueda en anchura (BFS), el escalado de conectividad designado M09, arranca en la barra de referencia de Julio Sauri y visita toda barra alcanzable en $\mathcal{G}_Y$. El Algoritmo~\ref{alg:bfs} es el procedimiento. Una barra que permanece sin visitar pertenece a otra componente conexa. Esa componente es una isla eléctrica: no tiene estado finito de flujo de potencia, y su magnitud de tensión se registra como $V_m=\mathrm{NaN}$ en lugar de un residuo fabricado. Tras el recorrido, toda barra visitada de grado uno es una antena radial y es candidata a la condensación de 69~kV de la Sección~\ref{sub:reduction}. El orden de descubrimiento coloca las barras interiores antes que las de frontera. Ese orden es la permutación que se aplica a la conectividad antes de la partición de Schur de la Sección~\ref{sub:hbcf}.
+
+\begin{algorithm}[!t]
+\caption{Escalado por búsqueda en anchura sobre el grafo de admitancias (M09, BFS)}
+\label{alg:bfs}
+\begin{algorithmic}[1]
+\Require grafo de dispersión $\mathcal{G}_Y=(\mathcal{V},\mathcal{E}_Y)$, referencia $s$
+\State $Q \gets (s)$, $\mathrm{seen}\gets\{s\}$, $\pi\gets(s)$
+\While{$Q\neq\emptyset$}
+  \State $u \gets \mathrm{pop}(Q)$
+  \For{$v\in\mathcal{N}(u)$}
+    \If{$v\notin\mathrm{seen}$}
+      \State $\mathrm{seen}\gets\mathrm{seen}\cup\{v\}$; se añade $v$ a $Q$ y a $\pi$
+    \EndIf
+  \EndFor
+\EndWhile
+\State $\mathcal{I}\gets\mathcal{V}\setminus\mathrm{seen}$ \Comment{islas, $V_m=\mathrm{NaN}$}
+\State $\mathcal{A}\gets\{u\in\mathrm{seen}:\deg(u)=1\}$ \Comment{antenas radiales}
+\State \Return permutación $\pi$, islas $\mathcal{I}$, antenas $\mathcal{A}$
+\end{algorithmic}
+\end{algorithm}
+
+El reordenamiento es una matriz de permutación $\mathbf{P}$. Los valores singulares son invariantes bajo semejanza por permutación, de modo que $\kappa_2(\mathbf{P}\mathbf{J}\mathbf{P}^{T})=\kappa_2(\mathbf{J})$. El propio BFS no mueve el número de condición y no agranda la dimensión del estado. En el caso base SENI-RD el movimiento medido es un cambio de punto de operación entre la red real y la red ideal:
+\begin{equation}
+\begin{aligned}
+\kappa_{\mathrm{real}} &= 341.21, &
+\kappa_{\mathrm{ideal}} &= 365.91, \\
+\frac{\kappa_{\mathrm{ideal}}-\kappa_{\mathrm{real}}}{\kappa_{\mathrm{real}}}
+&= +7.24\%.
+\end{aligned}
+\label{eq:bfs}
+\end{equation}
+El estado ideal ajusta la banda de tensión y las pérdidas. No optimiza $\kappa(\mathbf{J})$. El par $341.21 \to 365.91$ es la condición espectral $\kappa_2(\mathbf{J})$ de la Jacobiana del caso base en los puntos de operación real e ideal. El incremento de $+7.24\%$ es un cambio de condicionamiento por punto de operación. No es un aumento de dimensión. IEEE Std 399-1997 \cite{ieee399} se cita en la Sección~\ref{sub:reduction} como contexto de práctica industrial para estudios de sistema. No se usa aquí como umbral estricto de $\kappa(\mathbf{J})$ para el flujo de potencia en transmisión.
+
+\subsection{Regularización reactiva centrada y capabilidad del inversor}
+\label{sub:regularization}
+
+La conmutación dura PV--PQ en un límite reactivo induce ciclos límite en las iteraciones tipo Newton cuando el punto operativo oscila alrededor de ese límite. El controlador enunciado es un mapa centrado de clase $C^1$ con $Q(V_{\mathrm{ref}})=0$,
+\begin{equation}
+Q_g^{\mathrm{reg}}(V) = Q_g^{\max} \left( \frac{2}{1 + e^{-\gamma (V_{\mathrm{ref}} - V)}} - 1 \right).
+\label{eq:sigmoid}
+\end{equation}
+En $V=V_{\mathrm{ref}}$ el exponente se anula y el regulador inyecta potencia reactiva nula. Su derivada
+\begin{equation*}
+\frac{\partial Q_g^{\mathrm{reg}}}{\partial V} = -2\gamma Q_g^{\max}\,\sigma(1-\sigma), \qquad \sigma=\frac{1}{1+e^{-\gamma(V_{\mathrm{ref}}-V)}},
+\end{equation*}
+entra en la Jacobiana y mantiene diferenciable el paso de Newton. Un \emph{smoothstep} de clase $C^1$ con banda muerta, dentro de la misma banda de tensión, es una transición admisible de la misma clase. El error medido de regularización de este controlador sobre el horizonte de validación es $5.32 \times 10^{-12}$. Las plantas renovables estáticas usan la misma familia centrada,
+\begin{equation}
+Q_{\mathrm{sgen}}(V) = Q_{\max} \left( \frac{2}{1 + e^{-\gamma (V_{\mathrm{ref}} - V)}} - 1 \right),
+\label{eq:qsgen}
+\end{equation}
+impar respecto de la tensión de referencia. Toda inyección acoplada a un inversor queda además en el disco de potencia aparente
+\begin{equation}
+P_{g,t}^{2} + Q_{g,t}^{2} \le \bigl(S_{g}^{\max}\bigr)^{2},
+\label{eq:capability}
+\end{equation}
+conforme a IEEE Std 2800-2022 \cite{ieee2800} e IEEE Std 1547-2018 \cite{ieee1547}.
+
+\subsection{Jacobiana de cuatro bloques y cascada de solvers}
+\label{sub:jacobian}
+
+El paso de Newton usa la Jacobiana completa de cuatro bloques. Ningún bloque se sustituye por un desacoplo forzado:
+\begin{equation}
+\mathbf{J} =
+\begin{bmatrix}
+\mathbf{J}_{P\theta} & \mathbf{J}_{PV} \\
+\mathbf{J}_{Q\theta} & \mathbf{J}_{QV}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\partial \mathbf{P} / \partial \boldsymbol{\theta} & \partial \mathbf{P} / \partial \mathbf{V} \\[4pt]
+\partial \mathbf{Q} / \partial \boldsymbol{\theta} & \partial \mathbf{Q} / \partial \mathbf{V}
+\end{bmatrix}.
+\label{eq:jacobian}
+\end{equation}
+La resolución sobre la red reducida es una cascada de cuatro métodos. Un arranque plano aporta un estado inicial balanceado. Un paso desacoplado rápido estima los ángulos. Una iteración de Newton--Raphson en coordenadas polares lleva entonces el desajuste por debajo de $10^{-8}$~pu. Si la Jacobiana se aproxima al mal condicionamiento, un paso amortiguado de Levenberg--Marquardt sustituye la actualización de Newton sin amortiguar. La cifra de $10^{-8}$~pu es el criterio de parada de la especificación metodológica, no un segundo residuo medido.
+
+
+Retirada una referencia angular, el desajuste polar no reducido tiene orden $2\times 141=282$. El operador no reducido es por tanto $\mathbf{J}\in\mathbb{R}^{282\times 282}$, partido en los cuatro cuadrantes $\mathbf{J}_{P\theta}$, $\mathbf{J}_{PV}$, $\mathbf{J}_{Q\theta}$ y $\mathbf{J}_{QV}$ de \eqref{eq:jacobian}. Las barras PV eliminan las filas y columnas de tensión correspondientes en el paso de Newton factorizado, de modo que la cascada no afirma que cada factorización horaria sea la matriz densa de orden $282\times 282$. El objeto publicado es la Jacobiana polar no reducida, almacenada completa y sin elipsis. Junto con $\mathbf{Y}_{\mathrm{bus}}\in\mathbb{C}^{142\times 142}$ (20,164 entradas complejas), es el par de matrices que cierran los sellos de la Sección~\ref{sub:seals}.
+
+\subsection{Verificación numérica en varios niveles}
+\label{sub:trinity}
+
+Tres cálculos independientes auditan un mismo estado: la resolución física, la Jacobiana de cuatro bloques de la Sección~\ref{sub:jacobian} y un validador espectral dual. El validador reporta el número de condición ortogonal $\kappa_2(\mathbf{J}) = \sigma_{\max} / \sigma_{\min}$ a partir de la factorización $\mathbf{J} = \mathbf{U} \boldsymbol{\Sigma} \mathbf{V}^{T}$, y el autovalor mínimo $\lambda_{\min}(\mathbf{J}_R)$ del bloque reactivo reducido mediante una iteración de Arnoldi. El residuo de partición --- el desajuste máximo entre el estado recuperado por condensación y la referencia monolítica --- satisface
+\begin{equation}
+\|\mathbf{v}_{\mathrm{rec}} - \mathbf{v}_{\mathrm{full}}\|_\infty = 6.35 \times 10^{-12}\ \mathrm{pu} \le 10^{-11}\ \mathrm{pu}
+\label{eq:trinity}
+\end{equation}
+sobre el horizonte de validación \cite{vancutsem1998}. Como control de validez externa, la misma metodología espectral se ensayó primero sobre casos sintéticos: la Jacobiana de $22\times22$ del clásico sistema IEEE de 14 barras, por ejemplo, se clasifica como MARGINAL en la taxonomía espectral del proyecto con $\kappa_2 = 117.7823$, clasificación verificada cruzadamente contra herramientas independientes antes de cualquier despliegue nacional.
+
+\subsection{Barra slack acotada, reserva rodante y prueba N-1}
+\label{sub:n1}
+
+La referencia angular permanece en la barra Julio Sauri 345~kV a $V=1.02$~pu. Su potencia activa es una decisión acotada,
+\begin{equation}
+P_{\mathrm{slack}}^{\min} \le P_{\mathrm{slack},t} \le P_{\mathrm{slack}}^{\max},
+\label{eq:slackbox}
+\end{equation}
+y no absorbe un desbalance arbitrario. La reserva rodante se co-optimiza sobre el parque generador,
+\begin{equation}
+\begin{aligned}
+\sum_{g \in \mathcal{G}} r_{g,t}^{+} \;&\ge\; R_t^{\mathrm{req}}
+= \max\bigl(\underbrace{\max_{g} P_g^{\max}}_{\text{capa unitaria $N$--$1$}},\;
+\underbrace{P_{\mathrm{PC}}^{\mathrm{cmplx}}}_{\text{capa de modo com\'un}}\bigr)\\
+&= \max(376, 752) = 752~\mathrm{MW},
+\end{aligned}
+\label{eq:reserve}
+\end{equation}
+donde $P_{\mathrm{PC}}^{\mathrm{cmplx}} = 2 \times 376$~MW es la potencia nominal del complejo completo de Punta Catalina. Para cada contingencia $c \in \mathcal{C}$ el despacho posterior al evento despliega esa reserva,
+\begin{equation}
+P_{g,t}^{(c)} = P_{g,t}^{0} + \Delta P_{g,t}^{(c)}, \qquad 0 \le \Delta P_{g,t}^{(c)} \le r_{g,t}^{+},
+\label{eq:deploy}
+\end{equation}
+y el registro informa la desviación de la barra de referencia $\Delta P_{\mathrm{slack},t}^{(c)}$ junto con la variable de carga no servida $P_{\mathrm{shed},t}^{(c)}$.
+
+El requisito \eqref{eq:reserve} implementa una doctrina de seguridad explícita de dos capas. \emph{Capa 1 --- $N-1$ unitaria.} El catálogo de 215 elementos audita salidas simples --- 104 líneas troncales, 16 bancos de autotransformadores, 32 unidades térmicas síncronas y 63 plantas renovables estáticas --- con cada unidad de 376~MW de Punta Catalina auditada individualmente, de modo que la capa unitaria del requisito es la mayor potencia nominal unitaria, 376~MW. \emph{Capa 2 --- modo común.} El evento de modo común de planta más severo de la isla, el disparo simultáneo del complejo completo ($2 \times 376 = 752$~MW), queda adicionalmente cubierto al dimensionar el requisito con la potencia del complejo. Co-optimizar la reserva en $\sum r_g^+ \ge 752$~MW no es por tanto una tautología, sino un criterio preventivo deliberadamente ultraconservador: dado que la flota co-optimizada cubre el mayor déficit de modo común, toda salida unitaria del catálogo queda cubierta \emph{a fortiori} en el eje de capacidad, y la cuestión de factibilidad abierta para cada contingencia se reduce a la entregabilidad por red de la reserva desplegada y a la suficiencia de tensión post-evento --- exactamente lo que las cuatro cláusulas de admisión que siguen verifican mediante resolución AC explícita y no por supuesto. Ambas capas permanecen dentro de la frontera estática de la Sección~\ref{sub:scope}: \eqref{eq:reserve} dimensiona la capacidad de redespacho que la resolución AC post-evento despliega; no modela la excursión de frecuencia.
+
+El catálogo de contingencias (\emph{contingency catalog}) es la lista propia del operador de transmisión: 104 líneas troncales de 345, 230 y 138~kV, 16 bancos de autotransformadores de subestación, 32 unidades térmicas síncronas y 63 plantas renovables estáticas, 215 salidas simples en total. Una contingencia $c$ resulta admisible (\emph{PASS}) solo cuando se cumplen las cuatro cláusulas.
+\begin{enumerate}
+\item El flujo AC converge con $\|\Delta P^{(c)}, \Delta Q^{(c)}\|_{\infty} \le 10^{-8}$~pu.
+\item Toda barra retenida satisface $V_i^{(c)} \in [0.95, 1.05]$~pu.
+\item Toda rama sobreviviente $\ell \in \mathcal{L}\setminus\{c\}$ satisface $|S_\ell^{(c)}| \le S_\ell^{\max}$ y $|I_\ell^{(c)}| \le I_\ell^{\max}$.
+\item La desviación de la barra de referencia permanece acotada, $|\Delta P_{\mathrm{slack}}^{(c)}| \le \varepsilon_{\mathrm{slack}}$, y el déficit de potencia activa es nulo, $P_{\mathrm{shed}}^{(c)}=0$.
+\end{enumerate}
+Cada salida de ese catálogo cumplió las cuatro cláusulas, 215 de 215. Cuando una salida severa lleva las tensiones fuera de la banda, una bisección auxiliar calcula el escalón $\Delta Q_{\mathrm{shunt}}$ que restituye cada barra al intervalo $[0.95, 1.05]$~pu. Ese escalón es una medida correctiva documentada de soporte de tensión. No es holgura térmica no usada.
+
+\subsection{Partición espacial diakóptica: la HBCF}
+\label{sub:hbcf}
+
+La formulación jerárquica de frontera-coordenada (HBCF) particiona $\mathcal{G}$ en $K$ subsistemas territoriales $\mathcal{G}_k = (\mathcal{V}_k, \mathcal{E}_k)$, disjuntos en vértices por pares, interconectados exclusivamente a través de un conjunto de frontera mínimo $\mathcal{V}_B = \bigcup_{k=1}^{K} \partial \mathcal{V}_k$ de barras de corte. La partición es \emph{jerárquica en dos registros}:
+\begin{enumerate}
+\item \textbf{Registro jurídico-territorial.} La ley de ordenamiento territorial del país, la Ley 368-22 (Ley de Ordenamiento Territorial, Uso de Suelo y Asentamientos Humanos) \cite{ley368}, organiza el territorio nacional en diez regiones de planificación. El benchmark adopta estas diez regiones como sus diez microrredes territoriales soberanas, de modo que la partición eléctrica y la gobernanza territorial coinciden --- una decisión de modelado con consecuencias directas de política pública (Sección~\ref{sec:discussion}).
+\item \textbf{Registro eléctrico.} Para la condensación numérica, las diez microrredes se agrupan en $K = 4$ macrodominios eléctricos --- Norte (Cibao), Sur, Este y Metropolitano --- cuyas interconexiones son exactamente los enlaces troncales de 230/138~kV del patrimonio. El conjunto de frontera $\mathcal{V}_B$ es el conjunto de barras incidentes a esos enlaces; el corte de Kron de las ramas troncales \cite{kron1963}, \cite{happ1971} aísla los subdominios y define la frontera de condensación $\Gamma$.
+\end{enumerate}
+
+Tras reordenar las barras como $(\text{interior} \mid \text{frontera})$, el sistema de la Jacobiana nodal o de admitancias en cualquier punto operativo toma la forma de bloques
+\begin{equation}
+\begin{bmatrix} \mathbf{A} & \mathbf{B} \\ \mathbf{C} & \mathbf{D} \end{bmatrix} \begin{bmatrix} \mathbf{x}_I \\ \mathbf{x}_B \end{bmatrix} = \begin{bmatrix} \mathbf{u}_I \\ \mathbf{u}_B \end{bmatrix},
+\label{eq:blockform}
+\end{equation}
+donde $\mathbf{x}_I$ recoge las variables internas de todos los subdominios y $\mathbf{x}_B$ el estado de frontera. Por construcción $\mathbf{A} = \operatorname{diag}(\mathbf{A}_1, \dots, \mathbf{A}_K)$ es block-diagonal, con $\mathbf{A}_k$ el bloque jacobiano interno del macrodominio $k$.
+
+\subsection{Condensación exacta por el complemento de Schur}
+\label{sub:schur}
+
+La condensación descansa en tres resultados algebraicos. Se enuncian completos porque portan la exactitud de la descomposición de dominios por bloques.
+
+\begin{lemma}[inversa block-diagonal]
+\label{lem:blockdiag}
+Si $\mathbf{A} = \operatorname{diag}(\mathbf{A}_1, \dots, \mathbf{A}_K)$ con cada $\mathbf{A}_k \in \mathbb{R}^{N_k \times N_k}$ no singular, entonces $\mathbf{A}^{-1} = \operatorname{diag}(\mathbf{A}_1^{-1}, \dots, \mathbf{A}_K^{-1})$.
+\end{lemma}
+\begin{proof}
+Inmediato: para cada posición de bloque $(k, l)$, $\mathbf{A}_k \mathbf{A}_k^{-1} = \mathbf{I}_{N_k}$ si $l = k$ y $\mathbf{A}_k \cdot \mathbf{0} = \mathbf{0}$ en caso contrario; el producto es la identidad sobre la suma directa de los espacios interiores.
+\end{proof}
+
+\begin{theorem}[exactitud de la condensación de Schur]
+\label{thm:schur}
+Si la matriz completa del sistema $\begin{psmallmatrix} \mathbf{A} & \mathbf{B} \\ \mathbf{C} & \mathbf{D} \end{psmallmatrix}$ es no singular y $\mathbf{A}$ es no singular, entonces $\mathbf{x}_B$ es la solución única del sistema reducido de frontera
+\begin{equation}
+\mathbf{S}\, \mathbf{x}_B = \mathbf{u}_B - \mathbf{C}\, \mathbf{A}^{-1} \mathbf{u}_I, \qquad \mathbf{S} = \mathbf{D} - \mathbf{C}\, \mathbf{A}^{-1} \mathbf{B},
+\label{eq:schur}
+\end{equation}
+y $\mathbf{x}_I = \mathbf{A}^{-1}(\mathbf{u}_I - \mathbf{B}\, \mathbf{x}_B)$ restaura el estado interior. El par $(\mathbf{x}_I, \mathbf{x}_B)$ coincide con la solución única del sistema en bloques sin reducir.
+\end{theorem}
+\begin{proof}
+La eliminación gaussiana por bloques del sistema completo premultiplica la primera fila por $\mathbf{C}\mathbf{A}^{-1}$ y la resta de la segunda, eliminando $\mathbf{x}_I$ y produciendo el sistema de frontera anterior; estas son operaciones de fila no singulares, por lo que el sistema reducido es equivalente al original y la unicidad se transfiere desde la hipótesis de no singularidad. La sustitución hacia atrás es la segunda fila de la eliminación. El complemento de Schur $\mathbf{S}$ es no singular precisamente cuando lo es la matriz completa \cite{zhang2005}.
+\end{proof}
+
+\begin{proposition}[complejidad]
+\label{prop:complexity}
+La factorización densa del sistema de $N$ barras cuesta $O(N^3)$; la solución particionada cuesta una factorización block-diagonal $\sum_k O(N_k^3)$ más una factorización de frontera $O(N_B^3)$ más los productos de eliminación, es decir $O\!\left(\sum_k N_k^3 + N_B^3\right)$ con $\sum_k N_k + N_B = N$ y $N_B \ll N$. Para $\mathbf{A}_k$ dispersos factorizados con ordenamientos de reducción de relleno, el costo local tiende a la linealidad en $N_k$ \cite{george1973}, \cite{saad2003}.
+\end{proposition}
+
+El residuo de partición de la condensación es \eqref{eq:trinity}. Un estado horario de AC en esta partición se resuelve en 2.65~ms. Ese tiempo de reloj es la capacidad de cribado estático del solver particionado: el ritmo al que un sistema de gestión de energía puede cribar contingencias y al que un despacho intradiario puede refrescar un estado. El valor $\delta = 6.35 \times 10^{-12}$~pu certifica que la condensación de Schur por bloques no introduce truncamiento respecto del solver monolítico en doble precisión. El Algoritmo~\ref{alg:schur_pf} enuncia el solver completo.
+
+% ---- Bloque de inyección del Algoritmo 1 ----
+\begin{algorithm}[!t]
+\caption{Flujo de potencia AC de frontera-Schur sobre la partición HBCF del SENI-142}
+\label{alg:schur_pf}
+\begin{algorithmic}[1]
+\Require partición $\{\mathcal{G}_k\}_{k=1}^{4}$, conjunto de frontera $\mathcal{V}_B$,
+         inyecciones horarias $(\mathbf{u}_I, \mathbf{u}_B)$, tolerancia $\varepsilon$
+\Ensure estado convergido $(\mathbf{x}_I, \mathbf{x}_B)$, residuo $\rho$
+\State inicializar el arranque plano $(\mathbf{x}_I^{(0)}, \mathbf{x}_B^{(0)})$
+\State ensamblar $\mathbf{J}^{(0)} = \begin{psmallmatrix} \mathbf{A} & \mathbf{B} \\ \mathbf{C} & \mathbf{D} \end{psmallmatrix}$
+\For{$t \gets 0, 1, 2, \dots$ hasta $\rho \le \varepsilon$}
+  \For{$k \gets 1, \dots, K$} \Comment{paralelo, memoria disjunta}
+     \State $\mathbf{A}_k^{(t)} \gets \partial (\Delta \mathbf{u}_k) / \partial \mathbf{x}_k$
+     \State factorizar $\mathbf{A}_k^{(t)} = \mathbf{L}_k \mathbf{U}_k$ \Comment{ordenamiento de reducción de relleno}
+  \EndFor
+  \State $\mathbf{W}^{(t)} \gets \bigl(\mathbf{A}^{(t)}\bigr)^{-1} \mathbf{B}^{(t)}$ \Comment{$K$ sustituciones hacia atrás locales}
+  \State $\mathbf{S}^{(t)} \gets \mathbf{D}^{(t)} - \mathbf{C}^{(t)} \mathbf{W}^{(t)}$
+  \State factorizar $\mathbf{S}^{(t)}$
+  \State $\Delta \mathbf{x}_B^{(t)} \gets \bigl(\mathbf{S}^{(t)}\bigr)^{-1} \Bigl( \mathbf{u}_B - \mathbf{C}^{(t)} \bigl(\mathbf{A}^{(t)}\bigr)^{-1} \mathbf{u}_I \Bigr)$
+  \For{$k \gets 1, \dots, K$} \Comment{restauración paralela}
+     \State $\Delta \mathbf{x}_k^{(t)} \gets \bigl(\mathbf{A}_k^{(t)}\bigr)^{-1} \bigl( \mathbf{u}_k - \mathbf{B}_k^{(t)} \Delta \mathbf{x}_B^{(t)} \bigr)$
+  \EndFor
+  \State $\mathbf{x}^{(t+1)} \gets \mathbf{x}^{(t)} + \Delta \mathbf{x}^{(t)}$
+  \State $\rho \gets \lVert (\Delta P, \Delta Q) \rVert_{\infty}$
+\EndFor
+\State \Return $(\mathbf{x}_I, \mathbf{x}_B)$, $\rho$ \Comment{auditoría fasorial: $\delta$ vs.\ referencia}
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{La trinidad de estados de red}
+\label{sub:triad}
+
+Se distinguen tres redes y solo una se libera aquí. La red real $\mathcal{G}_{\mathrm{real}}$ es el benchmark homologado SENI-142 de este artículo. La red ideal $\mathcal{G}_{\mathrm{ideal}}$ es la frontera física del patrimonio que ya existe: los corredores y los calibres se repotencian hasta el límite admisible, y no se introduce un nuevo derecho de vía. La red óptima $\mathcal{G}_{\mathrm{opt}}$ comienza solo cuando esa frontera se agota; añade la reconducción de alta temperatura y baja flecha bajo el folleto técnico 244 de CIGRE, auxiliada por la bisección reactiva de la Sección~\ref{sub:n1}. Los frentes de Pareto y la comparación con la biblioteca clásica del IEEE quedan para el artículo complementario de optimización.
+
+\subsection{El ciclo de vida determinista de validación del gemelo digital}
+\label{sub:lifecycle}
+
+Cada cifra reportada en este artículo es aguas abajo de un estado de software cuya procedencia está atestiguada criptográficamente. El ciclo de vida tiene cuatro fases, y la Figura~\ref{fig:gemelo_fases} lo diagrama en su totalidad:
+\begin{enumerate}
+\item \textbf{Fase 1 --- enclave hermético de macro-sandbox.} El solver empaquetado se ejecuta en un sandbox de espacios de nombres POSIX de la clase bubblewrap, con vista de sistema de archivos de solo lectura y una envolvente de memoria por debajo de 200~MiB, y debe superar una cascada de catorce compuertas $G_0$--$G_{13}$ con semántica \emph{fail-closed}: cualquier compuerta que no puede ejecutarse cuenta como fallo, nunca como aprobación tácita.
+\item \textbf{Fase 2 --- banco de investigación bajo verificación estática post-evento $N-1$.} El paquete validado se ejercita contra el catálogo de especificación de 215 contingencias en el banco de investigación --- cada contingencia verificada como factibilidad estática post-evento bajo las cuatro cláusulas de la Sección~\ref{sub:n1} --- con telemetría del operador del sistema como verdad de terreno y reconciliación cruzada contra plataformas comerciales de estudio.
+\item \textbf{Fase 3 --- Golden Master.} La cascada completa se re-verifica y cada artefacto se sella con manifiestos SHA-512 desacoplados; el sello atestigua un estado exacto de software, no una familia de versiones.
+\item \textbf{Fase 4 --- producción industrial.} La promoción es un conmutador atómico a nivel de kernel (\texttt{renameat2} con \texttt{RENAME\_EXCHANGE}): producción y candidato se intercambian en una sola operación indivisible, y el delta de regresión entre el estado sellado y el desplegado es cero por construcción.
+\end{enumerate}
+
+Tres invariantes de custodia gobiernan el ciclo: preservación bit a bit del estado atestiguado entre fases; cierre \emph{fail-closed} ante la duda; y atomicidad de la observación, de modo que un lector no observa un sistema a medio actualizar. Si el artefacto desplegado es bit a bit el artefacto sellado y la conmutación es atómica, una diferencia de comportamiento entre el artefacto ensayado y el artefacto promovido queda excluida por construcción. La cota de la Fase 1, por debajo de 200~MiB, es la envolvente del sandbox hermético. El conjunto residente medido de la campaña horaria resuelta es 473~MiB, bajo un techo de 650~MiB. Una etapa posterior acepta el estado de la etapa previa solo cuando el digest SHA-512 coincide con el manifiesto sellado; un desajuste aborta la corrida.
+
+% ---- Bloque de inyección de la Figura 1 (variante ES) ----
+\begin{figure*}[!t]
+\centering
+\resizebox{0.88\textwidth}{!}{\input{sec01_fig_gemelo_fases_tikz_es}}
+\caption{Ciclo de vida ciber-físico del gemelo digital en cuatro fases con la cascada de compuertas \emph{fail-closed}. El enclave hermético de la Fase 1 (espacios de nombres POSIX, sistema de archivos de solo lectura, envolvente ${<}200$ MiB) debe superar las catorce compuertas $G_0$--$G_{13}$ (14/14, \emph{fail-closed}); el banco de investigación de la Fase 2 sostiene la verificación estática post-evento $N-1$ contra el catálogo de 215 contingencias con telemetría del operador y reconciliación entre herramientas; el Golden Master de la Fase 3 se sella con manifiestos SHA-512 desacoplados; la promoción a producción industrial es una conmutación atómica de kernel (renameat2, RENAME\_EXCHANGE) con regresión nula. Cualquier compuerta fallida o desviación no explicada devuelve el paquete a la Fase 1 con un informe forense: no existen estados intermedios admisibles.}
+\label{fig:gemelo_fases}
+\end{figure*}
+
+
+\subsection{Digestos de integridad criptográfica SHA-512}
+\label{sub:seals}
+
+La custodia entre etapas es una cadena de cuatro sellos SHA-512 (\emph{four seals}). Cada sello se desprende de la etapa que lo produjo y lo comprueba la etapa que lo consume. El sello~1 cierra la ingesta (Ingesta): los commercial catalogs cribados y el censo físico. El sello~2 cierra el despacho (Despacho): el programa por orden de mérito y la serie horaria de inyección. El sello~3 cierra las matrices y el registro forense (Matrices/Forense): la admitancia completa $\mathbf{Y}_{\mathrm{bus}}\in\mathbb{C}^{142\times 142}$, con sus 20,164 entradas complejas y sin elipsis, y la Jacobiana polar no reducida $\mathbf{J}\in\mathbb{R}^{282\times 282}$ en los cuatro cuadrantes $\mathbf{J}_{P\theta}$, $\mathbf{J}_{PV}$, $\mathbf{J}_{Q\theta}$, $\mathbf{J}_{QV}$. El sello~4 cierra los estados de la tríada (Estados Tríada): los puntos de operación real, ideal y óptimo que distingue la Sección~\ref{sub:triad}. Una etapa posterior acepta la etapa previa solo cuando el digest coincide. Un desajuste aborta la corrida.
+
+De esos sellos se emiten tres certificados (\emph{certificates}).
+\begin{enumerate}
+\item \textbf{Certificado 1 --- forense de convergencia.} Registra la cascada que alcanzó la prueba de parada de $10^{-8}$~pu, el desajuste final y la identidad del método que aceptó el estado.
+\item \textbf{Certificado 2 --- integridad espectral (SVD/Arnoldi).} Registra $\kappa_2(\mathbf{J})=\sigma_{\max}/\sigma_{\min}$ a partir de la descomposición en valores singulares y $\lambda_{\min}(\mathbf{J}_R)$ a partir de la iteración de Arnoldi de la Sección~\ref{sub:trinity}.
+\item \textbf{Certificado 3 --- invarianza bit a bit del núcleo.} Registra que el núcleo desplegado y el núcleo sellado son la misma cadena de bytes, que es la hipótesis de custodia de la Sección~\ref{sub:lifecycle}.
+\end{enumerate}
+
+\subsection{Transparencia de caja de cristal}
+\label{sub:glassbox}
+
+Un lector independiente no necesita la máquina del autor. Bastan los arreglos estructurales abiertos que se liberan con el benchmark en IEEE DataPort y en el repositorio público --- las matrices de admitancia $\mathbf{Y}_{\mathrm{bus}}$ y las Jacobianas, almacenadas como \texttt{.npz} y \texttt{.json} --- para la repetición numérica. Un script de validación restringido a \texttt{numpy} y \texttt{scipy}, sin paquete comercial de sistemas de potencia, sin PowerFactory y sin PSS/E, reproduce el residuo de partición de \eqref{eq:trinity},
+\begin{equation*}
+\|\mathbf{v}_{\mathrm{rec}}-\mathbf{v}_{\mathrm{full}}\|_\infty = 6.35 \times 10^{-12}\ \mathrm{pu} \le 10^{-11}\ \mathrm{pu},
+\end{equation*}
+y confirma el número de condición modal $\kappa_2(\mathbf{J})$. Los dígitos 6.35 son el residuo ya sellado en \eqref{eq:trinity}. El script es una repetición, no una segunda medición. Este es el protocolo glass-box: la afirmación estructural se reproduce solo con los arreglos liberados.
+
+La liberación se parte en dos capas para no confundir la reproducibilidad del modelo de red con el acceso a la telemetría operativa.
+\begin{enumerate}
+\item \textbf{Open Structural Benchmark (OSB).} El depósito público en IEEE DataPort y el repositorio público contienen la topología de 142 barras, los parámetros completos de rama $R$, $X$, $B$, $S_{\max}$ e $I_{\max}$, los parámetros de los transformadores, los equivalentes de reducción de 69~kV con la pérdida interna de Joule asignada como $\Delta S_{\mathrm{loss}}$, y los casos canónicos de prueba de punta, de valle y de máxima penetración solar.
+\item \textbf{Operational Validation Bundle (OVB).} La telemetría histórica agregada y los casos operativos anonimizados permanecen bajo gobernanza institucional. Son la fuente de la década usada en la Sección~\ref{sub:dataprotocol}. No forman parte del depósito estructural abierto.
+\end{enumerate}
+
+\subsection{Protocolo de datos empíricos}
+\label{sub:dataprotocol}
+
+El benchmark no se calibra contra supuestos; se alimenta de una realidad operativa archivada, y la frase de protocolo se cita verbatim como núcleo contractual de la capa de datos:
+\begin{quote}
+\itshape ``El solver estructural se alimenta de un repositorio empírico de verdad de terreno preexistente y continuo que comprende exactamente 520 semanas completas consecutivas de 168 horas --- 87,360 estados horarios sobre 3,640 días de lunes a domingo, seleccionados sin una sola hora interpolada del archivo operativo 2016--2025 --- provistas por el Operador del Sistema de la República Dominicana (Organismo Coordinador del SENI), capturando telemetría SCADA real, órdenes de despacho, perfiles variables de solar/eólica y registros históricos de salidas.'' (traducción; el original inglés es la cláusula contractual)
+\end{quote}
+
+Cuatro familias de variables entran al solver desde este repositorio: (i) demanda nodal activa y reactiva en las barras de transporte; (ii) despacho unidad por unidad de la flota térmica, hidráulica, solar y eólica; (iii) perfiles de producción solar y eólica acoplados meteorológicamente; y (iv) el registro histórico de salidas que siembra el catálogo de contingencias. El horizonte de validación se estandariza por construcción: exactamente 520 semanas completas consecutivas de 168 horas --- 87,360 estados horarios sobre 3,640 días de lunes a domingo --- extraídas del archivo 2016--2025 sin una sola hora interpolada. La extensión civil de la década contiene 3,653 días --- exactamente 521 semanas completas de lunes a domingo (3,647 días, 87,528 estados horarios) más seis días huérfanos de borde de calendario (del 1 al 3 de enero de 2016 y del 29 al 31 de diciembre de 2025). El horizonte estandarizado adopta 520 de esas 521 semanas completas --- del lunes 4 de enero de 2016 al domingo 21 de diciembre de 2025, es decir, 3,640 días u 87,360 estados horarios --- de modo que los trece días civiles excluidos se descomponen exactamente en los seis días huérfanos de borde más los siete días de la última semana festiva del año (del 22 al 28 de diciembre de 2025), dejada fuera deliberadamente para que la caída atípica de demanda industrial de fin de año no contamine la estructura de covarianza del bootstrap por bloques. La exclusión es \emph{por construcción}, no un descarte silencioso. Retenerlos rompería la ciclicidad semanal exacta del despacho archivado y truncaría los bloques de remuestreo en ambos extremos: el \textbf{bootstrap de bloques de 24 horas} extrae días operativos enteros alineados con la estructura de lunes a domingo del ciclo semanal de generación, mantenimiento y demanda, de modo que la selección de semanas íntegras garantiza que cada extracción es un patrón operativo de siete días físicamente realizable y que ningún bloque remuestreado arrastra un artefacto de truncamiento del calendario civil. Como el repositorio es continuo, la capa de validación puede remuestrearlo honestamente: un \textbf{bootstrap de bloques de 24 horas} extrae días operativos enteros, preservando la correlación intradía entre irradiancia, temperatura, demanda y despacho, en lugar del remuestreo decorrelacionado a nivel de hora que favorecería las estadísticas de error de los márgenes de estabilidad.
+
+\subsection{AC-OPF multitemporal con acoplamiento power-to-gas}
+\label{sub:opf}
+
+Sobre el modelo de red convergido, el benchmark formula un flujo óptimo de potencia AC multitemporal \cite{molzahn2019}. El despacho valora la energía y las dos direcciones de reserva,
+\begin{equation}
+\min \sum_{t \in \mathcal{T}} \left[ \sum_{g \in \mathcal{G}} \left( c_g^{P}(P_{g,t}) + c_g^{+} r_{g,t}^{+} + c_g^{-} r_{g,t}^{-} \right) + \sum_{i \in \mathcal{V}} c^{\mathrm{shed}}\, P_{i,t}^{\mathrm{shed}} \right],
+\label{eq:opfobj}
+\end{equation}
+sujeto a los balances AC, a los límites térmicos de rama, al disco de potencia aparente \eqref{eq:capability}, a las rampas horarias $|P_{g,t} - P_{g,t-1}| \le \Delta_g^{\mathrm{ramp}}$ y a los balances de almacenamiento de bombeo hidráulico e hidrógeno.
+
+El término de deslastre es una penalización exacta, no un punto blando de modelado: la penalización $c^{\mathrm{shed}}$ se elige estrictamente por encima de cualquier costo marginal del sistema alcanzable, $c^{\mathrm{shed}} > \max_{g \in \mathcal{G}} \partial c_g^{P} / \partial P_{g,t}$. En un óptimo, la estacionariedad KKT en $P_{i,t}^{\mathrm{shed}}$ lee $c^{\mathrm{shed}} = \lambda_{i,t} + \mu_{i,t}$, con $\lambda_{i,t}$ el multiplicador del balance nodal \eqref{eq:opf_balance} y $\mu_{i,t} \ge 0$ el multiplicador de la cota de no negatividad $P_{i,t}^{\mathrm{shed}} \ge 0$. Supóngase carga no servida positiva en el óptimo: la complementariedad forzaría $\mu_{i,t} = 0$ y por tanto $\lambda_{i,t} = c^{\mathrm{shed}}$. Pero siempre que la red post-evento sea estáticamente factible existe un despacho sin deslastre, y el multiplicador de energía queda entonces acotado por el costo marginal de la unidad marginal comprometida, $\lambda_{i,t} \le \max_{g} \partial c_g^{P} / \partial P_{g,t} < c^{\mathrm{shed}}$ --- una contradicción. La optimalidad lleva por tanto $P_{\mathrm{shed}} = 0$ en cada barra y hora en que la red post-evento es estáticamente factible; la cláusula 4 de la batería de admisión de la Sección~\ref{sub:n1} es la instancia verificada de esta propiedad estructural, no un supuesto. La garantía es cuantitativa bajo congestión: con la penalización fijada en el costo de la energía no suministrada, $c^{\mathrm{shed}} = 10{,}000\ \$/\mathrm{MWh}$, con el costo marginal de generación más alto registrado del sistema por debajo de $230\ \$/\mathrm{MWh}$ y las rentas de congestión de transmisión del peor caso sin exceder $120\ \$/\mathrm{MWh}$, el multiplicador nodal de energía queda acotado por $\lambda_{i,t}^{\max} < 350\ \$/\mathrm{MWh}$; la factibilidad dual da entonces $\mu_{i,t} = c^{\mathrm{shed}} - \lambda_{i,t} > 9{,}650 > 0$ estricta y uniformemente bajo cualquier nivel admisible de congestión física, y la complementariedad fuerza $P_{i,t}^{\mathrm{shed}} = 0$ de manera idéntica en cada nodo donde la red admite factibilidad estática.
+
+Para cada hora $t$ y barra $i$, las restricciones de igualdad son los balances nodales, aumentados con los términos de acoplamiento power-to-gas,
+\begin{equation}
+\sum_{g \in \mathcal{G}_i} P_{g,i,t} + \sum_{r \in \mathcal{R}_i} P_{r,i,t} + P_{i,t}^{\mathrm{FC}} - P_{i,t}^{\mathrm{EL}} + P_{i,t}^{\mathrm{shed}} - P_{i,t}^{\mathrm{load}} = P_i(\mathbf{V}_t, \boldsymbol{\theta}_t),
+\label{eq:opf_balance}
+\end{equation}
+con el análogo reactivo que admite absorción/inyección acoplada a inversores dentro de los límites de capacidad aparente. El acoplamiento intertemporal lo impone la dinámica del buffer de hidrógeno,
+\begin{equation}
+E_{h,t+1} = E_{h,t} + \left(\eta_{\mathrm{EL}}\, P_{h,t}^{\mathrm{EL}} - \frac{P_{h,t}^{\mathrm{FC}}}{\eta_{\mathrm{FC}}}\right) \Delta t, \qquad E_h^{\min} \le E_{h,t} \le E_h^{\max},
+\label{eq:h2_storage}
+\end{equation}
+donde $\eta_{\mathrm{EL}}$ y $\eta_{\mathrm{FC}}$ son las eficiencias de electrólisis y reconversión: el excedente de generación renovable no despachable se convierte en inventario energético intertemporal, absorbido como carga electrolítica flexible en horas de excedente y re-inyectado por la celda de combustible en horas de déficit. El bombeo obedece el análogo de embalse con eficiencias independientes de bombeo/turbina, acotando la flota reversible de 764~MW de la Sección~\ref{sub:phes}. El problema completo es no convexo porque las igualdades AC son no convexas. Se resuelve mediante una cascada de treinta y dos configuraciones tipo Newton que abarcan Newton--Raphson \cite{tinney1967}, control de paso por multiplicador óptimo de Iwamoto, iteraciones desacopladas rápidas BX \cite{stott1974} y un respaldo Gauss--Seidel, de modo que ninguna patología algebraica única pueda detener el barrido. El sistema de Karush--Kuhn--Tucker (KKT) certifica solo la estacionariedad local. En este problema no convexo las condiciones KKT son condiciones necesarias en un minimizador local. No son un certificado de optimalidad global. La estacionariedad del lagrangiano, la factibilidad primal, la factibilidad dual y la complementariedad se archivan con la salida de validación sellada \cite{nocedal2006}, \cite{dommel1968}, \cite{wood2013}. La Figura~\ref{fig:p2g_h2} diagrama el acoplamiento electroquímico.
+
+% ---- Bloque de inyección de la Figura 2 (variante ES) ----
+\begin{figure*}[!t]
+\centering
+\resizebox{0.85\textwidth}{!}{\input{sec02_fig_p2g_h2_tikz_es}}
+\caption{Acoplamiento electroquímico power-to-gas del vector de hidrógeno verde con la red AC. El electrolizador absorbe el excedente renovable como carga flexible ($P^{\mathrm{EL}}_{h,t} \ge 0$, eficiencia $\eta_{\mathrm{EL}}$); el buffer de almacenamiento impone el inventario intertemporal $E_{h,t+1} = E_{h,t} + (\eta_{\mathrm{EL}} P^{\mathrm{EL}}_{h,t} - P^{\mathrm{FC}}_{h,t}/\eta_{\mathrm{FC}})\,\Delta t$ con cotas de caja; la celda de combustible re-inyecta potencia en déficit ($P^{\mathrm{FC}}_{h,t} \ge 0$, eficiencia $\eta_{\mathrm{FC}}$). Ambos términos convertidores entran al balance nodal AC. Flujos eléctricos en trazo continuo; flujos de hidrógeno en dorado discontinuo.}
+\label{fig:p2g_h2}
+\end{figure*}
+
+
+\subsection{Doctrinas públicas del ciclo de vida diakóptico}
+\label{sub:doctrines}
+
+Las doctrinas públicas que siguen (\emph{public doctrines}) son la capa matemática del ciclo de vida que este benchmark ejecuta. Cada enunciado es una ecuación.
+
+\textbf{Doctrina 01 --- puertos de frontera y diakóptica de Kron.} Los bloques interiores se eliminan sobre los cortes. El operador de frontera es el complemento de Schur ya factorizado en \eqref{eq:schur},
+\begin{equation*}
+S = D - C A^{-1} B.
+\end{equation*}
+Solo los puertos de frontera permanecen como variables de acoplamiento.
+
+\textbf{Doctrina 02 --- prefacio de Th\'evenin/Norton y localización continua de Holter.} Mientras ninguna barra retenida sea una isla, existe la factorización $\mathbf{Y}=\mathbf{L}\mathbf{D}\mathbf{L}^{T}$. La impedancia de punto de excitación en la barra $i$ es la resolución triangular $Z_{\mathrm{th},i}=\mathbf{e}_i^{T}\mathbf{Y}^{-1}\mathbf{e}_i$. Un grado nulo, o una impedancia de punto de excitación que diverge, devuelve la componente como isla. No devuelve un residuo de Newton.
+
+\textbf{Doctrina 03 --- fallo suave como déficit diagnosticado.} Un balance infactible es el problema de penalización exacta
+\begin{equation}
+\min_{x,s}\ \tfrac12\lVert s\rVert^{2}\quad\mathrm{s.t.}\quad g(x)+s=0,
+\label{eq:softfail}
+\end{equation}
+cuya estacionariedad KKT identifica el déficit $s^{\star}=-\lambda^{\star}$. La variable de holgura es el certificado de la potencia que falta. No es una inyección silenciosa.
+
+\textbf{Doctrina 04 --- instantáneas de subestación y de anillo.} En la iteración $t$ el corte de soporte $\eta_k\ge\eta_k^{(t)}+\pi_k^{T}(v_c-v_c^{(t)})$ conserva una instantánea de subestación y una instantánea de anillo como aproximaciones exteriores válidas entre resoluciones.
+
+\textbf{Doctrina 06 --- supervisores y núcleos desacoplados por fuente renovable.} Los estados eléctricos rápidos $z$ y la tensión de puerto $V$ se separan por la perturbación singular $\varepsilon\dot{z}=f(z,V)$. El mapa de puerto $(P,Q)=h(V)$ es lo que ve el problema maestro. Los núcleos que enfrentan fuentes renovables distintas no comparten un estado algebraico.
+
+\textbf{Doctrina 07 --- supervisores de cambiadores de toma bajo carga y de SVC.} Una toma $n$ y una susceptancia $b$ permanecen discretas, $n\in\mathcal{N}$ y $b\in\mathcal{B}$, con tensión regulada $V_{\mathrm{reg}}=n\,V_{\mathrm{src}}$. El maestro acepta ese par discreto. No relaja la toma en un devanado continuo ficticio.
+
+\textbf{Doctrina 09 --- regularización sigmoidal continua $Q$--$V$.} Los inversores renovables usan el mapa sigmoidal impar \eqref{eq:qsgen}. Su derivada entra en $\mathbf{J}_{QV}$ y retira el castañeteo PV--PQ de la Sección~\ref{sub:regularization}.
+
+\textbf{Doctrina 10 --- supervisor espectral de Kundur.} La Jacobiana reactiva reducida es
+\begin{equation}
+\mathbf{J}_R = \mathbf{J}_{QV} - \mathbf{J}_{Q\theta}\, \mathbf{J}_{P\theta}^{-1}\, \mathbf{J}_{PV},
+\label{eq:jr}
+\end{equation}
+y $\lambda_{\min}(\mathbf{J}_R)\to 0$ es la prueba de colapso de tensión. No es una reescritura de $\kappa(\mathbf{J})$.
+
+\textbf{Doctrina 11 --- reconducción HTLS en la red ideal.} Sobre $\mathcal{G}_{\mathrm{ideal}}$ un corredor se conserva o se reconducciona, $z_{\ell}\in\{0,1\}$. A la misma flecha, $I_{\mathrm{HTLS}}>I_{\mathrm{ACSR}}$. Esa comparación térmica es el enunciado que se usa bajo el folleto técnico 244 de CIGRE.
+
+\textbf{Doctrina 12 --- reducción multiescala de Th\'evenin/Norton.} Desde el elemento, pasando por la subestación, el anillo y la frontera nacional, cada interior eliminado obedece la reducción de Kron--Ward
+\begin{equation}
+\mathbf{Y}_{\beta\beta}^{\mathrm{eq}} = \mathbf{Y}_{\beta\beta} - \mathbf{Y}_{\beta\alpha}\, \mathbf{Y}_{\alpha\alpha}^{-1}\, \mathbf{Y}_{\alpha\beta},
+\label{eq:matrioshka}
+\end{equation}
+aplicada desde los laterales condensados de 69~kV hasta los bornes de frontera retenidos de la Sección~\ref{sub:reduction}, que permanecen a los 69~kV medidos.
+
+\textbf{Doctrina 14 --- fronteras territoriales y la HBCF.} En un puerto de frontera los enunciados de Norton y de Th\'evenin son $I_p=Y_p V_p+I_N$ y $V_p=Z_p I_p+E_{\mathrm{th}}$. Los barridos directo e inverso se encuentran en ese puerto, y el digest del bloque $h_e=\mathrm{SHA512}(\mathrm{canon}(\mathrm{block}))$ sella la frontera. Los cuatro macrodominios de la Figura~\ref{fig:topologia142} son la agrupación eléctrica de las fronteras $\Gamma$ de la Ley 368-22.
+
+\subsection{Reconciliación topológica}
+\label{sub:crosswalk}
+
+La Tabla~\ref{tab:crosswalk} enuncia las poblaciones del censo físico y las del modelo de cómputo una junto a la otra. Las dos columnas son objetos distintos.
+
+\begin{table}[!t]
+\centering
+\caption{Reconciliación del censo físico con el modelo de cómputo SENI-142.}
+\label{tab:crosswalk}
+\begin{tabular}{p{0.30\columnwidth}p{0.62\columnwidth}}
+\toprule
+Objeto del censo & Lectura del modelo de cómputo \\
+\midrule
+171 recintos cercados & 112 subestaciones de transporte en 345/230/138~kV, más 59 recintos de distribución y media tensión en 34.5/13.8~kV retirados por la reducción \\
+205 barras físicas & 115 barras de masa (6 a 345~kV, 3 a 230~kV, 106 a 138~kV) más 27 bornes de frontera de 69~kV retenidos, iguales a 142 nodos de cómputo \\
+482 ramas no reducidas & 135 líneas de transmisión retenidas, más 58 transformadores del modelo de cómputo, más 289 ramas radiales y de distribución condensadas \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Las catorce ramas transformadoras 138/69~kV de la Tabla~\ref{tab:cuadro51} alimentan esos 27 bornes de frontera. Un recinto puede presentar varias bahías, una barra doble o un transformador de tres devanados que comparte una sola interfaz de frontera, de modo que el número de ramas y el número de bornes no coinciden. Los 58 transformadores del modelo de cómputo siguen siendo las aristas de transformador dentro de la admitancia resuelta. No son el inventario de 68 ramas de devanado.
+
+\subsection{Inventario de devanados de transmisión y tabla reducida de transporte}
+\label{sub:inventory}
+
+La Tabla~\ref{tab:cuadro51} es el inventario de devanados de transmisión: 68 ramas cuyos dos devanados se sitúan ambos en tensión de transmisión. Es una población distinta de los 58 transformadores de potencia del modelo de cómputo condensado. Esas 58 ramas son las aristas de transformador que permanecen dentro de la admitancia resuelta de 142 barras. Las 68 ramas cuentan cada par de devanados de nivel de transmisión del levantamiento del patrimonio, incluido el secundario de 34.5~kV que la reducción de Kron retira de la incógnita nodal.
+
+\begin{table}[!t]
+\centering
+\caption{Inventario de devanados de transmisión: 68 ramas con ambos devanados en tensión de transmisión. Los porcentajes son de este inventario.}
+\label{tab:cuadro51}
+\begin{tabular}{lrr}
+\toprule
+Par de devanados & Ramas & Parte \\
+\midrule
+138/34.5~kV & 40 & 58.8\% \\
+138/69~kV & 14 & 20.6\% \\
+69/34.5~kV & 7 & 10.3\% \\
+230/34.5~kV & 3 & 4.4\% \\
+345/138~kV & 2 & 2.9\% \\
+345/230~kV & 1 & 1.5\% \\
+230/138~kV & 1 & 1.5\% \\
+\midrule
+Total & 68 & 100\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La potencia entra por los corredores de 345~kV --- Punta Catalina, Julio Sauri, Bonao, Guerra y el circuito norte Manzanillo--El Naranjo --- y se releva hacia abajo. Las dos ramas de 345/138~kV (2.9\%) y la única rama de 345/230~kV (1.5\%) son los caminos de reducción desde el troncal de 345~kV, de modo que la pérdida de cualquiera de ellos traslada el flujo de corredor no entregado al escalón que sobrevive. La capa de 230~kV es delgada: una rama de 230/138~kV (1.5\%) y tres ramas de 230/34.5~kV (4.4\%) absorben las inyecciones de Quisqueya y de Pueblo Viejo en el troncal de 138~kV o en la entrega local. La absorción de la carga ocurre en el troncal de 138~kV. Cuarenta ramas de 138/34.5~kV, el 58.8\% del inventario, entregan la mayor parte de la potencia hacia la distribución, y catorce ramas de 138/69~kV (20.6\%) alimentan los bornes de frontera retenidos que dibuja la Figura~\ref{fig:topologia142}. Las siete ramas de 69/34.5~kV (10.3\%) son la entrega residual de subtransmisión. El relevo de un corredor de tensión superior es absorción en el devanado siguiente. No cambia el número de barras resueltas. La parte 58.8\% es la parte de las ramas 138/34.5~kV dentro de estas 68 ramas.
+
+La Tabla~\ref{tab:buses142} enumera los 115 patios de transporte con su tensión nominal medida, restringida a 345, 230 y 138~kV, con el macrodominio de la Ley 368-22 de cada patio. La cardinalidad resuelta es $142=115+27$. Los 27 bornes retenidos son puertos de 69~kV de los devanados 138/69~kV. Se dibujan en la Figura~\ref{fig:topologia142} y no reciben una tensión de transporte que no tienen. No aparecen coordenadas crudas de dibujo.
+
+% Tabla: balance transaccional regional (blindaje R3, EJE 3).
+% Flotante situado en la fuente antes de tab:buses142 para que el orden de
+% flotantes de la misma clase lo coloque en una página de texto en el formato
+% a dos columnas, en lugar de vararlo al final del vaciado.
+\begin{table}[!t]
+\centering
+\caption{Balance Transaccional Regional de los Cuatro Macrodominios (Ley 368-22) en el Estado de Punta de Referencia. Los intercambios netos cierran sobre el corte $\Gamma$ ($\Sigma = 0$); las pérdidas internas de red están embebidas en las inyecciones de frontera de los dominios exportadores.}
+\label{tab:regbalance}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrl@{}}
+\toprule
+\textbf{Macrodominio} & \textbf{Dem.\ (MW)} & \textbf{Gen.\ (MW)} & \textbf{Neto (MW)} & \textbf{Rol} \\
+\midrule
+$\Omega_{\mathrm{Metro}}$ & 1,645 & 250 & $-1{,}395$ & Importación \\
+$\Omega_{\mathrm{Sur}}$ & 520 & 1,450 & $+930$ & Exportación \\
+$\Omega_{\mathrm{Este}}$ & 680 & 1,100 & $+420$ & Exportación \\
+$\Omega_{\mathrm{Norte}}$ & 605 & 650 & $+45$ & Balance local \\
+\midrule
+$\Sigma$ & 3,450 & 3,450 & $0$ & Balanceado \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% Tabla de transporte en tres grupos. Tres columnas lógicas, repetidas. Sin coordenadas crudas.
+\begin{table*}[!p]
+\centering
+\caption{Barras de transporte con tensión nominal medida de 345, 230 o 138~kV (115 recintos), ordenadas por macrodominio. Las mismas tres columnas --- subestación o barra, kV nominal y macrodominio o corredor de enlace de la Ley 368-22 --- se repiten en tres grupos paralelos para ocupar una sola página de flotante. El conjunto resuelto tiene 142 nodos: estos 115 patios más 27 bornes de frontera retenidos de los devanados 138/69~kV, que conservan sus 69~kV medidos y aparecen en la Figura~\ref{fig:topologia142}. No se imprimen coordenadas crudas de dibujo.}
+\label{tab:buses142}
+\resizebox{\textwidth}{!}{%
+{\fontsize{6}{7}\selectfont
+\setlength{\tabcolsep}{1.5pt}
+\renewcommand{\arraystretch}{0.88}
+\begin{tabular}{@{}lrl@{\hspace{3.5pt}}|@{\hspace{3.5pt}}lrl@{\hspace{3.5pt}}|@{\hspace{3.5pt}}lrl@{}}
+\toprule
+\textbf{Subestación / barra} & \textbf{kV} & \textbf{Macrodominio / corredor} & \textbf{Subestación / barra} & \textbf{kV} & \textbf{Macrodominio / corredor} & \textbf{Subestación / barra} & \textbf{kV} & \textbf{Macrodominio / corredor} \\
+\midrule
+NAGUA 2 & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Nordeste} & AGUACATE & 138 & \makecell[l]{$\Omega_2$ Sur\\Del Valle} & QUISQUEYA 2 & 230 & \makecell[l]{$\Omega_3$ Este\\Higuamo} \\
+PAYITA & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Nordeste} & PALOMINO & 138 & \makecell[l]{$\Omega_2$ Sur\\Del Valle} & SAN PEDRO BIOENERGY & 138 & \makecell[l]{$\Omega_3$ Este\\Higuamo} \\
+PIMENTEL & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Nordeste} & SAN JUAN 2 & 138 & \makecell[l]{$\Omega_2$ Sur\\Del Valle} & SIBA & 138 & \makecell[l]{$\Omega_3$ Este\\Higuamo} \\
+PLAYA DORADA & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Nordeste} & BARAHONA CARBON & 138 & \makecell[l]{$\Omega_2$ Sur\\Enriquillo} & SPM & 138 & \makecell[l]{$\Omega_3$ Este\\Higuamo} \\
+PUERTO PLATA 2 & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Nordeste} & CRUCE DE CABRAL 2 & 138 & \makecell[l]{$\Omega_2$ Sur\\Enriquillo} & SPM 2 & 138 & \makecell[l]{$\Omega_3$ Este\\Higuamo} \\
+RIO SAN JUAN & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Nordeste} & Jimaní & 138 & \makecell[l]{$\Omega_2$ Sur\\Enriquillo} & SULTANA DEL ESTE & 138 & \makecell[l]{$\Omega_3$ Este\\Higuamo} \\
+S.F.M. & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Nordeste} & LA GALLERA & 138 & \makecell[l]{$\Omega_2$ Sur\\Enriquillo} & CUMAYASA & 138 & \makecell[l]{$\Omega_3$ Este\\Yuma} \\
+SALCEDO & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Nordeste} & MATAFONGO & 138 & \makecell[l]{$\Omega_2$ Sur\\Enriquillo} & EL SEIBO & 138 & \makecell[l]{$\Omega_3$ Este\\Yuma} \\
+SAN FELIPE & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Nordeste} & PARAISO & 138 & \makecell[l]{$\Omega_2$ Sur\\Enriquillo} & EL SOCO & 138 & \makecell[l]{$\Omega_3$ Este\\Yuma} \\
+Samaná & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Nordeste} & PEDERNALES & 138 & \makecell[l]{$\Omega_2$ Sur\\Enriquillo} & Higüey & 138 & \makecell[l]{$\Omega_3$ Este\\Yuma} \\
+Sánchez & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Nordeste} & BAYASOL & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & LA ROMANA & 138 & \makecell[l]{$\Omega_3$ Este\\Yuma} \\
+AGUA CLARA & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Noroeste} & CALABAZA & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & MIRASOL & 138 & \makecell[l]{$\Omega_3$ Este\\Yuma} \\
+Dajabón & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Noroeste} & EL BRISAL & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & ARROYO HONDO & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+ESPERANZA & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Noroeste} & GUZMANCITO & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & BOCA CHICA & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+GUANILLO & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Noroeste} & ITABO & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & CNP & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+GUAYUBIN & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Noroeste} & ITABO TG & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & DAJAO & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+LA ISABELA & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Noroeste} & JIGUEY & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & EMBAJADOR & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+MANZANILLO POWER LAND & 345 & \makecell[l]{$\Omega_1$ Norte\\Cibao Noroeste} & JULIO SAURI & 345 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & HAINA & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+MONTE CRISTI & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Noroeste} & JULIO SAURI & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & HAINAMOSA & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+Monción & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Noroeste} & KM 15 DE AZUA & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & HERRERA & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+SAJOMA & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Noroeste} & MATRISOL & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & LOS MINA & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+SANTIAGO RODRIGUEZ & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Noroeste} & PALENQUE & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & LOS MINA 5 & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+VALVERDE MAO & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Noroeste} & PERAVIA & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & LOS MINA 6 & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+CANABACOA & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Norte} & PIZARRETE & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & LOS MINA 7 & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+EL NARANJO & 345 & \makecell[l]{$\Omega_1$ Norte\\Cibao Norte} & PUNTA CATALINA & 345 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & LOS ORIGENES & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+EL NARANJO & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Norte} & PUNTA CATALINA & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & LOS PRADOS & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+LOPEZ ANGOSTURA & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Norte} & SAN CRISTOBAL NORTE & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & MATADERO & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+MOCA & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Norte} & SANTANASOL & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & METALDOM & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+NAVARRETE 2 & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Norte} & VALDESIA & 138 & \makecell[l]{$\Omega_2$ Sur\\Valdesia} & METROPOLITANO & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+NIBAJE & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Norte} & CIP LA LUISA & 138 & \makecell[l]{$\Omega_3$ Este\\Higuamo} & PALAMARA & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+TAVERA & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Norte} & COASTAL & 138 & \makecell[l]{$\Omega_3$ Este\\Higuamo} & POWERSHIP KPS01 & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+ZF SANTIAGO & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Norte} & ENERGAS 4 & 138 & \makecell[l]{$\Omega_3$ Este\\Higuamo} & POWERSHIP KPS26 & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+BONAO 2 & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Sur} & GIRASOL & 138 & \makecell[l]{$\Omega_3$ Este\\Higuamo} & POWERSHIP KPS60 & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+BONAO 3 & 345 & \makecell[l]{$\Omega_1$ Norte\\Cibao Sur} & GUERRA & 345 & \makecell[l]{$\Omega_3$ Este\\Higuamo} & TIMBEQUE 2 & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+BONAO 3 & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Sur} & GUERRA & 138 & \makecell[l]{$\Omega_3$ Este\\Higuamo} & UASD & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+COTOPERI & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Sur} & HATO MAYOR 2 & 138 & \makecell[l]{$\Omega_3$ Este\\Higuamo} & VILLA DUARTE & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+FALCONDO & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Sur} & JUAN DOLIO & 138 & \makecell[l]{$\Omega_3$ Este\\Higuamo} & VILLA MELLA & 138 & \makecell[l]{$\Omega_4$ Metropolitano\\Ozama-Metropolitana} \\
+MONTE RIO & 138 & \makecell[l]{$\Omega_1$ Norte\\Cibao Sur} & MATA DE PALMA 2 & 138 & \makecell[l]{$\Omega_3$ Este\\Higuamo} &  & &  \\
+PVDC & 230 & \makecell[l]{$\Omega_1$ Norte\\Cibao Sur} & QUISQUEYA 1 & 230 & \makecell[l]{$\Omega_3$ Este\\Higuamo} &  & &  \\
+\bottomrule
+\end{tabular}}}
+\end{table*}
+
+\subsection{La cláusula modular: instanciación bajo la Ley 368-22}
+\label{sub:clause}
+
+La formulación invariante se liga a una realidad de referencia mediante la siguiente cláusula canónica de cierre, citada verbatim:
+\begin{quote}
+\itshape ``En este benchmark de referencia, la carga estructural se instancia con la red insular de transporte de 142 barras de la República Dominicana, particionada en diez microrredes territoriales soberanas bajo el marco legal de la Ley No. 368-22 de Ordenamiento Territorial, Uso de Suelo y Asentamientos Humanos.'' (traducción; el original inglés es la cláusula contractual)
+\end{quote}
+
+La cláusula hace tres cosas a la vez. Fija el alcance de la reclamación (un país, completo, no muestreado); liga la partición al estatuto nacional de planificación, de modo que cada región computacional es también una región de gobernanza; y marca la cláusula territorial como reemplazable --- cualquier otro sistema insular o territorial puede instanciarse sustituyendo la cláusula, sin tocar la formulación invariante.

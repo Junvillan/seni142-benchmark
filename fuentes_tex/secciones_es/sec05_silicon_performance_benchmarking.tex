@@ -1,0 +1,114 @@
+% =========================================================================
+% secciones_es/sec05_silicon_performance_benchmarking.tex — Sección V, español
+% =========================================================================
+\section{Rendimiento computacional, exactitud y benchmarking numérico}
+\label{sec:benchmarking}
+
+\subsection{Validez de la medición mediante el determinismo del gemelo digital}
+\label{sub:determinism}
+
+La Sección~\ref{sub:lifecycle} estableció que la promoción al estado de producción es atómica y bit a bit idéntica a un Golden Master sellado con SHA-512. Las métricas que siguen describen ese estado de software probado y los artefactos de validación publicados. El Algoritmo~\ref{alg:n1_seal} presenta el pipeline de resiliencia y sellado usado para producir el registro informado.
+
+% ---- Algoritmo 2 ----
+\begin{algorithm}[!t]
+\caption{Barrido de resiliencia $N$--$1$ con bootstrap de bloques de 24 horas y sellado SHA-512}
+\label{alg:n1_seal}
+\begin{algorithmic}[1]
+\Require estado sellado del solver $\Sigma$, catálogo de contingencias $\mathcal{C}$
+         ($|\mathcal{C}| = 215$), horizonte $\mathcal{H}$ (87,360 h; 520 ciclos semanales)
+\Ensure registro de resiliencia $\mathcal{R}$, sello $\sigma$
+\State $\mathcal{R} \gets \emptyset$
+\For{$c \in \mathcal{C}$} \Comment{orden determinista, fail-closed}
+   \For{$b \in \text{bootstrap}(\mathcal{H}, 24\,\mathrm{h})$} \Comment{bloques de día completo}
+      \State inyectar la contingencia $c$ sobre el bloque $b$
+      \State ejecutar el Algoritmo 1 en cada hora del bloque
+      \State registrar $\rho$, $\kappa_2$, márgenes de tensión y de carga de rama en $\mathcal{R}[c, b]$
+   \EndFor
+\EndFor
+\State agregar los márgenes sobre la envolvente de bootstrap por contingencia
+\State $\sigma \gets \mathrm{SHA512}\text{-chain}(\Sigma, \mathcal{C}, \mathcal{R})$ \Comment{manifiesto desacoplado}
+\State \Return $\mathcal{R}$, $\sigma$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Velocidad de convergencia y memoria}
+\label{sub:speed}
+
+Sobre hardware comercial estándar (un portátil de 8 hilos de la clase Dell Inspiron 5570), el solver particionado converge cada estado horario de AC de la red nacional completa de 142 barras en \textbf{2.65~ms}, con una huella residente de \textbf{473~MiB} para el horizonte de validación. El horizonte comprende 87,360 horas operativas consecutivas correspondientes a 520 semanas completas de 168 horas (3,640 días de lunes a domingo) dentro del período 2016--2025, preservando la ciclicidad semanal del despacho; los 13 días civiles excluidos de la década (6 días huérfanos de borde más los 7 días de la semana festiva) se omiten por construcción (Sección~\ref{sub:dataprotocol}). El barrido completo se termina en minutos en este equipo, en consistencia con las asíntotas $O(N^3)$-a-$O(\sum_k N_k^3 + N_B^3)$ de la Proposición~\ref{prop:complexity} y con la práctica dispersa de reducción de relleno \cite{george1973}, \cite{saad2003}. La resolución de 2.65~ms mide cribado estático de estados AC; no modela el despeje dinámico de faltas, la respuesta de protecciones ni el control en lazo cerrado. El rendimiento por estado permite barridos estáticos multiescenario de gran volumen bajo las condiciones de modelo y hardware indicadas.
+
+Estas mediciones caracterizan el costo computacional de las comprobaciones de factibilidad AC en régimen permanente. Permiten repetir barridos de parámetros, bootstrap y contingencias en el hardware descrito; no demuestran el despliegue de un sistema dinámico de protección o de control en lazo cerrado.
+
+\subsection{Exactitud y condicionamiento numérico}
+\label{sub:accuracy}
+
+Tres cantidades medidas acotan la fidelidad numérica de la solución condensada. Primera, el residuo fasorial de acople de frontera --- el desajuste entre el estado recuperado por Schur y un estado de referencia independiente --- mide $\delta = 6.35 \times 10^{-12}$~pu a lo largo del horizonte de validación, es decir, el estado recuperado por condensación y la referencia monolítica concuerdan hasta un residuo que se sitúa dos órdenes de magnitud por encima del piso de redondeo en doble precisión escalado por el condicionamiento del caso base ($\varepsilon_{\mathrm{mach}}\kappa_2 \approx 8 \times 10^{-14}$, la firma de dos trayectorias de factorización distintas) y más de tres órdenes por debajo de la tolerancia de parada de $10^{-8}$~pu de la cascada. Segunda, el controlador sigmoidal de límites reactivos de la Sección~\ref{sub:regularization} contribuye un error de regularización de $5.32 \times 10^{-12}$ mientras elimina el ciclo límite PV--PQ. Tercera, el número de condición espectral $\kappa_2$ de cada sistema de frontera reducido se monitorea y archiva; la maquinaria de umbrales de gobernanza se validó sobre referencias sintéticas antes del despliegue nacional (la Jacobiana de $22\times22$ del IEEE 14 barras se clasifica MARGINAL en $\kappa_2 = 117.7823$), de modo que una degradación del condicionamiento en la red real se detectaría contra una escala calibrada y no contra una ad-hoc.
+
+\subsection{Resiliencia a contingencias sobre la topología de referencia}
+\label{sub:contingencies}
+
+La batería de resiliencia evalúa el catálogo $N-1$ de 215 contingencias --- la lista propia de salidas del operador de transmisión, cribada bajo la doctrina de selección automática de ramas de \cite{ejebe1979} --- sobre la topología de referencia, concentrada en el anillo metropolitano de 138~kV cuyas distancias de corredor (70.5~km, 50.0~km, 22.1~km) fijan la geometría eléctrica, como muestra la Figura~\ref{fig:topologia_seni}. El disparo del complejo de Punta Catalina ($2 \times 376 = 752$~MW), la mayor contingencia común del sistema, se resuelve bajo el criterio preventivo de la Sección~\ref{sub:n1}: la pérdida de potencia se cubre mediante el redespacho de la reserva rodante co-optimizada ($\sum r_g^+ \ge 752$~MW), preservando la factibilidad de tensión y flujo de potencia en estado estacionario post-evento sin deslastre de carga ($P_{\mathrm{shed}} = 0$). El registro de anomalías de la campaña también documenta depresión severa de tensión con agotamiento de margen reactivo --- $\lambda_{\min}(\mathbf{J}_R) < 10^{-2}$ sobre el bloque reactivo reducido \eqref{eq:jr} --- en el lazo JSAURI--Palamara--Haina de 138~kV bajo estados $N-1$ específicos; estos hallazgos se añadieron al catálogo de contingencias y activan la bisección de soporte de shunts de la Sección~\ref{sub:n1}. Todos los márgenes se reportan bajo la envolvente de bootstrap de bloques de 24 horas del Algoritmo~\ref{alg:n1_seal}.
+
+El pase de admisión de cuatro cláusulas es un resultado numérico reportable, no una afirmación narrativa. La Tabla~\ref{tab:worstcase} informa, para los ocho elementos más severos del catálogo --- ordenados por margen de tensión post-evento y por carga térmica ---, la fila completa de despacho y verificación: flujo o generación pre-evento, peor tensión post-evento, peor carga de rama post-evento, desviación de la barra de referencia tras el despliegue de reserva, reserva co-optimizada redespachada y carga no servida. Las filas de Punta Catalina merecen énfasis. El disparo unitario (GEN-PC1, 376~MW) es la peor $N-1$ unitaria; el disparo a nivel de complejo (GEN-PC-COMPLEX, $2 \times 376 = 752$~MW) es el mayor evento de modo común de la isla, cubierto preventivamente por el dimensionamiento de reserva de \eqref{eq:reserve}; ambas filas cierran con toda barra retenida dentro de $[0.95, 1.05]$~pu, peor carga de rama por debajo del 92.4\% de la capacidad térmica, desviación de barra de referencia acotada y carga no servida nula. 
+
+LINE-138-CUM-SPMI es el corredor cuya falla en servicio de 2025 está documentada en el registro hemerográfico nacional \cite{listin2025}; su fila del catálogo demuestra que la red de transmisión modelada soporta la pérdida de ese circuito sin deslastre ($P_{\mathrm{shed}} = 0$) bajo factibilidad AC estática. Este desacople analítico entre capacidad de transporte estática y colapsos nacionales históricos está corroborado por registros periciales primarios: investigaciones técnicas independientes del colapso del 11 de noviembre de 2025 \cite{uasdInformeSPM1_2025} establecieron que el apagón fue iniciado por maniobras de mantenimiento en S/E SPM1, la cual carecía de protección diferencial de barras, disparando una cascada descoordinada de protecciones de distancia que desconectó 10 circuitos de transmisión en 680~ms; el informe pericial ejecutivo del Instituto de Energía de la Universidad Autónoma de Santo Domingo (IEUASD) \cite{uasdInformeSPM1_2025} y del Operador del Sistema (registro horario de telemetría de OC-SENI, ventana 13:15--13:30 \cite{ocseniScadaP15_2025}) registran una frecuencia media de la ventana de 15 minutos (P15) de 55.11~Hz durante el colapso, con el 99.89\% de la ventana fuera de la banda operativa normal. De manera análoga, el apagón general del 16 de mayo de 2015 (1,782.65~MW desconectados) se originó en una falla en barraje de 138~kV en Itabo Gas agravada por fallo de interruptor con tiempo de despeje superior a $10\times$ el nominal \cite{listinItaboGas_2015}. El benchmark empírico confirma que el patrimonio de transmisión dominicano posee suficiente margen térmico y de tensión post-evento bajo $N-1$; las vulnerabilidades históricas corresponden a fallas transitorias, dinámicas y de coordinación de protecciones que pertenecen estrictamente al dominio dinámico.
+
+Las dos filas más escrutadas admiten una lectura física explícita. Para el corredor doble circuito PALA--SCNU (conductor ACSR 795~kcmil Drake, hilado 26/7, 988~A continuos a $75^{\circ}$C, $S^{\max} = 236.2$~MVA por circuito y 472.4~MVA para el corredor agregado), el estado pre-evento porta 412.7~MW --- 206.4~MW por circuito, una carga inicial del 87.4\%; tras el disparo de un circuito, el gemelo sobreviviente asume 206.7~MW, el 87.6\% reportado, mientras el excedente se redistribuye por la malla metropolitana: el enlace JSAURI--SCNU de 230~kV y 50.0~km absorbe unos 142~MW (carga del 83.3\%) y el circuito JSAURI--PALA de 138~kV y 70.5~km absorbe unos 64~MW (89.2\%), sin violación térmica en régimen permanente. Para el disparo a nivel de complejo de Punta Catalina, el redespacho de reserva co-optimizada reemplaza exactamente la inyección perdida ($\Delta P_g = 752.0$~MW, desplegada en unidades térmicas, hidroeléctricas y renovables geográficamente remotas), de modo que la desviación residual en la barra de referencia es físicamente el incremento de pérdidas de transporte por reenrutar 752~MW a través del patrimonio de 142 barras: $\Delta P_{\mathrm{slack}} = \Delta P_{\mathrm{loss}} = +24.8$~MW, un incremento del 0.72\% sobre la demanda nacional de referencia de 3,450~MW. En la fila LINE-345-PC-JS, el déficit de 752~MW cierra exactamente mediante dos variables de despacho separadas de la formulación multivector: $\Delta P_g = 687.40$~MW de redespacho térmico/hidráulico convencional (Quisqueya~I--II 180.0, AES Andr\'es CC 145.0, Estrella del Mar~III 110.0, Barahona carbón/CEPP 95.0, hidráulicas Valdesia--Tavera 82.4, reserva solar Monte Plata 75.0) y $\Delta P_{\mathrm{storage}} = 58.50$~MW de descarga rápida de almacenamiento (bombeo reversible Sabaneta/Dos Bocas 35.0~MW; BESS metropolitano 23.5~MW), con el residuo $\Delta P_{\mathrm{slack}} = +6.10$~MW de pérdidas marginales de transporte cerrando el balance en exactamente 752.00~MW (error nulo). El ratio de pérdidas resultante del 0.89\% --- frente al 2.5--3.3\% de los redespachos puramente remotos --- se explica por la inyección del almacenamiento en proximidad eléctrica directa del anillo metropolitano de carga, evitando el tránsito por las troncales de larga distancia de 345/230~kV. La convergencia Newton--Raphson se verificó a $\|\Delta P, \Delta Q\|_{\infty} \le 10^{-8}$~pu en a lo sumo cuatro iteraciones por estado, con balance nodal exacto, dentro de la salida de validación sellada de la suite canónica.
+
+% ---- Tabla VI: contingencias críticas peor caso (blindaje R3, EJE 4) ----
+\begin{table*}[!t]
+\caption{Contingencias Críticas Peor Caso: Informe de Despacho y Verificación Estática Post-Evento. Selección de los ocho elementos más severos del catálogo por margen de tensión post-evento y carga térmica; el registro completo de 215 elementos se archiva en la salida de validación sellada de la suite canónica de 142 barras. Los flujos pre-evento corresponden al estado de punta de referencia; tensiones y cargas son valores post-evento peor caso sobre barras retenidas y ramas sobrevivientes.}
+\label{tab:worstcase}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4.5pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lllrrrrrr@{}}
+\toprule
+\textbf{ID Contingencia} & \textbf{Activo} & \textbf{Tipo} &
+\textbf{Flujo/gen} & \textbf{min $V_i$} & \textbf{máx $|S|/S_{\max}$} &
+\textbf{$\Delta P_{\mathrm{slack}}$} & \textbf{$\Delta P_g$} & \textbf{$P_{\mathrm{shed}}$} \\
+ & & & \textbf{pre-evento (MW)} & \textbf{(pu)} & \textbf{(\%)} &
+\textbf{(MW)} & \textbf{(MW)} & \textbf{(MW)} \\
+\midrule
+GEN-PC1 & Punta Catalina Unidad 1 (376 MW) & $N-1$ unitaria & 376.0 & 0.9612 & 91.7 & $+12.4$ & 376.0 & 0.00 \\
+GEN-PC-COMPLEX & Complejo Punta Catalina ($2 \times 376$ MW) & Modo común & 752.0 & 0.9581 & 92.4 & $+24.8$ & 752.0 & 0.00 \\
+LINE-345-PC-JS & Troncal 345 kV Punta Catalina--JSAURI & $N-1$ de línea & 748.3 & 0.9703 & 89.2 & $+6.1$ & 687.4 & 0.00 \\
+XFMR-345-138-JS & Banco autotransformador JSAURI 345/138 kV (600 MVA) & $N-1$ de transformador & 521.7 & 0.9748 & 88.5 & $+4.7$ & 186.2 & 0.00 \\
+LINE-138-CUM-SPMI & 138 kV SPM--Cumayasa (falla en servicio 2025 \cite{listin2025}) & $N-1$ de línea & 172.1 & 0.9802 & 84.1 & $+2.9$ & 96.4 & 0.00 \\
+CORR-138-PALA-SCNU & Corredor doble circuito 138 kV PALA--SCNU, 22.1 km (pérdida de un circuito) & $N-1$ de corredor & 206.4 & 0.9755 & 87.6 & $+5.2$ & 158.3 & 0.00 \\
+LINE-230-JS-SCNU & Enlace 230 kV JSAURI--SCNU & $N-1$ de línea & 356.2 & 0.9790 & 83.3 & $+3.8$ & 141.7 & 0.00 \\
+GEN-AES-ANDRES & Ciclo combinado AES Andr\'es (319 MW) & $N-1$ unitaria & 319.0 & 0.9846 & 78.5 & $+8.3$ & 319.0 & 0.00 \\
+\midrule
+\multicolumn{9}{@{}p{0.98\textwidth}@{}}{\scriptsize Todas las filas satisfacen el pase de admisión de cuatro cláusulas de la Sección~\ref{sub:n1}: convergencia $\|\Delta P, \Delta Q\|_{\infty} \le 10^{-8}$~pu; $V_i \in [0.95, 1.05]$~pu; $|S_\ell| \le S_\ell^{\max}$; $|\Delta P_{\mathrm{slack}}| \le \varepsilon_{\mathrm{slack}}$ con $P_{\mathrm{shed}} = 0$. $\Delta P_g$ es la reserva co-optimizada desplegada tras el evento; $\Delta P_{\mathrm{slack}}$ es la desviación residual de la barra de referencia tras ese despliegue. Estados de verificación estática de factibilidad AC post-contingencia computados sobre el modelo canónico completo de 142 barras de transmisión bajo el despacho multitemporal base. El disparo GEN-PC-COMPLEX ($2 \times 376 = 752$~MW) representa el caso de referencia para el dimensionamiento de reserva rodante ($R^{\mathrm{req}}$), externo al catálogo de 215 salidas simples ($N-1$). Para el corredor doble circuito PALA--SCNU, el flujo pre-evento es el portado por el circuito disparado (206.4~MW) dentro de un flujo agregado del corredor de 412.7~MW; la carga post-evento reportada (87.6\%) corresponde al circuito sobreviviente y a los enlaces adyacentes, dentro de las capacidades térmicas reales de conductor. Conductor: ACSR 795~kcmil Drake (26/7), 988~A continuos a $75^{\circ}$C, $S^{\max} = 236.2$~MVA por circuito (472.4~MVA agregados).}
+\end{tabular}}%
+\end{table*}
+
+% ---- Figura 6 ----
+\begin{figure*}[!t]
+\centering
+\resizebox{0.85\textwidth}{!}{\input{sec03_fig_topologia_seni_tikz_es}}
+\caption{Triángulo real de subtransmisión del anillo de 138 kV del SENI. JSAURI--PALA--SCNU con longitudes geodésicas de línea de 70.5, 50.0 y 22.1 km, el refuerzo JSAURI--SCNU de 230 kV (discontinuo), la barra de transmisión de 345 kV desacoplada a la izquierda como barra de referencia ($V = 1.02$ pu) recibiendo Punta Catalina ($2 \times 376$ MW), el hub renovable de SCNU (58.9 MW hidro, 95 MW solar, 34 MW eólica) y el bloque prospectivo de electrólisis PEM de 50 MW (no operativo, 2026, con asterisco), y el centro de carga PALA (1,645 MW agregados). El catálogo $N-1$ de 215 contingencias de la batería de validación está definido sobre esta topología.}
+\label{fig:topologia_seni}
+\end{figure*}
+
+% ---- Tabla III ----
+\begin{table*}[!t]
+\caption{Rendimiento computacional y métricas de validación del benchmark SENI-142}
+\label{tab:telemetry}
+\centering
+\footnotesize
+\begin{tabular}{@{}p{0.30\textwidth} p{0.18\textwidth} p{0.34\textwidth}@{}}
+\toprule
+\textbf{Métrica} & \textbf{Valor} & \textbf{Condición} \\
+\midrule
+Tiempo de convergencia por estado horario nacional de AC & 2.65 ms & Modelo completo de 142 barras, portátil de consumo (8 hilos) \\
+Memoria residente, horizonte completo & 473 MiB & 87,360 estados horarios (520 semanas completas) \\
+Residuo fasorial de acople de frontera $\delta$ & $6.35 \times 10^{-12}$ pu & Reconstrucción de Schur vs.\ estado de referencia \\
+Error de regularización de límites reactivos & $5.32 \times 10^{-12}$ & Controlador sigmoidal, inyección jacobiana analítica \\
+Capacidad de cribado estático (EMS) & 2.65~ms / estado & Dentro del ciclo de estimación de estado EMS de 1--5~s; cribado multiescenario de gran volumen \\
+Catálogo de contingencias & 215 escenarios $N-1$ & Campaña de banco de ensayo de la Fase 2 (verificación estática post-evento) \\
+Contraste espectral (IEEE 14 barras, $22\times22$) & $\kappa_2 = 117.7823$ (MARGINAL) & Control de validez externa \\
+Mayor contingencia individual & Disparo de Punta Catalina, 752 MW & Factible en régimen permanente con redespacho de reserva ($P_{\mathrm{shed}} = 0$) \\
+\bottomrule
+\end{tabular}
+\end{table*}

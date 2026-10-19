@@ -1,0 +1,109 @@
+% =========================================================================
+% sec03_benchmark_seni142_topology.tex — Section III of the sealed master
+% sealed master paper_seni142_ieee_transactions_en.md; editorial injection pass 2026-10-17.
+% =========================================================================
+\section{The Dominican Republic SENI-142 Benchmark Topology}
+\label{sec:topology}
+
+\subsection{From 112 substations to 142 nodal buses}
+\label{sub:substations}
+
+The physical estate of the Dominican transmission system comprises approximately 112 fenced substations. The nodal model comprises exactly 142 buses. The difference is not noise; it is topology, and Figure~\ref{fig:jsauri} documents the rule on the nation's most consequential substation. A fenced substation is a real-estate object; a bus is a Kirchhoff object. Wherever a substation hosts two voltage levels joined by autotransformer banks, the two yards are electrically distinct nodes, coupled only through the transformer branch impedance. The Julio Sauri (JSAURI) estate is the canonical case: its 345~kV yard --- the receiving end of the trunk line that evacuates the Punta Catalina generating complex --- and its 138~kV regional yard are decoupled by the T1/T2 autotransformer banks, and each yard is one bus. Applying the rule uniformly over all strata --- 345, 230, and 138~kV bulk yards, plus 69~kV interfaces retained through the equivalents of Section~\ref{sub:reduction} --- yields exactly 142 nodal buses over 135 transmission lines and 58 power transformers.
+
+% ---- Figure 3 injection block (verbatim from the sealed master;
+%      resolved through \graphicspath{{figuras/}} in the host preamble) ----
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.88\textwidth]{fig_diagrama_1_jsauri_345_138.pdf}
+\caption{Kirchhoff decoupling at the Julio Sauri 345/138 kV substation. The 345 kV super-highway that evacuates the Punta Catalina complex ($2 \times 376$ MW) terminates in its own yard, decoupled by the impedance of the T1/T2 autotransformer banks from the regional 138 kV yard that feeds the San Crist\'obal corridor and the metropolitan ring. Wherever a transformation exists, the fenced estate yields two buses; modeled across all voltage strata, the network totals exactly 142 nodal buses.}
+\label{fig:jsauri}
+\end{figure*}
+
+\subsection{The bulk strata and the metropolitan 138 kV ring}
+\label{sub:strata}
+
+Three strategic substations articulate the system. \textbf{JSAURI} operates at two levels --- 345~kV and 138~kV --- and its 345~kV bus is the system slack at $V = 1.02\ \mathrm{pu}$, receiving the direct injection of \textbf{Punta Catalina}, the largest thermal plant in the country at $2 \times 376$~MW (752~MW, coal), evacuated by the 345~kV trunk. \textbf{PALA (Palamara)}, in the metropolitan region, is the principal load center with an aggregate modeled demand of 1,645~MW and local fuel-oil backup of three 10.77~MW units elevating from 13.8~kV. \textbf{SCNU} is the renewable integration hub of the southwest: 58.9~MW of hydroelectric generation, 95~MW of solar photovoltaics, and 34~MW of wind, all elevating from 13.8~kV. In addition, prospective modular assets designed for doctoral decarbonization expansion scenarios --- a 50~MW PEM electrolysis block at SCNU and 1,400~MW of modular nuclear PWR testbed units across JSAURI ($2 \times 400$~MW) and SCNU ($2 \times 300$~MW) --- are configured with \texttt{in\_service = false} in the baseline operational dataset (\texttt{seni\_real\_base}), ensuring that base simulation states remain strictly representative of the physical grid while preserving modular readiness for energy transition benchmarks. More than forty percent of the national load concentrates in the metropolitan Ozama region, served over a 138~kV ring whose redundancy is geometric: the JSAURI--PALA--SCNU triangle with line lengths of 70.5~km, 50.0~km, and 22.1~km, reinforced by a 230~kV JSAURI--SCNU tie. Any single circuit of the triangle can be lost with service carried by the remaining two --- the $N-1$ property that the resilience battery of Section~\ref{sub:contingencies} exercises systematically. The full geometry with real corridor distances is the reference zone of the economic proof (Section~\ref{sub:zonal}) and of the contingency catalog (Section~\ref{sub:contingencies}).
+
+The aggregate of 1,645~MW at PALA deserves an explicit physical reading, because a naive one --- a single 138~kV bus absorbing nearly half the national peak --- would be energetically inadmissible. In the model, PALA is the \emph{aggregated} load center of the metropolitan macro-domain: its 1,645~MW is distributed over the 28 metropolitan 138~kV substations of Table~\ref{tab:buses142}, with no modeled bus absorbing more than 120~MW, while approximately 250~MW of metropolitan generation supplies the domain locally. Table~\ref{tab:regbalance} states the transactional balance of the four macro-domains of Law 368-22 at the reference peak state: $\Omega_{\mathrm{Metro}}$ imports a net 1,395~MW across the HBCF border set $\Gamma$; $\Omega_{\mathrm{Sur}}$ exports $+930$~MW (Punta Catalina and the Valdesia--Enriquillo generation park); $\Omega_{\mathrm{Este}}$ exports $+420$~MW (Quisqueya, AES Andr\'es); and $\Omega_{\mathrm{Norte}}$ remains in local balance. The import is carried not by any single circuit but by a bundle of 345, 230, and 138~kV corridors whose aggregate thermal capacity exceeds 2,200~MVA; at the peak state the bundle operates at load factors of 63--72\%, so every post-contingency flow remains inside thermal limits under both $N$ and $N-1$ configurations (Section~\ref{sub:contingencies}).
+
+\subsection{Ten sovereign territorial microgrids}
+\label{sub:microgrids}
+
+Law 368-22 organizes the national territory into ten planning regions; the benchmark adopts them as its ten territorial microgrids and bundles them, for numerical condensation, into the four electrical macro-subdomains of the HBCF. Table~\ref{tab:microgrids} states the mapping and the representative anchors of each region as they appear in the operational record.
+
+% ---- Table I (verbatim content of the sealed master) ----
+\begin{table*}[!t]
+\caption{Territorial Microgrids of the SENI-142 Benchmark (Law 368-22) and Their Bundling Into the Four HBCF Macro-Subdomains}
+\label{tab:microgrids}
+\centering
+\footnotesize
+\begin{tabular}{@{}p{0.24\textwidth} l p{0.44\textwidth}@{}}
+\toprule
+\textbf{Territorial microgrid (planning region)} & \textbf{Macro-subdomain} & \textbf{Representative anchors in the operational record} \\
+\midrule
+Ozama-Metropolitana & $\Omega_{\mathrm{Metro}}$ & Palamara, Hainamosa, Herrera --- more than 40\% of national load \\
+Valdesia & $\Omega_{\mathrm{Sur}}$ & JSAURI, Punta Catalina (752 MW), Ban\'i--Yaguate solar corridor \\
+Higuamo & $\Omega_{\mathrm{Este}}$ & San Pedro de Macor\'is, Quisqueya plants, AES Andr\'es (GNL) \\
+Yuma & $\Omega_{\mathrm{Este}}$ & La Romana--Punta Cana tourist load corridor \\
+Del Valle & $\Omega_{\mathrm{Sur}}$ & El Valle multihub, reversible PHES 764 MW (Sabaneta / Dos Bocas) \\
+Enriquillo & $\Omega_{\mathrm{Sur}}$ & Barahona, Los Cocos and Larimar wind, Canoa solar \\
+Cibao Norte & $\Omega_{\mathrm{Norte}}$ & Canabacoa (Santiago), second load center \\
+Cibao Sur & $\Omega_{\mathrm{Norte}}$ & Pueblo Viejo mining load (Cotu\'i), Falcondo (Bonao) \\
+Cibao Nordeste & $\Omega_{\mathrm{Norte}}$ & Atlantic-coast thermal and wind (Puerto Plata) \\
+Cibao Noroeste & $\Omega_{\mathrm{Norte}}$ & Montecristi solar, Valverde--Mao, Dajab\'on border corridor \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Figure~\ref{fig:hbcf_schur} displays the resulting diakoptic map: four macro-subdomains $\Omega$ over the insular geography, the trunk borders $\Gamma$ (the 230/138~kV ties cut by Kron reduction), and the silicon key performance indicators of the condensed solve.
+
+% ---- Figure 4 injection block (verbatim from the sealed master;
+%      resolved through \graphicspath{{figuras/}} in the host preamble) ----
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_diagrama_2_schur_hbcf.pdf}
+\caption{Spatial HBCF diakoptic partitioning of the insular grid. The ten territorial microgrids of Law 368-22 bundle into four electrical macro-subdomains $\Omega$ (North/Cibao, South, East, Metropolitan); only the trunk borders $\Gamma$ --- the 230/138 kV ties cut by Kron reduction --- travel to the Schur complement $\mathbf{S} = \mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B}$, with block structure $\mathbf{A}, \mathbf{B}, \mathbf{C}, \mathbf{D}$ over the interior/border ordering. Silicon key performance indicators: 2.65 ms per national AC state, 473 MiB resident, over the standardized horizon of 520 complete weekly cycles (87,360 h; OC-SENI telemetry), with fasorial border-coupling residual $\delta = 6.35 \times 10^{-12}$ pu.}
+\label{fig:hbcf_schur}
+\end{figure*}
+
+\subsection{Data provenance and the boundary-state manifest}
+\label{sub:provenance}
+
+Physical substation footprints, topological bus connections, and geographical corridor
+trajectories are derived directly from the official single-line CAD blueprints maintained by the
+transmission system operator (ETED). The associated branch electrical parameters
+($R$, $X$, $B$, and MVA thermal ratings) and operational baseline setpoints are adopted from the
+official OC-SENI and ETED reference system datasets \cite{ocseni}, \cite{eted}, structured under
+the Common Information Model (CIM) conventions of IEC 61970 \cite{iec61970}. Power-quality-relevant
+quantities follow the measurement definitions of IEC 61000-4-30 \cite{iec61000} and IEEE Std 1459
+\cite{ieee1459}. Provenance thus runs unbroken from validated utility records and operator
+references to solver input to published benchmark figures.
+
+Every coupling term that reaches the master solver --- the $(P_g, Q_g)$ injections of the flexibility constellation of Section~\ref{sec:multivector} --- travels through a boundary-state manifest whose entries are chained and signed with SHA-512, so that the provenance of any injection can be verified post hoc against the sealed run. Provenance thus runs unbroken from operator archive \cite{ocseni}, \cite{eted} to solver input to published figure --- the property that distinguishes a benchmark from a screenshot.
+
+\subsection{The synthetic canon versus the measured island}
+\label{sub:canon}
+
+The scientific identity of SENI-142 is easiest to state by contrast. Table~\ref{tab:canon} places the synthetic canon beside the measured island along the axes that matter for reproducible science. Two of those axes deserve emphasis because they are invisible in parameter tables. The first is \emph{temporal depth}: a synthetic case has one operating point, or a handful of scenarios; SENI-142 has 87,360 consecutive archived hourly states --- 520 complete weekly cycles selected from the 2016--2025 archive --- so every statistical claim made on it can be resampled, bootstrapped, and falsified against a decade-scale record of realized weather, demand, and dispatch. The second is \emph{consequence}: nothing in a synthetic case has ever broken; every trunk line of the SENI carries an outage log, a maintenance history, and a price at which its loss has been paid. A benchmark that remembers being hit is a different scientific object from one that cannot.
+
+% ---- Table II (verbatim content of the sealed master) ----
+\begin{table*}[!t]
+\caption{The Synthetic Canon and the Measured Island}
+\label{tab:canon}
+\centering
+\footnotesize
+\begin{tabular}{@{}l p{0.40\textwidth} p{0.36\textwidth}@{}}
+\toprule
+\textbf{Axis} & \textbf{Synthetic canon (IEEE 9/14/30/57/118-class)} & \textbf{SENI-142} \\
+\midrule
+Origin & Drafting-table abstractions, early 1960s onward & National transmission estate, measured \\
+Geography & None (reactance diagrams) & Real corridors; metropolitan ring at 70.5 / 50.0 / 22.1 km \\
+Temporal depth & One operating point or scenario set & 87,360 hourly states $=$ 520 complete consecutive weeks (2016--2025 archive) \\
+Outage history & None & Operator event and outage logs seed the $N-1$ catalog \\
+Governance coupling & None & Ten planning regions of Law 368-22 \\
+Renewable regime & None (fixed loads) & Instantaneous solar share up to 36.6\% \\
+Provenance & Publication only & SHA-512-sealed four-phase digital-twin lifecycle \\
+Release & Open (by design) & Open (IEEE DataPort, GitHub), sovereign archives retained \\
+\bottomrule
+\end{tabular}
+\end{table*}

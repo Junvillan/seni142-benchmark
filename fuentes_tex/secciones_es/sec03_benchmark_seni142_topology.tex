@@ -1,0 +1,98 @@
+% =========================================================================
+% secciones_es/sec03_benchmark_seni142_topology.tex — Sección III, español
+% =========================================================================
+\section{Topología del benchmark SENI-142 de la República Dominicana}
+\label{sec:topology}
+
+\subsection{De 112 subestaciones a 142 barras nodales}
+\label{sub:substations}
+
+El patrimonio físico del sistema de transmisión dominicano comprende aproximadamente 112 subestaciones cercadas. El modelo nodal comprende exactamente 142 barras. La diferencia no es ruido; es topología, y la Figura~\ref{fig:jsauri} documenta la regla sobre la subestación más determinante de la nación. Una subestación cercada es un objeto inmobiliario; una barra es un objeto de Kirchhoff. Dondequiera que una subestación alberga dos niveles de tensión unidos por bancos de autotransformadores, los dos patios son nodos eléctricamente distintos, acoplados solo a través de la impedancia de la rama de transformador. El recinto de Julio Sauri (JSAURI) es el caso canónico: su patio de 345~kV --- el extremo receptor de la línea troncal que evacúa el complejo generador de Punta Catalina --- y su patio regional de 138~kV están desacoplados por los bancos de autotransformadores T1/T2, y cada patio es una barra. Aplicando la regla uniformemente sobre todos los estratos --- patios de transporte de 345, 230 y 138~kV, más las interfaces de 69~kV retenidas a través de los equivalentes de la Sección~\ref{sub:reduction} --- se obtienen exactamente 142 barras nodales sobre 135 líneas de transmisión y 58 transformadores de potencia.
+
+% ---- Figura 3 ----
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.88\textwidth]{fig_diagrama_1_jsauri_345_138.pdf}
+\caption{Desacoplamiento de Kirchhoff en la subestación Julio Sauri 345/138 kV. La super-autopista de 345 kV que evacúa el complejo de Punta Catalina ($2 \times 376$ MW) termina en su propio patio, desacoplado por la impedancia de los bancos de autotransformadores T1/T2 del patio regional de 138 kV que alimenta el corredor de San Cristóbal y el anillo metropolitano. Donde existe una transformación, el recinto cercado produce dos barras; modelado sobre todos los estratos de tensión, la red suma exactamente 142 barras nodales.}
+\label{fig:jsauri}
+\end{figure*}
+
+\subsection{Los estratos de transporte y el anillo metropolitano de 138 kV}
+\label{sub:strata}
+
+Tres subestaciones estratégicas articulan el sistema. \textbf{JSAURI} opera a dos niveles --- 345~kV y 138~kV --- y su barra de 345~kV es la barra de referencia del sistema en $V = 1.02$~pu, recibiendo la inyección directa de \textbf{Punta Catalina}, la mayor planta térmica del país con $2 \times 376$~MW (752~MW, carbón), evacuados por la troncal de 345~kV. \textbf{PALA (Palamara)}, en la región metropolitana, es el principal centro de carga con una demanda modelada agregada de 1,645~MW y respaldo local de fuel-oil de tres unidades de 10.77~MW que elevan desde 13.8~kV. \textbf{SCNU} es el hub de integración renovable del suroeste: 58.9~MW de generación hidroeléctrica, 95~MW de solar fotovoltaica y 34~MW de eólica, todas elevando desde 13.8~kV. Además, los activos modulares prospectivos diseñados para escenarios de expansión de descarbonización de la tesis doctoral --- un bloque de electrólisis PEM de 50~MW en SCNU y 1,400~MW de unidades modulares de prueba nuclear PWR repartidas entre JSAURI ($2 \times 400$~MW) y SCNU ($2 \times 300$~MW) --- están configurados con \texttt{in\_service = false} en el conjunto de datos operativo base (\texttt{seni\_real\_base}), garantizando que los estados de simulación base sigan siendo estrictamente representativos de la red física mientras preserva la disponibilidad modular para los benchmarks de transición energética. Más del cuarenta por ciento de la carga nacional se concentra en la región metropolitana de Ozama, servida sobre un anillo de 138~kV cuya redundancia es geométrica: el triángulo JSAURI--PALA--SCNU con longitudes de línea de 70.5~km, 50.0~km y 22.1~km, reforzado por un enlace JSAURI--SCNU de 230~kV. Cualquier circuito individual del triángulo puede perderse con el servicio sostenido por los dos restantes --- la propiedad $N-1$ que la batería de resiliencia de la Sección~\ref{sub:contingencies} ejercita sistemáticamente. La geometría completa con distancias reales de corredor es la zona de referencia de la prueba económica (Sección~\ref{sub:zonal}) y del catálogo de contingencias (Sección~\ref{sub:contingencies}).
+
+El agregado de 1,645~MW en PALA merece una lectura física explícita, porque una lectura ingenua --- una única barra de 138~kV absorbiendo casi la mitad de la punta nacional --- sería energéticamente inadmisible. En el modelo, PALA es el centro de carga \emph{agregado} del macrodominio metropolitano: sus 1,645~MW se distribuyen sobre las 28 subestaciones metropolitanas de 138~kV de la Tabla~\ref{tab:buses142}, sin que ninguna barra modelada absorba más de 120~MW, mientras que unos 250~MW de generación metropolitana abastecen el dominio localmente. La Tabla~\ref{tab:regbalance} enuncia el balance transaccional de los cuatro macrodominios de la Ley 368-22 en el estado de punta de referencia: $\Omega_{\mathrm{Metro}}$ importa 1,395~MW netos a través del conjunto de frontera $\Gamma$ de la HBCF; $\Omega_{\mathrm{Sur}}$ exporta $+930$~MW (Punta Catalina y el parque Valdesia--Enriquillo); $\Omega_{\mathrm{Este}}$ exporta $+420$~MW (Quisqueya, AES Andr\'es); y $\Omega_{\mathrm{Norte}}$ permanece en balance local. La importación no la lleva un único circuito, sino un haz de corredores de 345, 230 y 138~kV cuya capacidad térmica agregada supera los 2,200~MVA; en el estado de punta el haz opera con factores de carga de 63--72\%, de modo que todo flujo post-contingencia permanece dentro de los límites térmicos bajo configuración $N$ y bajo $N-1$ (Sección~\ref{sub:contingencies}).
+
+\subsection{Diez microrredes territoriales soberanas}
+\label{sub:microgrids}
+
+La Ley 368-22 organiza el territorio nacional en diez regiones de planificación; el benchmark las adopta como sus diez microrredes territoriales y las agrupa, para la condensación numérica, en los cuatro macrodominios eléctricos de la HBCF. La Tabla~\ref{tab:microgrids} enuncia el mapeo y los anclajes representativos de cada región tal como aparecen en el registro operativo.
+
+% ---- Tabla I ----
+\begin{table*}[!t]
+\caption{Microrredes Territoriales del Benchmark SENI-142 (Ley 368-22) y su Agrupación en los Cuatro Macrodominios HBCF}
+\label{tab:microgrids}
+\centering
+\footnotesize
+\begin{tabular}{@{}p{0.24\textwidth} l p{0.44\textwidth}@{}}
+\toprule
+\textbf{Microrred territorial (región de planificación)} & \textbf{Macrodominio} & \textbf{Anclajes representativos en el registro operativo} \\
+\midrule
+Ozama-Metropolitana & $\Omega_{\mathrm{Metro}}$ & Palamara, Hainamosa, Herrera --- más del 40\% de la carga nacional \\
+Valdesia & $\Omega_{\mathrm{Sur}}$ & JSAURI, Punta Catalina (752 MW), corredor solar Baní--Yaguate \\
+Higuamo & $\Omega_{\mathrm{Este}}$ & San Pedro de Macorís, plantas Quisqueya, AES Andrés (GNL) \\
+Yuma & $\Omega_{\mathrm{Este}}$ & Corredor de carga turística La Romana--Punta Cana \\
+Del Valle & $\Omega_{\mathrm{Sur}}$ & Multihub El Valle, PHES reversible de 764 MW (Sabaneta / Dos Bocas) \\
+Enriquillo & $\Omega_{\mathrm{Sur}}$ & Barahona, eólicas Los Cocos y Larimar, solar Canoa \\
+Cibao Norte & $\Omega_{\mathrm{Norte}}$ & Canabacoa (Santiago), segundo centro de carga \\
+Cibao Sur & $\Omega_{\mathrm{Norte}}$ & Carga minera Pueblo Viejo (Cotu\'i), Falcondo (Bonao) \\
+Cibao Nordeste & $\Omega_{\mathrm{Norte}}$ & Térmica y eólica de la costa atlántica (Puerto Plata) \\
+Cibao Noroeste & $\Omega_{\mathrm{Norte}}$ & Solar Montecristi, Valverde--Mao, corredor fronterizo Dajabón \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+La Figura~\ref{fig:hbcf_schur} despliega el mapa diakóptico resultante: cuatro macrodominios $\Omega$ sobre la geografía insular, las fronteras troncales $\Gamma$ (los enlaces de 230/138~kV cortados por reducción de Kron) y los indicadores clave de rendimiento en silicio de la solución condensada.
+
+% ---- Figura 4 ----
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_diagrama_2_schur_hbcf.pdf}
+\caption{Partición diakóptica espacial HBCF de la red insular. Las diez microrredes territoriales de la Ley 368-22 se agrupan en cuatro macrodominios eléctricos $\Omega$ (Norte/Cibao, Sur, Este, Metropolitano); solo las fronteras troncales $\Gamma$ --- los enlaces de 230/138 kV cortados por reducción de Kron --- viajan al complemento de Schur $\mathbf{S} = \mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B}$, con estructura en bloques $\mathbf{A}, \mathbf{B}, \mathbf{C}, \mathbf{D}$ sobre el ordenamiento interior/frontera. Indicadores en silicio: 2.65 ms por estado nacional de AC, 473 MiB residentes, sobre el horizonte estandarizado de 520 ciclos semanales completos (87,360 h; telemetría OC-SENI), con residuo fasorial de acople de frontera $\delta = 6.35 \times 10^{-12}$ pu.}
+\label{fig:hbcf_schur}
+\end{figure*}
+
+\subsection{Procedencia de datos y el manifiesto de estados de frontera}
+\label{sub:provenance}
+
+Las huellas físicas de subestaciones, las conexiones topológicas de barras y las trayectorias geográficas de los corredores se derivan directamente de los planos unifilares oficiales en CAD mantenidos por el operador de transmisión (ETED). Los parámetros eléctricos de rama asociados ($R$, $X$, $B$ y las potencias MVA térmicas) y los puntos de ajuste de la línea base operativa se adoptan de los conjuntos de datos de referencia oficiales del OC-SENI y de ETED \cite{ocseni}, \cite{eted}, estructurados bajo las convenciones del Common Information Model (CIM) del IEC 61970 \cite{iec61970}. Las cantidades relevantes de calidad de potencia siguen las definiciones de medición del IEC 61000-4-30 \cite{iec61000} y del IEEE Std 1459 \cite{ieee1459}. La procedencia corre así ininterrumpida desde los registros validados de las utilidades y las referencias del operador hasta la entrada del solver y las figuras publicadas del benchmark.
+
+Cada término de acoplamiento que llega al solver maestro --- las inyecciones $(P_g, Q_g)$ de la constelación de flexibilidad de la Sección~\ref{sec:multivector} --- viaja a través de un manifiesto de estados de frontera cuyas entradas están encadenadas y firmadas con SHA-512, de modo que la procedencia de cualquier inyección puede verificarse \emph{post hoc} contra la corrida sellada. La procedencia corre así ininterrumpida desde el archivo del operador \cite{ocseni}, \cite{eted} hasta la entrada del solver y la figura publicada --- la propiedad que distingue un benchmark de una captura de pantalla.
+
+\subsection{El canon sintético frente a la isla medida}
+\label{sub:canon}
+
+La identidad científica del SENI-142 es más fácil de enunciar por contraste. La Tabla~\ref{tab:canon} coloca el canon sintético junto a la isla medida a lo largo de los ejes que importan para la ciencia reproducible. Dos de esos ejes merecen énfasis porque son invisibles en las tablas de parámetros. El primero es la \emph{profundidad temporal}: un caso sintético tiene un punto operativo, o un puñado de escenarios; el SENI-142 tiene 87,360 estados horarios archivados consecutivos --- 520 ciclos semanales completos seleccionados del archivo 2016--2025 --- de modo que cada reclamación estadística hecha sobre él puede remuestrearse, someterse a bootstrap y falsificarse contra un registro de escala decenal de clima, demanda y despacho realizados. El segundo es la \emph{consecuencia}: nada en un caso sintético se ha roto jamás; cada línea troncal del SENI porta un registro de salidas, una historia de mantenimiento y un precio al que su pérdida se ha pagado. Un benchmark que recuerda haber sido golpeado es un objeto científico distinto de uno que no puede.
+
+% ---- Tabla II ----
+\begin{table*}[!t]
+\caption{El Canon Sintético y la Isla Medida}
+\label{tab:canon}
+\centering
+\footnotesize
+\begin{tabular}{@{}l p{0.40\textwidth} p{0.36\textwidth}@{}}
+\toprule
+\textbf{Eje} & \textbf{Canon sintético (clase IEEE 9/14/30/57/118)} & \textbf{SENI-142} \\
+\midrule
+Origen & Abstracciones de mesa de dibujo, desde principios de los años sesenta & Patrimonio nacional de transmisión, medido \\
+Geografía & Ninguna (diagramas de reactancias) & Corredores reales; anillo metropolitano a 70.5 / 50.0 / 22.1 km \\
+Profundidad temporal & Un punto operativo o conjunto de escenarios & 87,360 estados horarios $=$ 520 semanas completas consecutivas (archivo 2016--2025) \\
+Historia de salidas & Ninguna & Los registros de eventos y salidas del operador siembran el catálogo $N-1$ \\
+Acople de gobernanza & Ninguno & Diez regiones de planificación de la Ley 368-22 \\
+Régimen renovable & Ninguno (cargas fijas) & Participación solar instantánea de hasta 36.6\% \\
+Procedencia & Solo publicación & Ciclo de vida de gemelo digital de cuatro fases sellado con SHA-512 \\
+Liberación & Abierta (por diseño) & Abierta (IEEE DataPort, GitHub), archivos soberanos retenidos \\
+\bottomrule
+\end{tabular}
+\end{table*}

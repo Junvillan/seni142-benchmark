@@ -1,0 +1,50 @@
+% Figure 1 tikzpicture — English edition (editorial refinement per
+% GUIA_BUENAS_PRACTICAS_LATEX_IEEE: >=15 mm node spacing, midway labels with
+% fill=white inner sep=2pt, sovereign nomenclature without internal codes;
+% palette seni-* defined in the host preamble).
+\begin{tikzpicture}[
+  fase/.style={rectangle, rounded corners=5pt, draw, thick, text width=11.6cm, align=center, inner sep=5pt, minimum height=9mm},
+  compuerta/.style={rectangle, rounded corners=2pt, draw=seni-dark!50, thick, fill=white, text=seni-dark, font=\tiny\bfseries, minimum width=6.8mm, minimum height=4.8mm, inner sep=0pt},
+  forense/.style={rectangle, rounded corners=3pt, draw=seni-red, thick, fill=seni-red!8, text=seni-dark, font=\tiny, align=center, text width=2.4cm, inner sep=2pt},
+  flujo/.style={-{Stealth[length=3mm]}, very thick, seni-dark!70},
+  retorno/.style={-{Stealth[length=2.5mm]}, thick, seni-red, dashed},
+  nota/.style={font=\scriptsize, text=seni-dark!85, align=center, fill=white, inner sep=2pt},
+]
+%% --- PHASE 1 ---
+\node[fase, fill=seni-blue!88, text=white] (f1) at (0, 0) {
+  \textbf{PHASE 1 $\cdot$ HERMETIC MACRO-SANDBOX ENCLAVE}\\[1pt]
+  {\scriptsize POSIX namespaces (bubblewrap class) $\cdot$ read-only filesystem $\cdot$ ${<}\,200$ MiB envelope}
+};
+\node[nota, text=seni-blue] at (0, -1.45) {\textbf{Cascade of 14 gates} $G_0$--$G_{13}$ $\cdot$ fail-closed semantics};
+%% --- Gates G0..G13 (single row) ---
+\foreach \i in {0,...,13}{
+  \node[compuerta] (g\i) at (-4.55+\i*0.70, -2.15) {$G_{\i}$};
+}
+%% --- PHASE 2 ---
+\node[fase, fill=seni-green!85, text=white] (f2) at (0, -4.00) {
+  \textbf{PHASE 2 $\cdot$ RESEARCH BENCHMARK} (Fine-Tuned Reference Engine)\\[1pt]
+  {\scriptsize Static post-event $N-1$ verification (215-contingency catalog) $\cdot$ operator telemetry $\cdot$ cross-tool reconciliation}
+};
+%% --- PHASE 3 ---
+\node[fase, fill=seni-gold!90, text=white] (f3) at (0, -6.60) {
+  \textbf{PHASE 3 $\cdot$ GOLDEN MASTER}\\[1pt]
+  {\scriptsize Fail-closed re-verification of the full cascade $\cdot$ detached SHA-512 sealing per artifact}
+};
+%% --- PHASE 4 ---
+\node[fase, fill=seni-red!88, text=white] (f4) at (0, -9.20) {
+  \textbf{PHASE 4 $\cdot$ INDUSTRIAL PRODUCTION} (Full-Scale Grid Execution Engine)\\[1pt]
+  {\scriptsize Atomic kernel switch \texttt{renameat2(RENAME\_EXCHANGE)} $\cdot$ regression delta $= 0\%$}
+};
+%% --- Main flow (labels never crossed: midway white-filled) ---
+\draw[flujo] (f1.south) -- (0, -1.77);
+\draw[flujo] (0, -2.53) -- node[nota, right=2mm] {14/14 PASS} (f2.north);
+\draw[flujo] (f2.south) -- node[nota, right=2mm] {full parity} (f3.north);
+\draw[flujo] (f3.south) -- node[nota, right=2mm] {immutable state} (f4.north);
+%% --- FAIL loop (left): forensic report and return to Phase 1 ---
+\node[forense] (forense) at (-7.9, -2.15) {FAIL at any gate: forensic cause report};
+\draw[retorno] (-5.14, -2.15) -- (forense.east);
+\draw[retorno] (forense.north) -- (-7.9, 0) -- (f1.west);
+%% --- Deviation loop (right): Phase 2 back to Phase 1 ---
+\draw[retorno] (f2.east) -- (6.9, -4.00) -- (6.9, 0) -- (f1.east);
+\node[nota, text=seni-red, rotate=90, align=center] at (7.28, -2.00) {unexplained deviation $\to$ return to Phase 1};
+\end{tikzpicture}

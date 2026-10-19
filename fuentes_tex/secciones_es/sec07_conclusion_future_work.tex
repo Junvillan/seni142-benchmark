@@ -1,0 +1,84 @@
+% =========================================================================
+% secciones_es/sec07_conclusion_future_work.tex — Sección VII, Nomenclatura
+% y Apéndice A, edición en español (directiva editorial)
+% =========================================================================
+\section{Conclusiones y trabajo futuro}
+\label{sec:conclusion}
+
+Este artículo contribuyó el SENI-142: un benchmark abierto, medido y deterministamente reproducible de un sistema nacional de transmisión entero --- 142 barras, aproximadamente 112 subestaciones, 135 líneas, 58 transformadores, diez microrredes territoriales bajo la Ley 368-22 --- con una condensación diakóptica exacta que resuelve cada estado horario nacional de AC en 2.65~ms y 473~MiB a residuo fasorial $\delta = 6.35 \times 10^{-12}$~pu, validado contra una década de telemetría operativa continua y sellado por un ciclo de vida de gemelo digital de cuatro fases. El benchmark, el arnés de validación y el registro de resiliencia se liberan abiertamente a través de IEEE DataPort y GitHub.
+
+Cuatro rutas de investigación se siguen directamente. Primera, \textbf{sustitutos neuronales informados por física en sub-segundo}: el horizonte de 87,360 estados es el terreno de entrenamiento para aceleradores aprendidos del barrido clásico, con el solver exacto retenido como oráculo de falsificación \cite{misyris2020}. Segunda, \textbf{co-simulación EMT de conversores grid-forming}: incrustar las dinámicas de control de conversores grid-forming \cite{rosso2021}, \cite{ieee2800} dentro de la envolvente particionada para estudiar la formación de frecuencia, y no solo su contención. Tercera, \textbf{degradación de membranas de electrolizadores bajo despacho transitorio}: la operación intertemporal del bloque power-to-gas es el perfil de carga natural para estudios de envejecimiento de stacks PEM \cite{irena2020}, \cite{iea2023}. Cuarta, \textbf{liquidación horaria distribuida en silicio}: el horizonte horario de grado de liquidación, los manifiestos firmados y la cadena de procedencia estilo Merkle \cite{merkle1987}, \cite{fips180} esbozan una arquitectura de liquidación en la que cada hora preciosada concilia contra un estado físico criptográficamente atestiguado. La isla que no pudo importar inercia ha producido, en su propia imagen medida, algo exportable: un instrumento público para la ingeniería de la autonomía energética.
+
+% ---- Nomenclatura (contenido verbatim de la edición inglesa, forma tabular) ----
+\begin{table*}[!t]
+\caption{Nomenclatura}
+\label{tab:nomenclature}
+\centering
+\footnotesize
+\begin{tabular}{@{}p{0.24\textwidth} p{0.64\textwidth}@{}}
+\toprule
+$\mathcal{G} = (\mathcal{V}, \mathcal{E})$ & Grafo no dirigido conexo de la red de transmisión \\
+$\mathcal{V}$, $|\mathcal{V}| = 142$ & Conjunto de barras de transmisión \\
+$\mathcal{E}_{\mathrm{line}}$, $\mathcal{E}_{\mathrm{trafo}}$ & Ramas de línea (135), ramas de transformador (58) \\
+$\mathbf{Y}_{\mathrm{bus}}$ & Matriz de admitancia nodal, $\mathbb{C}^{142 \times 142}$ \\
+$S_i = P_i + j Q_i$ & Inyección de potencia compleja en la barra $i$ \\
+$Z_{\mathrm{cc}}$ & Impedancia de cortocircuito de un área reducida \\
+$\mathcal{G}_k$, $\Omega_k$ & Microrred territorial $k$ y su macrodominio \\
+$\mathcal{V}_B$, $\Gamma$ & Conjunto de barras de frontera y frontera de condensación \\
+$\mathbf{A}, \mathbf{B}, \mathbf{C}, \mathbf{D}$ & Bloques interior/frontera de la matriz del sistema reordenada \\
+$\mathbf{S} = \mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B}$ & Complemento de Schur del bloque interior \\
+$\mathbf{x}_I$, $\mathbf{x}_B$, $\mathbf{u}_I$, $\mathbf{u}_B$ & Estados y términos independientes interior/frontera \\
+$N$, $N_k$, $N_B$ & Dimensiones del sistema, del subdominio y de la frontera \\
+$\kappa_2(\cdot)$ & Número de condición espectral \\
+$\delta$ & Residuo fasorial de acople de frontera (pu) \\
+$P_i(\mathbf{V}_t, \boldsymbol{\theta}_t)$ & Inyección nodal de potencia activa desde el estado de red \\
+$P^{\mathrm{EL}}_{h,t}$, $P^{\mathrm{FC}}_{h,t}$ & Potencia eléctrica de electrolizador / celda de combustible de la unidad $h$ \\
+$\eta_{\mathrm{EL}}$, $\eta_{\mathrm{FC}}$ & Eficiencias de electrólisis / reconversión \\
+$E_{h,t}$, $E_h^{\min}$, $E_h^{\max}$ & Inventario del buffer de hidrógeno y cotas \\
+$\Delta t$ & Duración del paso de tiempo (1 h) \\
+$C_p(\lambda, \beta)$ & Coeficiente de potencia del aerogenerador \\
+$\sigma(\cdot)$, $\alpha$ & Activación sigmoidal y su pendiente adaptativa \\
+$Q_g^{\lim}$, $Q_g^{\mathrm{eff}}$ & Límite reactivo del generador y capacidad regularizada \\
+PHES & Bombeo hidroeléctrico reversible (flota de 764 MW) \\
+ADM1 & Modelo de Digestión Anaerobia No. 1 \\
+PEM & Membrana de intercambio protónico (electrólisis) \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+% ---- Apéndice A (tabla técnica de parámetros, directiva directiva editorial) ----
+\appendix
+\section{Parámetros Topológicos y Eléctricos Consolidados del Benchmark Insular SENI-142}
+\label{app:parameters}
+
+La Tabla~\ref{tab:parameters} consolida los parámetros estructurales y eléctricos del benchmark publicado tal como se instancian en el modelo nodal, de modo que la aritmética de topología de las Secciones~\ref{sec:topology}--\ref{sec:benchmarking} pueda verificarse de un vistazo contra el conjunto de datos liberado.
+
+\begin{table*}[!t]
+\caption{Parámetros Topológicos y Eléctricos Consolidados del Benchmark Insular SENI-142. El bloque superior es el levantamiento del plano unifilar en CAD recuperado en este trabajo y constituye la contribución propia medida del artículo; el bloque inferior es el modelo nodal condensado sobre el que se ejecutan todas las simulaciones reportadas.}
+\label{tab:parameters}
+\centering
+\footnotesize
+\begin{tabular}{@{}l r@{}}
+\toprule
+\textbf{Cantidad} & \textbf{Valor} \\
+\midrule
+\multicolumn{2}{@{}l}{\textit{Levantamiento del unifilar CAD (este trabajo, medido)}} \\
+Subestaciones cercadas resueltas & 171 \\
+Barras físicas, 345~kV & 6 \\
+Barras físicas, 230~kV & 3 \\
+Barras físicas, 138~kV & 106 \\
+Barras físicas, 69~kV & 90 \\
+\textbf{Total de barras físicas} & \textbf{205} \\
+\midrule
+\multicolumn{2}{@{}l}{\textit{Modelo nodal de cómputo SENI-142 (derivado, condensado)}} \\
+Nodos de transmisión en masa, 345/230/138~kV & 115 \\
+\textbf{Total de nodos de cómputo} & \textbf{142} \\
+Líneas de transmisión & 135 \\
+Autotransformadores de potencia & 58 \\
+Capacidad instalada de generación (nominal) & 5,420 MW \\
+Demanda horaria máxima (registro SCADA) & 3,450 MW \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+El censo de barras sigue la regla nodal de la Sección~\ref{sub:substations}: una barra por nivel de tensión por recinto cercado, con los bancos de transformadores como ramas. El bloque superior de la Tabla~\ref{tab:parameters} es el levantamiento del unifilar en CAD recuperado en este trabajo y es la contribución propia medida del artículo: 205 barras físicas en 171 subestaciones cercadas, de las cuales 115 pertenecen a los estratos de masa de 345, 230 y 138~kV. El bloque inferior es el modelo de cómputo condensado que realmente ejercita el solver, en el que la capa de subtransmisión de 69~kV se sustituye por los equivalentes nodales que preservan inyecciones de la Sección~\ref{sub:reduction}, dando un modelo condensado de 142 nodos de cómputo. Los dos bloques se reportan por separado y deliberadamente: el primero es una medición, el segundo es una decisión de modelado. Las dos cláusulas de protocolo verbatim de la Sección~\ref{sub:dataprotocol} y la Sección~\ref{sub:clause} permanecen como el núcleo contractual de la capa de datos y de la instanciación territorial, respectivamente, y se preservan carácter a carácter en la edición inglesa canónica.

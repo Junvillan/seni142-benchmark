@@ -1,0 +1,79 @@
+% =========================================================================
+% secciones_zh/sec05_silicon_performance_benchmarking.tex — 第V节，中文版
+% =========================================================================
+\section{硅上性能、精度与数值基准测试}
+\label{sec:benchmarking}
+
+\subsection{以数字孪生确定性保障测量效度}
+\label{sub:determinism}
+
+第~\ref{sub:lifecycle}节已确立：向生产状态的晋升是原子的，且与SHA-512封存的黄金主版本逐位一致。对本节而言其后果是认识论的：以下每个数字都是一个被冻结、可证明的软件状态的属性，任何获得已发布工件的读者都可重新执行。这就是"硅上验证"的运行含义——不是修辞装点，而是监管链条。算法~\ref{alg:n1_seal}给出产生该性能记录的韧性与封存流水线。
+
+% ---- 算法2 ----
+\begin{algorithm}[!t]
+\caption{带24小时块自助法与SHA-512封存的 $N$--$1$ 韧性扫描}
+\label{alg:n1_seal}
+\begin{algorithmic}[1]
+\Require 封存求解器状态 $\Sigma$，预想事故目录 $\mathcal{C}$
+         （$|\mathcal{C}| = 215$），水平域 $\mathcal{H}$（87,360 h）
+\Ensure 韧性记录 $\mathcal{R}$，封印 $\sigma$
+\State $\mathcal{R} \gets \emptyset$
+\For{$c \in \mathcal{C}$} \Comment{确定性顺序，失效即闭}
+   \For{$b \in \text{bootstrap}(\mathcal{H}, 24\,\mathrm{h})$} \Comment{整日块}
+      \State 将预想事故 $c$ 注入块 $b$
+      \State 在块的每一小时运行算法1
+      \State 将 $\rho$、$\kappa_2$、电压/频率裕度记入 $\mathcal{R}[c, b]$
+   \EndFor
+\EndFor
+\State 按预想事故在自助包络上聚合裕度
+\State $\sigma \gets \mathrm{SHA512}\text{-chain}(\Sigma, \mathcal{C}, \mathcal{R})$ \Comment{分离式清单}
+\State \Return $\mathcal{R}$, $\sigma$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{收敛速度与内存}
+\label{sub:speed}
+
+在消费级商用硬件（Dell Inspiron 5570级的8线程笔记本）上，分块求解器以\textbf{2.65~ms}收敛完整142节点国家电网的每个小时级交流状态，常驻内存\textbf{473~MiB}承载完整验证水平域。87,360个连续小时状态——十年全国运行——的扫描数分钟内完成，而同类硬件上同水平域的整体式计算需要数小时至数日，这与命题~\ref{prop:complexity}的 $O(N^3)$-至-$O(\sum_k N_k^3 + N_B^3)$ 渐近以及填充降低稀疏实践\cite{george1973}、\cite{saad2003}一致。相对物理实时的余量是决定性的：60~Hz下半周期阈值为8.33~ms，因此单个国家级状态的求解比其建模系统的半周期快3.1倍，十年扫描以分钟而非数小时至数日完成——将闭环、操作员在环与市场间隔应用置于与离线研究相同的包络之内。
+
+这一包络带来三项值得明说的运行后果，因为它们改变的是谁能够使用该基准，而不仅仅是速度。第一，\emph{研究节奏}：十年全国扫描不再是需要排期的计算战役，而是可以随时提出的问题；参数研究、自助包络与预想事故目录可交互式重执行，使科学工作流从批处理考古学转变为实时实验。第二，\emph{部署级别}：硬件要求是一台消费级笔记本而非计算集群——这一属性对发展中岛屿系统的监管机构、大学与电力公司具有直接意义，因为替代平台的许可与基础设施成本高出另一个量级\cite{ieee399}、\cite{matpower2011}。第三，\emph{教学同步性}：课堂可以在讲授某小时的同时重新执行该国该小时的潮流，把教科书运行点与真实系统运行点之间的距离压缩为零。
+
+\subsection{精度与数值条件}
+\label{sub:accuracy}
+
+三个实测数量界定了凝聚解的数值保真度。第一，相量边界耦合残差——舒尔恢复状态与独立参考状态之间的失配——在整个验证水平域上为 $\delta = 6.35 \times 10^{-12}$~pu，即网络分块求解精确到单精度噪声水平。第二，第~\ref{sub:regularization}节的S形无功限值控制器贡献 $5.32 \times 10^{-12}$ 的正则化误差，同时消除了PV--PQ极限环。第三，每个降阶边界系统的谱条件数 $\kappa_2$ 均被监测并存档；治理阈值机制在国家级部署之前已在合成参考上完成验证（IEEE 14节点 $22\times22$ 雅可比被评MARGINAL，$\kappa_2 = 117.7823$），因此真实电网上的条件劣化将相对于一个经过校准的标尺而非临时标尺被检出。
+
+\subsection{参考拓扑上的预想事故韧性}
+\label{sub:contingencies}
+
+韧性测试在动态参考拓扑上执行规范目录中的 $N-1$ 预想事故\cite{ejebe1979}——集中于都市138~kV环网，其真实走廊距离（70.5、50.0、22.1~km）固定了电气几何，如图~\ref{fig:topologia_seni}所示。两项有记录的行为构成记录的锚点。其一，蓬塔卡塔利纳综合体（752~MW）的突然跳闸——该岛单一最大的可信预想事故——在一个求解步内由预防性旁路动作补偿（受2.65~ms状态分辨率约束），表明数字孪生在故障清除时间尺度之内而非之后观测并响应。其二，测试活动的异常日志记录了JSAURI--Palamara--Haina 138~kV环在特定 $N-1$ 状态下的电压谐振现象——这些发现从异常登记迁移入预想事故目录，而这正是第~\ref{sub:lifecycle}节所规定的生命周期纪律。所有裕度均按算法~\ref{alg:n1_seal}的24小时块自助包络报告，使所引用的稳定裕度携带其相关性诚实的的不确定性。
+
+% ---- 图6 ----
+\begin{figure*}[!t]
+\centering
+\resizebox{0.85\textwidth}{!}{\input{sec03_fig_topologia_seni_tikz}}
+\caption{SENI 138 kV环网的真实subtransmission三角形。JSAURI--PALA--SCNU，线路实长70.5、50.0与22.1 km；左侧解耦的345 kV输电母线作为系统平衡节点（$V = 1.02$ pu）接收蓬塔卡塔利纳（$2 \times 376$ MW）；SCNU可再生枢纽（58.9 MW水电、95 MW光伏、34 MW风电）与50 MW PEM电解前瞻区块（2026年不运行，星号标注）；PALA负荷中心（聚合1,645 MW）；JSAURI--SCNU 230 kV增强联络（虚线）。验证测试的215个 $N-1$ 预想事故目录即定义于此拓扑之上。}
+\label{fig:topologia_seni}
+\end{figure*}
+
+% ---- 表III ----
+\begin{table*}[!t]
+\caption{SENI-142数字孪生的硅上遥测（全部数值来自封存验证运行）}
+\label{tab:telemetry}
+\centering
+\footnotesize
+\begin{tabular}{@{}p{0.30\textwidth} p{0.18\textwidth} p{0.34\textwidth}@{}}
+\toprule
+\textbf{指标} & \textbf{数值} & \textbf{条件} \\
+\midrule
+每小时国家级交流状态的收敛时间 & 2.65 ms & 142节点完整模型，消费级笔记本（8线程） \\
+常驻内存（完整水平域） & 473 MiB & 87,360个连续小时级状态 \\
+相量边界耦合残差 $\delta$ & $6.35 \times 10^{-12}$ pu & 舒尔重建对比参考状态 \\
+无功限值正则化误差 & $5.32 \times 10^{-12}$ & S形控制器，解析雅可比注入 \\
+实时半周期阈值（60 Hz） & 8.33 ms & 闭环适用性裕度 \\
+预想事故目录 & 215个 $N-1$ 场景 & 动态压力测试相 \\
+谱交叉校验（IEEE 14节点，$22\times22$） & $\kappa_2 = 117.7823$（MARGINAL） & 外部效度控制 \\
+最大单一预想事故 & 蓬塔卡塔利纳跳闸，752 MW & 一个求解步内缓解 \\
+\bottomrule
+\end{tabular}
+\end{table*}

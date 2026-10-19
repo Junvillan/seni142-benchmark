@@ -1,0 +1,125 @@
+% ============================================================================
+% fig_diagrama_3_constelacion_microsolvers.tex
+% DIAGRAMA 3 — La constelación de micro-solvers de física dedicada y el
+%              supervisor de flota: inyección (Pg, Qg) en las 142 barras del
+%              SENI. Informe hito SENI 142 barras (Rep. Dominicana).
+% Enclave Triángulo (GLM) · Supervisor notarial: Cuadrado ■
+% ----------------------------------------------------------------------------
+% Compilación individual (protocolo solucion_error_latex.md):
+%   nice -n 19 pdflatex -interaction=nonstopmode fig_diagrama_3_constelacion_microsolvers.tex
+%
+% Cumple: regla 1 (arrows.meta + tip explícito, nunca > ni < crudos),
+% regla 2 (align=center + text width/minimum height + rounded corners),
+% regla 3 (paleta doctoral soberana), regla 4 (cero menciones prohibidas),
+% regla 5 (bloque autocontenido). Cifras: únicamente las del informe hito.
+% ============================================================================
+\documentclass[border=12pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-nodecimaldot,es-noshorthands]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds,babel}
+
+\begin{document}
+% ==================== BLOQUE INSERTABLE EN IEEETRAN: INICIO ====================
+% Requisitos del documento hospedador (p. ej. IEEEtran):
+%   \usepackage{amsmath,amssymb}
+%   \usepackage{tikz}
+%   \usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds,babel}
+% Puntas bidireccionales explícitas (sin escribir > ni < crudos):
+\tikzset{
+  >={Stealth[length=2.5mm,width=1.8mm]},
+  doble/.style={{Stealth[length=2.5mm,width=1.8mm]}-{Stealth[length=2.5mm,width=1.8mm]}}
+}
+\definecolor{seniNavy}{RGB}{26,54,93}   % Azul institucional
+\definecolor{seniBlue}{RGB}{43,108,176} % Azul alta tensión
+\definecolor{seniGold}{RGB}{217,194,130}% Dorado V-Core
+\definecolor{seniRed}{RGB}{155,44,44}   % Rojo 345 kV / solver maestro
+\definecolor{seniGreen}{RGB}{39,103,73} % Verde renovable
+\definecolor{seniBg}{RGB}{247,250,252}  % Fondo de caja
+\begin{tikzpicture}[
+  font=\small,
+  sup/.style={align=center, text width=112mm, minimum height=13mm,
+              rounded corners=2pt, draw=seniNavy, fill=seniNavy,
+              text=white, font=\small\bfseries},
+  solver/.style={align=center, text width=52mm, minimum height=17mm,
+                 rounded corners=2pt, draw=seniBlue, line width=1pt,
+                 fill=seniBg, font=\scriptsize},
+  canal/.style={align=center, text width=172mm, minimum height=12mm,
+                rounded corners=2pt, draw=seniGold!60!black, line width=1.2pt,
+                fill=seniGold!30, font=\footnotesize},
+  maestro/.style={align=center, text width=88mm, minimum height=12mm,
+                  rounded corners=2pt, draw=seniRed, line width=1.4pt,
+                  fill=seniRed!12, font=\small\bfseries},
+  titulo/.style={align=center, text width=176mm, minimum height=8mm,
+                 rounded corners=2pt, draw=seniNavy, fill=seniNavy,
+                 text=white, font=\small\bfseries},
+  rotulo/.style={align=center, font=\scriptsize, text=seniNavy}
+]
+
+% ---- Cintillo de título ----
+\node[titulo] (tit) at (9.5, 13.0)
+  {Constelación de micro-solvers de física dedicada: inyección
+   $(P_g,\,Q_g)$ sobre el solver maestro de 142 barras};
+
+% ---- Nivel superior: supervisor de generadores ----
+\node[sup] (sup) at (9.5, 11.3)
+  {SUPERVISOR DE GENERADORES\\[0.4mm]
+   {\footnotesize orquestador desacoplado · política Zero-Trust ·
+    memoria compartida protegida}};
+
+% ---- Columna izquierda: renovables y almacenamiento energético ----
+\node[solver] (solar) at (4.2, 9.4)
+  {\texttt{\footnotesize\bfseries\textcolor{seniNavy}{villa-solr-core}}\\[0.4mm]
+   fotovoltaica · control sigmoidal $Q$--$V$\\ supresión de curva de pato};
+\node[solver] (eolica) at (4.2, 7.3)
+  {\texttt{\footnotesize\bfseries\textcolor{seniNavy}{villa-eolic-core}}\\[0.4mm]
+   aerodinámica $C_p(\lambda,\beta)$\\ inercia sintética};
+\node[solver] (h2) at (4.2, 5.2)
+  {\texttt{\footnotesize\bfseries\textcolor{seniNavy}{villa-h2core}}\\[0.4mm]
+   electrólisis · compresión a 700 bar\\ 740 hidrogeneras};
+
+% ---- Columna derecha: bioquímica, térmica e hidro bombeario ----
+\node[solver] (bio) at (14.8, 9.4)
+  {\texttt{\footnotesize\bfseries\textcolor{seniNavy}{villa-biocore}}\\[0.4mm]
+   modelo bioquímico ADM1\\ digestión de sargazo/vinaza};
+\node[solver] (termica) at (14.8, 7.3)
+  {\texttt{\footnotesize\bfseries\textcolor{seniNavy}{thermal-core}}\\[0.4mm]
+   curvas heat rate térmicas\\ despacho $P$--$Q$ síncrono};
+\node[solver] (phes) at (14.8, 5.2)
+  {\texttt{\footnotesize\bfseries\textcolor{seniNavy}{hydro/phes-core}}\\[0.4mm]
+   ciclo reversible PHES 764 MW\\ Sabaneta / Dos Bocas};
+
+% ---- Canal de intercambio: manifiesto de fronteras ----
+\node[canal] (canal) at (9.5, 2.75)
+  {\texttt{\textbf{MANIFIESTO\_ESTADO\_FRONTERAS.json}}\\[0.4mm]
+   {\scriptsize firmas SHA-512 · inyecciones netas $(P_g,\,Q_g)$
+    entregadas al solver maestro}};
+
+% ---- Nivel inferior: solver maestro de 142 barras ----
+\node[maestro] (maestro) at (9.5, 1.1)
+  {Solver maestro de flujo del SENI --- 142 barras nodales};
+
+% ---- Bus central de estado (espina dorsal supervisor <-> manifiesto) ----
+\draw[doble, line width=1.8pt, seniNavy] (sup.south) -- (canal.north);
+
+% ---- Derivaciones del bus hacia cada micro-solver (despacho/telemetría) ----
+\draw[doble, line width=1pt, seniBlue] (9.5, 9.4) -- (solar.east);
+\draw[doble, line width=1pt, seniBlue] (9.5, 7.3) -- (eolica.east);
+\draw[doble, line width=1pt, seniBlue] (9.5, 5.2) -- (h2.east);
+\draw[doble, line width=1pt, seniBlue] (9.5, 9.4) -- (bio.west);
+\draw[doble, line width=1pt, seniBlue] (9.5, 7.3) -- (termica.west);
+\draw[doble, line width=1pt, seniBlue] (9.5, 5.2) -- (phes.west);
+
+% ---- Rótulo del bus (hueco libre bajo la última derivación) ----
+\node[rotulo, text width=36mm] at (11.9, 3.85)
+  {bus de estado\\ (despacho / telemetría)};
+
+% ---- Entrega de inyecciones al solver maestro ----
+\draw[->, line width=2pt, seniGold!60!black] (canal.south) -- (maestro.north)
+  node[rotulo, pos=0.5, right=1.5mm]{$(P_g,\,Q_g)$ por barra};
+
+\end{tikzpicture}
+% ===================== BLOQUE INSERTABLE EN IEEETRAN: FIN =====================
+\end{document}

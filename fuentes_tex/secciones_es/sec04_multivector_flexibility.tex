@@ -1,0 +1,41 @@
+% =========================================================================
+% secciones_es/sec04_multivector_flexibility.tex — Sección IV, español
+% =========================================================================
+\section{Flexibilidad multivector y validación económica}
+\label{sec:multivector}
+
+\subsection{La constelación de flexibilidad}
+\label{sub:constellation}
+
+La capa multivector se organiza como una constelación de seis solvers de física dedicada que alimentan al solver maestro de 142 barras a través del manifiesto de estados de frontera firmado: (i) producción fotovoltaica con control sigmoidal continuo $Q$--$V$ para la supresión de la curva de pato; (ii) producción eólica con modelado aerodinámico $C_p(\lambda, \beta)$ e inercia sintética; (iii) el vector hidrógeno --- electrólisis, compresión a 700~bar y una red nacional de 740 hidrogeneras en el modelo de planificación; (iv) conversión bioquímica mediante el Modelo de Digestión Anaerobia No.~1 (ADM1) \cite{batstone2002}, digiriendo sustratos de sargazo y vinaza en biometano despachable; (v) producción térmica con curvas de \emph{heat-rate} y despacho síncrono $P$--$Q$; y (vi) la flota de bombeo reversible de 764~MW (Sabaneta / Dos Bocas). Un supervisor de despacho de confianza cero orquesta la constelación sobre un bus de estado protegido; ningún solver lee la memoria de otro, y cada intercambio viaja por el manifiesto sellado. La Figura~\ref{fig:constellation} diagrama la constelación.
+
+% ---- Figura 5 ----
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_diagrama_3_constelacion_microsolvers.pdf}
+\caption{Constelación de flexibilidad multivector. Seis solvers de física dedicada --- fotovoltaica (control sigmoidal $Q$--$V$), eólica ($C_p(\lambda,\beta)$ con inercia sintética), hidrógeno (electrólisis, compresión a 700 bar, 740 hidrogeneras), bioquímica (digestión ADM1 de sargazo y vinaza), térmica (despacho por curva de heat-rate) y PHES reversible (764 MW, Sabaneta/Dos Bocas) --- entregan sus inyecciones netas $(P_g, Q_g)$ a través de un supervisor de despacho de confianza cero y un manifiesto de estados de frontera firmado con SHA-512 al solver maestro de 142 barras de la red nacional.}
+\label{fig:constellation}
+\end{figure*}
+
+\subsection{Operación electroquímica power-to-gas}
+\label{sub:p2g}
+
+Operacionalmente, el bloque power-to-gas de la Sección~\ref{sub:opf} se comporta como un par de cargas flexibles opuestas con memoria. En horas de excedente --- el régimen creciente en el que la penetración solar instantánea alcanza el 36.6\% y los precios de mediodía colapsan --- el electrolizador absorbe lo que la red de otro modo vertería, convirtiéndolo en inventario presurizado; en horas de déficit la celda de combustible devuelve energía firme a la razón de eficiencia $\eta_{\mathrm{EL}} \cdot \eta_{\mathrm{FC}}$. Las cotas del buffer hacen explícito y auditable el conjunto de oportunidades intertemporales, y los términos de acoplamiento entran a los balances AC sin relajación alguna de la física de red. La interconexión de los activos acoplados sigue los requisitos de recursos basados en inversores del IEEE Std 2800-2022 \cite{ieee2800} y la interfaz de energía distribuida del IEEE Std 1547-2018 \cite{ieee1547}.
+
+\subsection{Bombeo reversible y buffers de biometanación}
+\label{sub:phes}
+
+La flota de bombeo reversible de 764~MW del multihub El Valle (plantas Sabaneta / Dos Bocas) juega el papel complementario a escala de sistema: convierte la energía nocturna y excedentaria en capacidad sincrónica portadora de inercia para las horas de déficit, con dinámicas de embalse análogas al buffer de hidrógeno y despacho sujeto a la misma optimalidad certificada por KKT. La capa bioquímica ADM1 añade un tercer buffer con una constante de tiempo distinta: las dinámicas de estado del digestor convierten los afluentes de sargazo y vinaza en biometano que entra al despacho térmico como un combustible renovable almacenable --- cerrando un ciclo de nutrientes y energía con relevancia directa de uso de suelo bajo el mismo estatuto territorial que define la partición.
+
+\subsection{La prueba económica zonal de CAPEX/OPEX}
+\label{sub:zonal}
+
+La capa económica valida la pila de flexibilidad por balance zonal: para la zona de referencia (el triángulo metropolitano de 138~kV de la Sección~\ref{sub:strata}), el arnés publicado contabiliza, por hora y por activo de flexibilidad, cuatro términos de la identidad de bienestar zonal,
+\begin{equation}
+\begin{aligned}
+\Delta C^{\mathrm{zone}}_t = {}& \underbrace{c^{\mathrm{curt}} E^{\mathrm{abs}}_t}_{\text{vertimiento evitado}} + \underbrace{c^{\mathrm{fuel}} E^{\mathrm{displ}}_t}_{\text{combustible desplazado}} \\
+& + \underbrace{c^{\mathrm{ss}} N^{\mathrm{avoid}}_t}_{\text{arranque-parada evitado}} + \underbrace{\big(R^{\mathrm{base}}_t - R^{\mathrm{flex}}_t\big)}_{\text{diferencial de pérdidas}},
+\end{aligned}
+\label{eq:zonal}
+\end{equation}
+donde $E^{\mathrm{abs}}_t$ es la energía renovable absorbida por electrólisis y bombeo en lugar de ser vertida, $E^{\mathrm{displ}}_t$ la energía térmica desplazada por la re-inyección de celda de combustible y biometano, $N^{\mathrm{avoid}}_t$ los eventos de arranque-parada térmicos evitados, y $R^{\mathrm{base}}_t - R^{\mathrm{flex}}_t$ el diferencial de pérdidas de red entre los despachos flexible e inflexible; la identidad se impone por zona y por hora, de modo que cada conclusión económica concilia con un estado físico. Los costos unitarios y los cargos de capital se parametrizan transparentemente desde la planificación nacional y las referencias internacionales de hidrógeno \cite{cne2022}, \cite{irena2020}, \cite{iea2023}, y la identidad de balance se cierra contra la envolvente de bootstrap del registro operativo. Los hallazgos cualitativos son estables a través de la envolvente: la pila de flexibilidad absorbe una fracción material del excedente solar de otro modo vertido, reduce el ciclado de arranque-parada térmico sobre el ancla de carbón y difiere adiciones de capacidad firme en la zona de referencia --- con todas las cantidades reproducibles desde el conjunto de datos publicado y no meramente afirmadas.
