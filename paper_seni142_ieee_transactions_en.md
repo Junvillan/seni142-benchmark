@@ -482,7 +482,8 @@ Four research routes follow directly. First, **sub-second physics-informed neura
 | ADM1 | Anaerobic Digestion Model No. 1 |
 | PEM | Proton-exchange membrane (electrolysis) |
 
-**Data Availability.** The SENI-142 benchmark dataset, network parameters, provenance metadata, validation harness, and sealed resilience record are openly available at https://github.com/Junvillan/seni142-benchmark, with a mirrored archival deposit on IEEE DataPort.
+**Data Availability.** The SENI-142 benchmark dataset, network parameters, provenance metadata, validation harness, and sealed resilience record are openly available at https://github.com/Junvillan/seni142-benchmark and permanently archived on Zenodo under DOI https://doi.org/10.5281/zenodo.23484705, with a mirrored archival deposit on IEEE DataPort.
+
 ## Acknowledgment
 The author dedicates this work to the memory of Eng. Arturo Lamarche (E.P.D., in memoriam)---an esteemed mentor, master of Dominican power systems, and tireless guardian of the national grid. His lifelong devotion, technical rigor, and unwavering vigilance over the integrity of the Dominican electrical system during the pivotal expansion of the 345/138 kV bulk network left an indelible mark on generations of electrical engineers. His legacy endures in every bus, corridor, and protective boundary analyzed in this benchmark.
 

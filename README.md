@@ -1,5 +1,7 @@
 # SENI-142: An Open-Access Resilient Transmission and Sovereign Decoupling Benchmark for the Dominican Republic Power Grid (IEEE TPWRS Submission Dataset & Verification Harness)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23484705.svg)](https://doi.org/10.5281/zenodo.23484705)
+
 **Manuscript:** *TPWRS-SENI-142-2026* — IEEE Transactions on Power Systems
 **Author:** Ing. Junior Alexis Villanueva Rosario, Ms.C., Ph.D.(c)
 **Benchmark:** SENI-142 — the 142-bus nodal model of the Dominican Republic bulk transmission system (115 bulk nodes at 345/230/138 kV + 27 retained 69 kV boundary ports; 135 transmission lines + 58 power transformers), partitioned into the ten territorial planning regions of Law 368-22 and condensed by the Hierarchical Border-Coordinate Formulation (HBCF) into four electrical macro-domains.
