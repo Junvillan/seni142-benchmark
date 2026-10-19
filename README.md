@@ -36,6 +36,9 @@ line parameters; Ybus ≡ branch table (<1e-9); block-diagonal A; Schur identity
 ‖S − (D − CA⁻¹B)‖∞ < 1e-12; 748.3 + 3.70 = 752.00 MW trunk isolation;
 687.40 + 58.50 + 6.10 = 752.00 MW reserve-sizing closure (error 0.0000 MW).
 
+### Scope of the Verification Harness
+The open verification harness (`verify_seni142_benchmark.py`) validates structural, topological, and algebraic consistency directly from the released bundle: nodal censuses, 193 branch parameters, exact Schur complement identity $\|\mathbf{S} - (\mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B})\|_\infty < 10^{-12}$, unique slack assignment, and static contingency reserve accounting. Full non-linear AC Newton-Raphson iterations, multi-temporal OPF optimizations, and dynamic EMT simulations belong to the solver engine domain (the author's research C++/Sparse engine reports 2.65 ms / 473 MiB as an experimental baseline on an 8-thread workstation).
+
 ## Mutation robustness
 
 ```bash
