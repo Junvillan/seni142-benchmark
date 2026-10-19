@@ -51,7 +51,7 @@ Dictamen vinculante del 19-oct-2026: núcleo técnico certificado **en verde**; 
 
 | Invariante | Definición congelada | Estado en fuentes (archivo:evidencia) | Gate |
 |---|---|---|---|
-| **T1** | Artefacto B1 con los 8 JSON y digests íntegros; descomposición de los 58.5 MW en LINE-345-PC-JS (ΔPg 687.40 + ΔP_storage 58.50 [PHES 35.0 + BESS 23.5] + ΔP_slack +6.10 = 752.00 exactos; ratio 0.89%) | `ARTEFACTO_B1_8_CONTINGENCIAS_CANONICAS_142BARRAS.json` (sha512 `8ee4b22b…`) en el paquete; párrafo físico con la descomposición en sec05 EN/ES y maestro | `58.50` presente 3/3 ✅ |
+| **T1** | Artefacto B1 con los 8 JSON y digests íntegros; descomposición de los 58.5 MW en LINE-345-PC-JS (ΔPg 687.40 + ΔP_storage 58.50 [PHES 35.0 + BESS 23.5] + ΔP_slack +6.10 = 752.00 exactos; ratio 0.89%) | `ARTEFACTO_B1_8_CONTINGENCIAS_CANONICAS_142BARRAS.json` (sha512 `a59f0fac…`) en el paquete; párrafo físico con la descomposición en sec05 EN/ES y maestro | `58.50` presente 3/3 ✅ |
 | **T2-a** | 22.1 km + ACSR 795 Drake 26/7, 988 A @ 75 °C, S_max = 236.2 MVA/circuito (472.4 agregados); 87.4% pre / 87.6% post | Fila CORR-138-PALA-SCNU a 22.1 km; S_max 236.2/472.4 en sec05 EN/ES y maestro | `236.2` 3/3; cero «50 km» en la fila ✅ |
 | **T2-b** | Subsección II-A `Steady-State AC Feasibility Scope` (### A en maestro, \subsection en LaTeX), desplazando a B–J | Insertada e intacta en ambos formatos | título 3/3 ✅ |
 | **T2-c** | Calendario: 3,653 días = 6 días huérfanos de borde + 521 semanas completas; horizonte 520 semanas hasta el dom 21-dic-2025; 13 días = 6 huérfanos + 7 de la semana festiva; prohibido «13 días fraccionados» | Terminología «orphan/huérfanos» en sec02 EN/ES y maestro | cero `fractionated/fraccionados` en fuentes ✅ |

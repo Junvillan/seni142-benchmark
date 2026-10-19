@@ -18,6 +18,7 @@
 | `paper_seni142_ieee_transactions_en.md` | Canonical master of the manuscript (bit-identical to the submission master). |
 | `SENI142_IEEE_2col.pdf` / `SENI142_IEEE_1col.pdf` / `SENI142_IEEE_ES_1col.pdf` | Compiled manuscript (two-column, one-column, Spanish). |
 | `CARTA_*`, `DOSSIER_*`, `MATRIZ_*` | Transmittal dossier and cross-reference matrix of the review correspondence. |
+| `NOTA_PROPIEDAD_INTELECTUAL_SOLVER_ES_SENI142_20261019.md` / `IP_PATENT_SOLVER_STATEMENT_EN_SENI142_20261019.md` | Intellectual-property doctrine of the submission: benchmark-paper scope per IEEE PES Task Force practice (open model + open validation harness) versus the patent-pending multi-vector optimization solver; confidential reviewer access under an IEEE peer-review NDA. |
 
 ## Verification
 

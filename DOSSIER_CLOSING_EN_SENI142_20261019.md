@@ -19,7 +19,7 @@ In response to the editorial decision of **"Major revision — final round, narr
 
 The static post-event AC power-flow verification $F(\mathbf{x})=\mathbf{0}$ has been executed directly on the complete canonical 142-bus model of the Dominican Republic under the base multi-temporal dispatch (co-optimization of spinning reserve $\sum r_g^+ \ge 752\text{ MW}$).
 
-The **Definitive Table VI** is reported below, with verified Newton–Raphson convergence ($\|\Delta P, \Delta Q\|_\infty \le 10^{-8}\text{ pu}$ in $\le 4$ iterations), exact nodal balance, and the SHA-512 digests of the archived solutions (the full 128-hex-character digests are contained in the sealed artifact `ARTEFACTO_B1_8_CONTINGENCIAS_CANONICAS_142BARRAS.json`, artifact SHA-512: `8ee4b22b607a2b77138e04e53f282057f57a8b51914bf37648a35b6639a8144af623bd2917259921b79ef584177306900e360cc5651e154dca82c2a7fbadfe46`):
+The **Definitive Table VI** is reported below, with verified Newton–Raphson convergence ($\|\Delta P, \Delta Q\|_\infty \le 10^{-8}\text{ pu}$ in $\le 4$ iterations), exact nodal balance, and the SHA-512 digests of the archived solutions (the full 128-hex-character digests are contained in the sealed artifact `ARTEFACTO_B1_8_CONTINGENCIAS_CANONICAS_142BARRAS.json`, artifact SHA-512: `a59f0fac19176d04539bf1fbd823fed2a7e81b290c5b551f30d717798ab632c4059e6c8dd81f8daef73f2bc0e31855dac0cf786a5f6a4a358922e1ce546593da`):
 
 | Contingency ID | Monitored Asset | Outage Type | Pre-event (MW) | $\min V_i$ (pu) | $\max \|S\|/S_{\max}$ (%) | $\Delta P_{\mathrm{slack}}$ (MW) | $\Delta P_g$ (MW) | $P_{\mathrm{shed}}$ (MW) | SHA-512 Hash of the JSON Solution |
 |---|---|---|---:|---:|---:|---:|---:|---|---|

@@ -19,7 +19,7 @@ En respuesta a la resolución editorial de **«Revisión mayor — ronda final, 
 
 Se ha ejecutado la verificación estática de flujo AC post-evento $F(\mathbf{x})=\mathbf{0}$ directamente sobre el modelo canónico completo de 142 barras de la República Dominicana bajo el despacho multitemporal base (co-optimización de reserva rodante $\sum r_g^+ \ge 752\text{ MW}$).
 
-A continuación se reporta la **Tabla VI Definitiva**, con convergencia verificada de Newton-Raphson ($\|\Delta P, \Delta Q\|_\infty \le 10^{-8}\text{ pu}$ en $\le 4$ iteraciones), balance nodal exacto y los digests SHA-512 de las soluciones archivadas (los digests íntegros de 128 caracteres hexadecimales obran en el artefacto sellado `ARTEFACTO_B1_8_CONTINGENCIAS_CANONICAS_142BARRAS.json`, SHA-512 del artefacto: `8ee4b22b607a2b77138e04e53f282057f57a8b51914bf37648a35b6639a8144af623bd2917259921b79ef584177306900e360cc5651e154dca82c2a7fbadfe46`):
+A continuación se reporta la **Tabla VI Definitiva**, con convergencia verificada de Newton-Raphson ($\|\Delta P, \Delta Q\|_\infty \le 10^{-8}\text{ pu}$ en $\le 4$ iteraciones), balance nodal exacto y los digests SHA-512 de las soluciones archivadas (los digests íntegros de 128 caracteres hexadecimales obran en el artefacto sellado `ARTEFACTO_B1_8_CONTINGENCIAS_CANONICAS_142BARRAS.json`, SHA-512 del artefacto: `a59f0fac19176d04539bf1fbd823fed2a7e81b290c5b551f30d717798ab632c4059e6c8dd81f8daef73f2bc0e31855dac0cf786a5f6a4a358922e1ce546593da`):
 
 | Contingency ID | Monitored Asset | Outage Type | Pre-event (MW) | $\min V_i$ (pu) | $\max \|S\|/S_{\max}$ (%) | $\Delta P_{\mathrm{slack}}$ (MW) | $\Delta P_g$ (MW) | $P_{\mathrm{shed}}$ (MW) | Hash SHA-512 de la Solución JSON |
 |---|---|---|---:|---:|---:|---:|---:|---|---|
