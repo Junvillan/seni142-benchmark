@@ -15,7 +15,7 @@ import json, os, shutil, subprocess, sys, tempfile
 import numpy as np
 from pathlib import Path
 
-BUNDLE = Path(sys.argv[1] if len(sys.argv) > 1 else "/workspace/seni142_v3").resolve()
+BUNDLE = Path(sys.argv[1] if len(sys.argv) > 1 else Path(__file__).resolve().parent).resolve()
 results = []
 
 
