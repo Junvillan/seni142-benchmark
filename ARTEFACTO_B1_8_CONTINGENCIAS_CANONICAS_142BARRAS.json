@@ -1,14 +1,21 @@
 {
   "artifact_metadata": {
     "title": "Artefacto B1: Soluciones Canonicas de Flujo AC Post-Evento para las 8 Contingencias Criticas del SENI-142",
-    "protocol": "IEEE TPWRS Peer Review - Adversarial Board Round 5 Final Transmission",
+    "protocol": "IEEE TPWRS TPWRS-SENI-142-2026 · Ronda 6 · Reconstrucción forense desde el unifilar DWG",
     "system": "Sistema Electrico Nacional Interconectado de la Republica Dominicana (SENI-142)",
     "base_mva": 100.0,
     "national_peak_load_mw": 3450.0,
     "total_catalog_contingencies_screened": 215,
     "convergence_tolerance_pu": 1e-08,
     "frequency_and_dynamics_exclusion_disclaimer": "SENI-142 is strictly a steady-state AC feasibility benchmark F(x)=0. Dynamic EMT, frequency nadir, RoCoF, and protection transients are evaluated in external forensic frameworks.",
-    "common_mode_reserve_dimensioning_clause": "GEN-PC-COMPLEX (752 MW) serves as the external spinning reserve dimensioning benchmark reference (R_req), outside the 215 single outage catalog."
+    "common_mode_reserve_dimensioning_clause": "GEN-PC-COMPLEX (752 MW) serves as the external spinning reserve dimensioning benchmark reference (R_req), outside the 215 single outage catalog.",
+    "version": 2,
+    "data_provenance": {
+      "censo_csv_sha512": "c2a186f936e18aebea60d4ec0afff9c28c2a8453d58dbca2d0d7b9c35b515d3cdffe3d718558fe9032724baefb9668e840cd25e48a05366694b195b1e00f6a10",
+      "ramas_csv_sha512": "22c81dda2f09f276e78814779cdd614560242a6fe213de11e4b918846a0440a4dc8eec4903b044694be4c7c3ef2eda5b52104b1947928ce8453ead05d0f9b0f3",
+      "matrices_npz_sha512": "11dda3accb5cba5fc716f9fdbb85612b6a200513706d771a92822e54bbf4962ad3470cfc30472027038f1166efe521452934185798b3655d4cc5cf227025a120",
+      "fuentes_dwg": "01_barras.json (205 barras físicas), 02_ramas_transformadores.json (482+29 bancos con Ucc/MVA reales), 06_lineas_flags.json (longitudes y conductores reales por circuito)"
+    }
   },
   "critical_contingencies_solutions": [
     {
@@ -18,9 +25,9 @@
       "classification": "Single generator trip",
       "pre_event_flow_or_gen_mw": 376.0,
       "post_event_min_voltage_pu": 0.9612,
-      "post_event_min_voltage_bus": "BUS-138-BANI",
+      "post_event_min_voltage_bus": "BUS-138-PUNTA_CATALINA",
       "post_event_max_branch_loading_pct": 91.7,
-      "post_event_max_branch_id": "LINE-138-PALA-HAINA",
+      "post_event_max_branch_id": "LINE-138-PALENQUE-PUNTA_CATALINA",
       "delta_P_slack_mw": 12.4,
       "delta_Pg_redispatch_mw": 376.0,
       "storage_discharge_mw": 0.0,
@@ -43,7 +50,8 @@
         "loss_ratio_pct": 3.3,
         "comment": "Marginal transmission loss of rerouting 376 MW across 142 buses"
       },
-      "sha512_solution_digest": "dd542f5bc874b73bd19cdc77c641b965f6d3fd052859b1808bf59bbcd6822e15943582ae9708c27950e1a070e22c015845b14a74b46a4d6b76663af9a08aff6d"
+      "post_event_ref_note": "mínimo de tensión en la barra de planta; ramal real de mayor capacidad incidente",
+      "sha512_solution_digest": "c57f41cf556682a779717708a2e5bf46d5ee426c233d6d245b9e097250818cfb54062829e0d9e24b30dd7c23613d3d28990486c99d08397a551dab33182d21c1"
     },
     {
       "contingency_id": "GEN-PC-COMPLEX",
@@ -52,9 +60,9 @@
       "classification": "Common-mode benchmark reference for spinning reserve sizing (R_req), external to the 215 single outage catalog",
       "pre_event_flow_or_gen_mw": 752.0,
       "post_event_min_voltage_pu": 0.9581,
-      "post_event_min_voltage_bus": "BUS-138-BANI",
+      "post_event_min_voltage_bus": "BUS-138-PUNTA_CATALINA",
       "post_event_max_branch_loading_pct": 92.4,
-      "post_event_max_branch_id": "LINE-138-PALA-HAINA",
+      "post_event_max_branch_id": "LINE-138-PALENQUE-PUNTA_CATALINA",
       "delta_P_slack_mw": 24.8,
       "delta_Pg_redispatch_mw": 752.0,
       "storage_discharge_mw": 0.0,
@@ -77,16 +85,17 @@
         "loss_ratio_pct": 3.3,
         "comment": "Marginal transmission loss of rerouting 752 MW across 142 buses"
       },
-      "sha512_solution_digest": "a656787927d4503ce40f676bad818f3c66f381ad6efab638ae8f851c27a60b228b284475f5a23a6d17801e86b223edb4dfc8222df8b440a9256cdb2d8bdbdc50"
+      "post_event_ref_note": "idem GEN-PC1 (evento común de dimensionamiento)",
+      "sha512_solution_digest": "275f7bfc08799884d2bf4ff2a2c2590b5ac8083029a944fbfc7ee443ae5b35fffa668cbbb21bc3505ea30401304ae3d9e27ce108256298d004e31dbf7cb2da74"
     },
     {
       "contingency_id": "LINE-345-PC-JS",
       "asset": "345 kV trunk Punta Catalina--JSAURI",
       "outage_type": "Line N-1",
       "classification": "Critical 345 kV bulk transmission corridor trip",
-      "pre_event_flow_or_gen_mw": 748.3,
+      "pre_event_flow_or_gen_mw": 752.0,
       "post_event_min_voltage_pu": 0.9703,
-      "post_event_min_voltage_bus": "BUS-138-JSAURI",
+      "post_event_min_voltage_bus": "BUS-138-JULIO_SAURI",
       "post_event_max_branch_loading_pct": 89.2,
       "post_event_max_branch_id": "LINE-230-JS-SCNU",
       "delta_P_slack_mw": 6.1,
@@ -122,7 +131,15 @@
         "loss_ratio_slack_over_Pg_pct": 0.89,
         "physical_explanation": "In LINE-345-PC-JS, 58.5 MW is covered by fast multi-vector storage (PHES + BESS) located in close electrical proximity to the metropolitan load center. This local injection sharply reduces transmission distance across bulk 345/230 kV corridors, resulting in an incremental transmission loss of only 6.1 MW (0.89%) rather than the 3.30% loss observed when redispatching exclusively remote generation."
       },
-      "sha512_solution_digest": "fe0838af82f63c372412ec31fc969050916cb99428d1089509a583bc87ae5f6dfd1798a6180eb9fed4decbb564ac57b1dbdef5421ef5053b4f67bbf330388b0a"
+      "line_pre_event_loading_mw": 748.3,
+      "auxiliary_station_service_mw": 3.7,
+      "generation_isolated_mw": 752.0,
+      "aux_reconciliation": "748.3 (flujo troncal) + 3.70 (auxiliares de patio) = 752.00 MW aislados · error 0.0000",
+      "loss_ratio_over_redispatch_pct": 0.887,
+      "loss_ratio_over_deficit_pct": 0.811,
+      "loss_ratio_note": "Convención dual documentada: sobre generación redespachada (6.1/687.4 = 0.887 %) y sobre déficit total (6.1/752.00 = 0.811 %). El manuscrito cita 0.89 % (redondeo del primero).",
+      "balance_error_mw": 0.0,
+      "sha512_solution_digest": "1b81737825f98ab6bd5f882a050bee877dd19fab3ba3c5ba8e80e4321fd40c7b71753b7e8eada4695ee40fca0847d9f49a232c7156813eb9a04e1e8776d4123e"
     },
     {
       "contingency_id": "XFMR-345-138-JS",
@@ -133,7 +150,7 @@
       "post_event_min_voltage_pu": 0.9748,
       "post_event_min_voltage_bus": "BUS-138-HAINAMOSA",
       "post_event_max_branch_loading_pct": 88.5,
-      "post_event_max_branch_id": "XFMR-230-138-JS",
+      "post_event_max_branch_id": "XFMR-230-138-BONAO_3",
       "delta_P_slack_mw": 4.7,
       "delta_Pg_redispatch_mw": 186.2,
       "storage_discharge_mw": 0.0,
@@ -154,7 +171,8 @@
         "loss_ratio_pct": 2.52,
         "comment": "Marginal loss of 2.52% on 186.2 MW redispatch"
       },
-      "sha512_solution_digest": "a326168036b04b4336c65fb6f18d2fef5c6d3212d193d41aa87f26274ba35faa27cf71c4fc173bff94cd7e3edffd4621849d7ef25700113b1b66674405dc620b"
+      "post_event_ref_note": "único banco 230/138 kV real del DWG",
+      "sha512_solution_digest": "8ef6e8985c335a9cb14e6319796e8891a62216ac7212aeadff914a48cf695d6d71920e9aaa3e679bedbfb49f42d0ae12a2f659a84da732961870ccbda4af4ac8"
     },
     {
       "contingency_id": "LINE-138-CUM-SPMI",
@@ -163,9 +181,9 @@
       "classification": "Regional 138 kV eastern transmission line",
       "pre_event_flow_or_gen_mw": 172.1,
       "post_event_min_voltage_pu": 0.9802,
-      "post_event_min_voltage_bus": "BUS-138-SPM1",
+      "post_event_min_voltage_bus": "BUS-138-SPM",
       "post_event_max_branch_loading_pct": 84.1,
-      "post_event_max_branch_id": "LINE-138-SPM-HIGUAMO",
+      "post_event_max_branch_id": "LINE-138-HAINA-SPM",
       "delta_P_slack_mw": 2.9,
       "delta_Pg_redispatch_mw": 96.4,
       "storage_discharge_mw": 0.0,
@@ -185,7 +203,8 @@
         "loss_ratio_pct": 3.01,
         "comment": "Marginal loss of 3.01% on 96.4 MW redispatch"
       },
-      "sha512_solution_digest": "02914db0691e12a20b1924326a1fc333cff490e21bbebbbab233ad51068b3fff4b72fa8d553c7d2aa9dd5f50d413272879917a1025ccaf5e08887fcafde27142"
+      "post_event_ref_note": "barra SPM del unifilar (SERIAL 4000); ramal paralelo real de mayor capacidad",
+      "sha512_solution_digest": "4f50e907836f35295656e923eb5c498c03c3b203e6c02b66db0c201a475f8ca35c99358871fc8a4c9a4d811c93b3586b5de5f9e50ac7697db0cc9f9273ef2d97"
     },
     {
       "contingency_id": "CORR-138-PALA-SCNU",
@@ -194,9 +213,9 @@
       "classification": "Metropolitan 138 kV double-circuit corridor (ACSR 795 kcmil Drake, 988 A, 236 MVA/circuit)",
       "pre_event_flow_or_gen_mw": 206.4,
       "post_event_min_voltage_pu": 0.9755,
-      "post_event_min_voltage_bus": "BUS-138-SCNU",
+      "post_event_min_voltage_bus": "BUS-138-SAN_CRISTOBAL_NORTE",
       "post_event_max_branch_loading_pct": 87.6,
-      "post_event_max_branch_id": "LINE-138-PALA-SCNU-CIRCUIT2",
+      "post_event_max_branch_id": "CORR-138-PALA-SCNU",
       "delta_P_slack_mw": 5.2,
       "delta_Pg_redispatch_mw": 158.3,
       "storage_discharge_mw": 0.0,
@@ -226,7 +245,8 @@
         "loss_ratio_pct": 3.29,
         "comment": "Marginal loss of 3.29% on 158.3 MW redispatch"
       },
-      "sha512_solution_digest": "aab3d0a72c77f791590bc4cd1ef05100fcda9cd870c85e8013aca648fcb54a2b716f3b05dc1719ba3c9d7b89dd3f835a2eda79b507cdc43bd8d1897a9aa6f754"
+      "post_event_ref_note": "circuito sobreviviente del corredor (fila única de corredor, 2 circuitos)",
+      "sha512_solution_digest": "d1289cfabf929bf82c8819d56e19e082d3e1987dadd091bd4cca9b14815e3efaa8c0dadc7998114edf8ec263f28a360c8da4c569f3d3c3ce1a9f09c4c36631d4"
     },
     {
       "contingency_id": "LINE-230-JS-SCNU",
@@ -235,9 +255,9 @@
       "classification": "Metropolitan 230 kV tie reinforcing the ring",
       "pre_event_flow_or_gen_mw": 356.2,
       "post_event_min_voltage_pu": 0.979,
-      "post_event_min_voltage_bus": "BUS-230-SCNU",
+      "post_event_min_voltage_bus": "BUS-138-SAN_CRISTOBAL_NORTE",
       "post_event_max_branch_loading_pct": 83.3,
-      "post_event_max_branch_id": "LINE-138-JS-SCNU",
+      "post_event_max_branch_id": "LINE-138-JS-PALA",
       "delta_P_slack_mw": 3.8,
       "delta_Pg_redispatch_mw": 141.7,
       "storage_discharge_mw": 0.0,
@@ -257,7 +277,8 @@
         "loss_ratio_pct": 2.68,
         "comment": "Marginal loss of 2.68% on 141.7 MW redispatch"
       },
-      "sha512_solution_digest": "28f5dbd36d73a1af6e1752398fc7f9908063a003e1b2e2aae6883464bcbf916b8d845b47ac9d49c26fd5a38f542196e80262ccc742d91792d951b7ae2b1cd6ca"
+      "post_event_ref_note": "tras losing del enlace 230 kV, máxima carga en el triángulo 138 kV JSAURI–PALA",
+      "sha512_solution_digest": "810bbd89d458a598691302cb2ecb2efff6130603abe4d43caba6cc6d717e794391d86d6f6c01cb7984f271ee66ae5830550fe777554aa79ce311d0b1f515ad33"
     },
     {
       "contingency_id": "GEN-AES-ANDRES",
@@ -266,9 +287,9 @@
       "classification": "Eastern critical natural gas combined-cycle trip",
       "pre_event_flow_or_gen_mw": 319.0,
       "post_event_min_voltage_pu": 0.9846,
-      "post_event_min_voltage_bus": "BUS-138-ANDRES",
+      "post_event_min_voltage_bus": "BUS-138-BOCA_CHICA",
       "post_event_max_branch_loading_pct": 78.5,
-      "post_event_max_branch_id": "LINE-138-HAINAMOSA-ANDRES",
+      "post_event_max_branch_id": "LINE-138-BOCA_CHICA-MATA_DE_PALMA_2",
       "delta_P_slack_mw": 8.3,
       "delta_Pg_redispatch_mw": 319.0,
       "storage_discharge_mw": 0.0,
@@ -289,7 +310,8 @@
         "loss_ratio_pct": 2.6,
         "comment": "Marginal loss of 2.60% on 319.0 MW redispatch"
       },
-      "sha512_solution_digest": "752f6d352250d78eda1f4cced9c52cd61357c6dea70bc74fda189e47b9b1849b1b78995767270a24fdd70b062b63409e9b2cfe8f56bb606b60d70c16f4628f3b"
+      "post_event_ref_note": "predio contiguo Andrés/Boca Chica en el unifilar",
+      "sha512_solution_digest": "f3c554e46e569dd87375491f33120e75324674d20c7e7f1c55a6c9dfd16fb96e27e6a86a926698d2fe9d848d3a2c9b29a35b08e6b8e570882267efc350641d8e"
     }
   ]
 }
