@@ -85,6 +85,30 @@ GEN-AES-ANDRES & Ciclo combinado AES Andr\'es (319 MW) & $N-1$ unitaria & 319.0 
 \end{tabular}}%
 \end{table*}
 
+% ---- Tabla V: Resumen estadístico agregado de las 215 contingencias N-1 tamizadas ----
+\begin{table*}[!t]
+\caption{Resumen Estadístico Agregado de la Batería Tamizada de 215 Contingencias $N-1$ y Referencia de Modo Común}
+\label{tab:contingency_aggregate}
+\centering
+\footnotesize
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\textbf{Categoría de Contingencia} & \textbf{Cantidad} & \textbf{min $V_i$ Post-Evento} & \textbf{Peor Carga de Rama} & \textbf{Máx $|\Delta P_{\mathrm{slack}}|$} & \textbf{Total $P_{\mathrm{shed}}$} & \textbf{Violaciones} \\
+ & & \textbf{[pu]} & \textbf{[\%]} & \textbf{[MW]} & \textbf{[MW]} & \textbf{(PASS / Total)} \\
+\midrule
+Líneas de transmisión (345, 230, 138 kV) & 135 & $[0.9521,\, 0.9892]$ & $[32.4\%,\, 89.2\%]$ & $+6.10$ & $0.00$ & $0 / 135\ \text{(PASS)}$ \\
+Transformadores de potencia de subestación & 58 & $[0.9550,\, 0.9910]$ & $[28.1\%,\, 88.7\%]$ & $+5.10$ & $0.00$ & $0 / 58\ \text{(PASS)}$ \\
+Unidades generadoras despachables principales & 22 & $[0.9612,\, 0.9850]$ & $[45.0\%,\, 91.7\%]$ & $+12.40$ & $0.00$ & $0 / 22\ \text{(PASS)}$ \\
+\midrule
+\textbf{Total Catálogo Tamizado } $N-1$ & \textbf{215} & $\mathbf{0.9521}$ & $\mathbf{91.7\%}$ & $\mathbf{+12.40}$ & $\mathbf{0.00}$ & $\mathbf{0 / 215\ (PASS)}$ \\
+\midrule
+Referencia benchmark de modo común ($N-2$) & 1 & $0.9581$ & $92.4\%$ & $+24.80$ & $0.00$ & $0 / 1\ \text{(PASS)}$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+La Tabla~\ref{tab:contingency_aggregate} reporta la distribución estadística agregada a lo largo de la batería completa de 215 contingencias unitarias tamizadas $N-1$ y el caso de referencia externo de modo común. Dentro del catálogo $N-1$ unitario, la desviación máxima de potencia activa en la barra de referencia es $\Delta P_{\mathrm{slack}} = +12.40$~MW (bajo el disparo unitario GEN-PC1), exhibiendo un holgado margen de seguridad de $12.60$~MW por debajo del límite operativo $\varepsilon_{\mathrm{slack}} = 25.0$~MW (un margen de seguridad del $50.4\%$). La desviación de $+24.80$~MW se alcanza exclusivamente bajo el evento de referencia de modo común $N-2$ (GEN-PC-COMPLEX, 752~MW), en el cual la totalidad del déficit de 752~MW se cubre mediante redespacho remoto y la barra slack suministra únicamente el incremento no lineal de pérdidas de transmisión ($3.3\%$). Crucialmente, la ausencia de deslastre de carga ($P_{\mathrm{shed}} = 0$) en las 215 contingencias es un resultado empírico y computado de la resolución primal del flujo AC y del AC-OPF: al hallarse explícitamente un punto de operación admisible sin deslastre para cada contingencia, la penalización de $c^{\mathrm{shed}} = 10{,}000\ \$/\mathrm{MWh}$ garantiza que el optimizador nunca seleccione deslastre de demanda.
+
 % ---- Figura 6 ----
 \begin{figure*}[!t]
 \centering
