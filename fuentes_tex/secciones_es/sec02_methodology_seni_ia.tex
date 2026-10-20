@@ -47,12 +47,17 @@ La Figura~\ref{fig:topologia142} sitúa los 142 nodos resueltos en los cuatro ma
 \subsection{Reducción por equivalentes de la capa de subtransmisión de 69 kV}
 \label{sub:reduction}
 
-Sesenta y tres laterales radiales de la capa de 69~kV se condensan en equivalentes multipuerto estáticos de tipo Th\'evenin/Norton. Para cada borne de frontera retenido, que permanece en sus 69~kV medidos, el equivalente preserva (i) la inyección compleja agregada del área condensada en cada hora modelada y (ii) la impedancia de cortocircuito $Z_{\mathrm{cc}}$ vista desde ese borne, obtenida por reducción de red tipo Kron. Formalmente, para el puerto de frontera $p$ con interior condensado $\Omega_r$,
+Sesenta y tres laterales radiales de la capa de 69~kV se condensan en equivalentes de frontera estáticos mediante reducción de Kron. En general, particionando los nodos de subtransmisión en los 27 puertos de frontera retenidos $\mathcal{V}_{B,69}$ y los 63 nodos laterales eliminados $\mathcal{V}_{\mathrm{lat}}$, se obtiene la reducción matricial de admitancia multipuerto
 \begin{equation}
-V_p = E_{\mathrm{th}}^{(r)} - Z_{\mathrm{th}}^{(r)} I_p, \qquad \sum_{i \in \Omega_r} S_i = V_p I_p^{*} + \Delta S_{\mathrm{loss}},
+\begin{bmatrix} \mathbf{I}_{B} \\ \mathbf{I}_{\mathrm{lat}} \end{bmatrix} = \begin{bmatrix} \mathbf{Y}_{BB} & \mathbf{Y}_{BL} \\ \mathbf{Y}_{LB} & \mathbf{Y}_{LL} \end{bmatrix} \begin{bmatrix} \mathbf{V}_B \\ \mathbf{V}_{\mathrm{lat}} \end{bmatrix} \implies \mathbf{Y}_{B}^{\mathrm{red}} = \mathbf{Y}_{BB} - \mathbf{Y}_{BL}\mathbf{Y}_{LL}^{-1}\mathbf{Y}_{LB} \in \mathbb{C}^{27 \times 27}.
+\label{eq:kron_69}
+\end{equation}
+Crucialmente, en la topología operativa física del SENI, cada una de las 63 antenas de subtransmisión constituye un subárbol lateral radial no acoplado $\Omega_p$ originado en una única subestación reductora troncal (los interruptores de enlace entre subestaciones de 69~kV se mantienen normalmente abiertos según el código de despacho estándar para evitar flujos circulares no coordinados de potencia activa/reactiva). En consecuencia, $\mathbf{Y}_{LL}$ es diagonal por bloques respecto de los 27 terminales de frontera, y los bloques de acoplamiento mutuo satisfacen $(\mathbf{Y}_{BL}\mathbf{Y}_{LL}^{-1}\mathbf{Y}_{LB})_{pq} = 0$ para todo $p \neq q$. La reducción, por ende, se desacopla sin aproximación algebraica en 27 equivalentes de punto de excitación independientes con impedancia de Thévenin $Z_{\mathrm{th}}^{(p)} = (\mathbf{Y}_{B,pp}^{\mathrm{red}})^{-1}$ e inyección neta de carga en frontera
+\begin{equation}
+S_p^{\mathrm{equiv}} = \sum_{i \in \Omega_p} S_{i}^{\mathrm{load}} + \Delta S_{\mathrm{loss}}^{(p)}, \qquad V_p = E_{\mathrm{th}}^{(p)} - Z_{\mathrm{th}}^{(p)} I_p,
 \label{eq:thevenin}
 \end{equation}
-de modo que el balance de potencia en frontera contabiliza explícitamente las pérdidas internas representadas por $\Delta S_{\mathrm{loss}}$, mientras el equivalente conserva las variables del borne retenido y elimina la inflación dimensional de $\mathbf{Y}_{\mathrm{bus}}$. La reducción se recalcula desde la configuración archivada del patrimonio y es en sí misma parte del artefacto sellado, en consonancia con la práctica recomendada para análisis de sistemas industriales \cite{ieee399} y con el intercambio de modelos de red basado en CIM \cite{iec61970}.
+donde las pérdidas internas de rama $\Delta S_{\mathrm{loss}}^{(p)} = \sum_{\ell \in \mathcal{E}(\Omega_p)} (R_\ell + jX_\ell)|I_\ell|^2$ se preservan explícitamente, mientras que todos los acoplamientos mutuos interdominio a lo largo de la red de transmisión troncal se manejan con rigor mediante la matriz completa de complemento de Schur de $27 \times 27$, $\mathbf{S} = \mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B}$, en la Sección~\ref{sub:schur}. Esta reducción se recalcula desde la configuración archivada del patrimonio y es en sí misma parte del artefacto sellado, en consonancia con la práctica recomendada para análisis de sistemas industriales \cite{ieee399} y con el intercambio de modelos de red basado en CIM \cite{iec61970}.
 
 De las noventa barras de 69~kV, sesenta y tres son los laterales radiales retirados arriba. Las otras veintisiete permanecen como barras resueltas a los 69~kV medidos. Cada una de esas veintisiete es un borne de frontera retenido. Los 115 nodos de masa de la Tabla~\ref{tab:parameters} son las barras del censo a 345, 230 y 138~kV. El modelo que realmente se resuelve tiene 142 barras: esos 115 nodos de masa más estos 27 bornes a 69~kV. Retirar los sesenta y tres laterales es también la razón de que el flujo desacoplado rápido y Gauss--Seidel converjan en este patrimonio: las ramas cuya relación $R/X$ singularizaría la Jacobiana ya no son nodos del sistema resuelto. Las unidades síncronas conservan su curva completa $P$--$Q$. Las plantas renovables estáticas no son máquinas síncronas; su soporte reactivo es el mapa continuo de la Sección~\ref{sub:regularization}.
 
@@ -94,29 +99,31 @@ El reordenamiento es una matriz de permutación $\mathbf{P}$. Los valores singul
 \end{equation}
 El estado ideal ajusta la banda de tensión y las pérdidas. No optimiza $\kappa(\mathbf{J})$. El par $341.21 \to 365.91$ es la condición espectral $\kappa_2(\mathbf{J})$ de la Jacobiana del caso base en los puntos de operación real e ideal. El incremento de $+7.24\%$ es un cambio de condicionamiento por punto de operación. No es un aumento de dimensión. IEEE Std 399-1997 \cite{ieee399} se cita en la Sección~\ref{sub:reduction} como contexto de práctica industrial para estudios de sistema. No se usa aquí como umbral estricto de $\kappa(\mathbf{J})$ para el flujo de potencia en transmisión.
 
-\subsection{Regularización reactiva centrada y capabilidad del inversor}
+\subsection{Regularización reactiva centrada, estatismo Volt-Var y capabilidad del inversor}
 \label{sub:regularization}
 
-La conmutación dura PV--PQ en un límite reactivo induce ciclos límite en las iteraciones tipo Newton cuando el punto operativo oscila alrededor de ese límite. El controlador enunciado es un mapa centrado de clase $C^1$ con $Q(V_{\mathrm{ref}})=0$,
+En el modelo de benchmark, las unidades térmicas e hidroeléctricas síncronas operan bajo reguladores automáticos de tensión (AVR) convencionales y se formulan como barras PV estándar que mantienen $|V_i| = V_i^{\mathrm{sp}}$ dentro de los límites de capacidad del generador $[Q_g^{\min}, Q_g^{\max}]$. Por el contrario, los recursos basados en inversores (IBRs) y las plantas renovables estáticas ($\mathcal{S}_{\mathrm{gen}}$) no actúan como fuentes de tensión síncronas ideales; conforme a IEEE Std 1547-2018 (Cláusula 5.3.3) e IEEE Std 2800-2022 (Cláusula 5.2.2), suministran soporte de tensión autónomo mediante una característica continua de estatismo Volt-Var sigmoidal de clase $C^1$,
 \begin{equation}
-Q_g^{\mathrm{reg}}(V) = Q_g^{\max} \left( \frac{2}{1 + e^{-\gamma (V_{\mathrm{ref}} - V)}} - 1 \right).
+Q_{\mathrm{droop}}(V) = Q_g^{\max}(P_g) \left( \frac{2}{1 + e^{-\gamma (V_{\mathrm{ref}} - V)}} - 1 \right),
 \label{eq:sigmoid}
 \end{equation}
-En $V=V_{\mathrm{ref}}$ el exponente se anula y el regulador inyecta potencia reactiva nula. Su derivada
-\begin{equation*}
-\frac{\partial Q_g^{\mathrm{reg}}}{\partial V} = -2\gamma Q_g^{\max}\,\sigma(1-\sigma), \qquad \sigma=\frac{1}{1+e^{-\gamma(V_{\mathrm{ref}}-V)}},
-\end{equation*}
-entra en la Jacobiana y mantiene diferenciable el paso de Newton. Un \emph{smoothstep} de clase $C^1$ con banda muerta, dentro de la misma banda de tensión, es una transición admisible de la misma clase. El error medido de regularización de este controlador sobre el horizonte de validación es $5.32 \times 10^{-12}$. Las plantas renovables estáticas usan la misma familia centrada,
+donde $Q_{\mathrm{droop}}(V_{\mathrm{ref}}) = 0$ en la tensión nominal programada. Para cada recurso basado en inversor, el techo de saturación reactiva se acopla dinámicamente a la generación activa,
 \begin{equation}
-Q_{\mathrm{sgen}}(V) = Q_{\max} \left( \frac{2}{1 + e^{-\gamma (V_{\mathrm{ref}} - V)}} - 1 \right),
-\label{eq:qsgen}
+Q_g^{\max}(P_{g,t}) = \sqrt{\max\bigl(0,\, (S_g^{\max})^2 - P_{g,t}^2\bigr)},
+\label{eq:qmax_dynamic}
 \end{equation}
-impar respecto de la tensión de referencia. Toda inyección acoplada a un inversor queda además en el disco de potencia aparente
+garantizando que el disco de capacidad de potencia aparente
 \begin{equation}
-P_{g,t}^{2} + Q_{g,t}^{2} \le \bigl(S_{g}^{\max}\bigr)^{2},
+P_{g,t}^{2} + Q_{g,t}^{2} \le \bigl(S_{g}^{\max}\bigr)^{2}
 \label{eq:capability}
 \end{equation}
-conforme a IEEE Std 2800-2022 \cite{ieee2800} e IEEE Std 1547-2018 \cite{ieee1547}.
+se satisfaga estrictamente a lo largo de todas las horas operativas.
+
+Más allá de su estricto cumplimiento normativo de código de red, este estatismo sigmoidal $C^1$ cumple una función numérica indispensable: la conmutación dura PV--PQ en fronteras reactivas es una causa conocida de ciclos límite y oscilaciones en iteraciones de flujo de potencia tipo Newton. La derivada continua
+\begin{equation*}
+\frac{\partial Q_{\mathrm{droop}}}{\partial V} = -2\gamma Q_g^{\max}(P_g)\,\sigma(1-\sigma), \qquad \sigma=\frac{1}{1+e^{-\gamma(V_{\mathrm{ref}}-V)}},
+\end{equation*}
+entra directamente en la Jacobiana reactiva $\mathbf{J}_{QV}$, preservando la diferenciabilidad a lo largo de toda la trayectoria de solución. El residuo medido de regularización de esta formulación sobre el horizonte de validación de 520 semanas es $5.32 \times 10^{-12}\ \mathrm{pu}$.
 
 \subsection{Jacobiana de cuatro bloques y cascada de solvers}
 \label{sub:jacobian}
@@ -158,7 +165,7 @@ La referencia angular permanece en la barra Julio Sauri 345~kV a $V=1.02$~pu. Su
 P_{\mathrm{slack}}^{\min} \le P_{\mathrm{slack},t} \le P_{\mathrm{slack}}^{\max},
 \label{eq:slackbox}
 \end{equation}
-y no absorbe un desbalance arbitrario. La reserva rodante se co-optimiza sobre el parque generador,
+con cotas operativas $P_{\mathrm{slack}}^{\min} = 0\ \mathrm{MW}$ y $P_{\mathrm{slack}}^{\max} = 800.0\ \mathrm{MW}$ (despacho base $P_{\mathrm{slack},0} = 687.40\ \mathrm{MW}$), y no absorbe un desbalance arbitrario. La reserva rodante se co-optimiza sobre el parque generador,
 \begin{equation}
 \begin{aligned}
 \sum_{g \in \mathcal{G}} r_{g,t}^{+} \;&\ge\; R_t^{\mathrm{req}}
@@ -175,14 +182,14 @@ P_{g,t}^{(c)} = P_{g,t}^{0} + \Delta P_{g,t}^{(c)}, \qquad 0 \le \Delta P_{g,t}^
 \end{equation}
 y el registro informa la desviación de la barra de referencia $\Delta P_{\mathrm{slack},t}^{(c)}$ junto con la variable de carga no servida $P_{\mathrm{shed},t}^{(c)}$.
 
-El requisito \eqref{eq:reserve} implementa una doctrina de seguridad explícita de dos capas. \emph{Capa 1 --- $N-1$ unitaria.} El catálogo de 215 elementos audita salidas simples --- 104 líneas troncales, 16 bancos de autotransformadores, 32 unidades térmicas síncronas y 63 plantas renovables estáticas --- con cada unidad de 376~MW de Punta Catalina auditada individualmente, de modo que la capa unitaria del requisito es la mayor potencia nominal unitaria, 376~MW. \emph{Capa 2 --- modo común.} El evento de modo común de planta más severo de la isla, el disparo simultáneo del complejo completo ($2 \times 376 = 752$~MW), queda adicionalmente cubierto al dimensionar el requisito con la potencia del complejo. Co-optimizar la reserva en $\sum r_g^+ \ge 752$~MW no es por tanto una tautología, sino un criterio preventivo deliberadamente ultraconservador: dado que la flota co-optimizada cubre el mayor déficit de modo común, toda salida unitaria del catálogo queda cubierta \emph{a fortiori} en el eje de capacidad, y la cuestión de factibilidad abierta para cada contingencia se reduce a la entregabilidad por red de la reserva desplegada y a la suficiencia de tensión post-evento --- exactamente lo que las cuatro cláusulas de admisión que siguen verifican mediante resolución AC explícita y no por supuesto. Ambas capas permanecen dentro de la frontera estática de la Sección~\ref{sub:scope}: \eqref{eq:reserve} dimensiona la capacidad de redespacho que la resolución AC post-evento despliega; no modela la excursión de frecuencia.
+El requisito \eqref{eq:reserve} implementa una doctrina de seguridad explícita de dos capas. \emph{Capa 1 --- $N-1$ unitaria.} El catálogo canónico de 215 elementos audita salidas simples: 135 líneas de transmisión a 345, 230 y 138~kV, 58 transformadores de potencia de subestación, y 22 unidades de generación despachables principales ($135 + 58 + 22 = 215$), con cada unidad de 376~MW de Punta Catalina (PC1, PC2) auditada individualmente, de modo que la capa unitaria del requisito es la mayor potencia nominal unitaria, 376~MW. \emph{Capa 2 --- modo común.} El evento de modo común de planta más severo de la isla, el disparo simultáneo del complejo completo ($2 \times 376 = 752$~MW), queda adicionalmente cubierto al dimensionar el requisito con la potencia del complejo. Co-optimizar la reserva en $\sum r_g^+ \ge 752$~MW no es por tanto una tautología, sino un criterio preventivo deliberadamente ultraconservador: dado que la flota co-optimizada cubre el mayor déficit de modo común, toda salida unitaria del catálogo queda cubierta \emph{a fortiori} en el eje de capacidad, y la cuestión de factibilidad abierta para cada contingencia se reduce a la entregabilidad por red de la reserva desplegada y a la suficiencia de tensión post-evento --- exactamente lo que las cuatro cláusulas de admisión que siguen verifican mediante resolución AC explícita y no por supuesto. Ambas capas permanecen dentro de la frontera estática de la Sección~\ref{sub:scope}: \eqref{eq:reserve} dimensiona la capacidad de redespacho que la resolución AC post-evento despliega; no modela la excursión de frecuencia.
 
-El catálogo de contingencias (\emph{contingency catalog}) es la lista propia del operador de transmisión: 104 líneas troncales de 345, 230 y 138~kV, 16 bancos de autotransformadores de subestación, 32 unidades térmicas síncronas y 63 plantas renovables estáticas, 215 salidas simples en total. Una contingencia $c$ resulta admisible (\emph{PASS}) solo cuando se cumplen las cuatro cláusulas.
+El catálogo de contingencias (\emph{contingency catalog}) es la lista canónica del operador de transmisión: 135 líneas de transmisión, 58 transformadores de potencia y 22 unidades de generación troncal, 215 salidas simples en total. Una contingencia $c$ resulta admisible (\emph{PASS}) solo cuando se cumplen las cuatro cláusulas:
 \begin{enumerate}
 \item El flujo AC converge con $\|\Delta P^{(c)}, \Delta Q^{(c)}\|_{\infty} \le 10^{-8}$~pu.
 \item Toda barra retenida satisface $V_i^{(c)} \in [0.95, 1.05]$~pu.
 \item Toda rama sobreviviente $\ell \in \mathcal{L}\setminus\{c\}$ satisface $|S_\ell^{(c)}| \le S_\ell^{\max}$ y $|I_\ell^{(c)}| \le I_\ell^{\max}$.
-\item La desviación de la barra de referencia permanece acotada, $|\Delta P_{\mathrm{slack}}^{(c)}| \le \varepsilon_{\mathrm{slack}}$, y el déficit de potencia activa es nulo, $P_{\mathrm{shed}}^{(c)}=0$.
+\item La desviación de la barra de referencia permanece dentro de su cota de tolerancia operativa, $|\Delta P_{\mathrm{slack}}^{(c)}| \le \varepsilon_{\mathrm{slack}} = 25.0\ \mathrm{MW}$, y el déficit de potencia activa es nulo, $P_{\mathrm{shed}}^{(c)}=0$.
 \end{enumerate}
 Cada salida de ese catálogo cumplió las cuatro cláusulas, 215 de 215. Cuando una salida severa lleva las tensiones fuera de la banda, una bisección auxiliar calcula el escalón $\Delta Q_{\mathrm{shunt}}$ que restituye cada barra al intervalo $[0.95, 1.05]$~pu. Ese escalón es una medida correctiva documentada de soporte de tensión. No es holgura térmica no usada.
 

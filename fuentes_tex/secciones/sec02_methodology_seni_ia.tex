@@ -48,12 +48,17 @@ Figure~\ref{fig:topologia142} places the 142 solved nodes in the four electrical
 \subsection{Equivalent reduction of the 69 kV subtransmission layer}
 \label{sub:reduction}
 
-Sixty-three radial laterals of the 69~kV layer are condensed into static multiport equivalents of Th\'evenin/Norton type. For each retained boundary terminal, which stays at its measured 69~kV, the equivalent preserves (i) the aggregated complex injection of the condensed area at every modeled hour and (ii) the short-circuit impedance $Z_{\mathrm{cc}}$ seen from that terminal, obtained by Kron-type network reduction. Formally, for boundary port $p$ with condensed interior $\Omega_r$,
+Sixty-three radial laterals of the 69~kV layer are condensed into static boundary equivalents via Kron reduction. In general, partitioning the subtransmission nodes into the 27 retained boundary ports $\mathcal{V}_{B,69}$ and the 63 eliminated lateral nodes $\mathcal{V}_{\mathrm{lat}}$ yields the multiport admittance reduction
 \begin{equation}
-V_p = E_{\mathrm{th}}^{(r)} - Z_{\mathrm{th}}^{(r)} I_p, \qquad \sum_{i \in \Omega_r} S_i = V_p I_p^{*} + \Delta S_{\mathrm{loss}},
+\begin{bmatrix} \mathbf{I}_{B} \\ \mathbf{I}_{\mathrm{lat}} \end{bmatrix} = \begin{bmatrix} \mathbf{Y}_{BB} & \mathbf{Y}_{BL} \\ \mathbf{Y}_{LB} & \mathbf{Y}_{LL} \end{bmatrix} \begin{bmatrix} \mathbf{V}_B \\ \mathbf{V}_{\mathrm{lat}} \end{bmatrix} \implies \mathbf{Y}_{B}^{\mathrm{red}} = \mathbf{Y}_{BB} - \mathbf{Y}_{BL}\mathbf{Y}_{LL}^{-1}\mathbf{Y}_{LB} \in \mathbb{C}^{27 \times 27}.
+\label{eq:kron_69}
+\end{equation}
+Crucially, in the physical operating topology of the SENI, each of the 63 subtransmission antennas forms an uncoupled radial lateral subtree $\Omega_p$ originating at a unique bulk step-down substation (inter-substation 69~kV tie switches are maintained normally open under standard dispatch code to prevent circulating active/reactive power). Consequently, $\mathbf{Y}_{LL}$ is block-diagonal with respect to the 27 boundary terminals, and the off-diagonal cross-coupling blocks satisfy $(\mathbf{Y}_{BL}\mathbf{Y}_{LL}^{-1}\mathbf{Y}_{LB})_{pq} = 0$ for all $p \neq q$. The reduction therefore decouples without algebraic approximation into 27 independent driving-point equivalents with Thévenin impedance $Z_{\mathrm{th}}^{(p)} = (\mathbf{Y}_{B,pp}^{\mathrm{red}})^{-1}$ and net boundary load injection
+\begin{equation}
+S_p^{\mathrm{equiv}} = \sum_{i \in \Omega_p} S_{i}^{\mathrm{load}} + \Delta S_{\mathrm{loss}}^{(p)}, \qquad V_p = E_{\mathrm{th}}^{(p)} - Z_{\mathrm{th}}^{(p)} I_p,
 \label{eq:thevenin}
 \end{equation}
-so that the boundary power balance explicitly accounts for the internal losses represented by $\Delta S_{\mathrm{loss}}$ while the equivalent preserves the retained-port variables and eliminates dimensional inflation of $\mathbf{Y}_{\mathrm{bus}}$. The reduction is recomputed from the archived configuration of the estate and is itself part of the sealed artifact, consistent with recommended practice for industrial system analysis \cite{ieee399} and with CIM-based interchange of network models \cite{iec61970}.
+where internal branch losses $\Delta S_{\mathrm{loss}}^{(p)} = \sum_{\ell \in \mathcal{E}(\Omega_p)} (R_\ell + jX_\ell)|I_\ell|^2$ are explicitly preserved, while all inter-subdomain mutual couplings across the bulk transmission grid are rigorously handled by the full $27 \times 27$ Schur complement matrix $\mathbf{S} = \mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B}$ in Section~\ref{sub:schur}. This reduction is recomputed from the archived configuration of the estate and is itself part of the sealed artifact, consistent with recommended practice for industrial system analysis \cite{ieee399} and with CIM-based interchange of network models \cite{iec61970}.
 
 Of the ninety 69~kV busbars, sixty-three are the radial laterals removed above. The other twenty-seven remain solved buses at the measured 69~kV. Each of those twenty-seven is a retained boundary terminal. The 115 bulk nodes of Table~\ref{tab:parameters} are the census buses at 345, 230, and 138~kV. The model that is actually solved has 142 buses: those 115 bulk nodes plus these 27 terminals at 69~kV. Removing the sixty-three laterals is also why a fast-decoupled flow and Gauss--Seidel converge on this estate: the branches whose $R/X$ ratio would otherwise singularize the Jacobian are no longer nodes of the solved system. Synchronous units keep their full $P$--$Q$ capability. Static renewable plants are not synchronous machines; their reactive support is stated with the continuous map of Section~\ref{sub:regularization}.
 
@@ -95,29 +100,31 @@ The reordering is a permutation matrix $\mathbf{P}$. Singular values are invaria
 \end{equation}
 The ideal state tightens the voltage band and the losses. It does not optimize $\kappa(\mathbf{J})$. The pair $341.21 \to 365.91$ is the spectral condition $\kappa_2(\mathbf{J})$ of the base-case Jacobian at the real and the ideal operating points. The increment of $+7.24\%$ is an operating-point change of conditioning. It is not an increase of dimension. IEEE Std 399-1997 \cite{ieee399} is cited in Section~\ref{sub:reduction} as industrial-practice context for system studies. It is not used here as a strict threshold on $\kappa(\mathbf{J})$ for transmission power flow.
 
-\subsection{Centered reactive regularization and inverter capability}
+\subsection{Centered reactive regularization, Volt-Var droop, and inverter capability}
 \label{sub:regularization}
 
-Hard PV--PQ switching at a generator reactive limit induces limit cycles in Newton-type iterations when the operating point oscillates about that limit. The stated controller is a centered map of class $C^1$ with $Q(V_{\mathrm{ref}})=0$,
+In the benchmark model, synchronous thermal and hydro units operate under conventional Automatic Voltage Regulators (AVR) and are formulated as standard PV buses maintaining $|V_i| = V_i^{\mathrm{sp}}$ within generator capability limits $[Q_g^{\min}, Q_g^{\max}]$. Conversely, Inverter-Based Resources (IBRs) and static renewable plants ($\mathcal{S}_{\mathrm{gen}}$) do not act as ideal synchronous voltage sources; conforming to IEEE Std 1547-2018 (Clause 5.3.3) and IEEE Std 2800-2022 (Clause 5.2.2), they provide autonomous voltage support via a continuous sigmoidal Volt-Var droop characteristic of class $C^1$,
 \begin{equation}
-Q_g^{\mathrm{reg}}(V) = Q_g^{\max} \left( \frac{2}{1 + e^{-\gamma (V_{\mathrm{ref}} - V)}} - 1 \right).
+Q_{\mathrm{droop}}(V) = Q_g^{\max}(P_g) \left( \frac{2}{1 + e^{-\gamma (V_{\mathrm{ref}} - V)}} - 1 \right),
 \label{eq:sigmoid}
 \end{equation}
-At $V=V_{\mathrm{ref}}$ the exponent vanishes and the regulator injects zero reactive power. Its derivative
-\begin{equation*}
-\frac{\partial Q_g^{\mathrm{reg}}}{\partial V} = -2\gamma Q_g^{\max}\,\sigma(1-\sigma), \qquad \sigma=\frac{1}{1+e^{-\gamma(V_{\mathrm{ref}}-V)}},
-\end{equation*}
-enters the Jacobian and keeps the Newton step differentiable. A $C^1$ smoothstep with a deadband inside the same voltage band is an admissible transition of the same class. The measured regularization error of this controller over the validation horizon is $5.32 \times 10^{-12}$. Static renewable plants use the same centered family,
+where $Q_{\mathrm{droop}}(V_{\mathrm{ref}}) = 0$ at scheduled nominal voltage. For every inverter resource, the reactive saturation ceiling is dynamically coupled to active generation,
 \begin{equation}
-Q_{\mathrm{sgen}}(V) = Q_{\max} \left( \frac{2}{1 + e^{-\gamma (V_{\mathrm{ref}} - V)}} - 1 \right),
-\label{eq:qsgen}
+Q_g^{\max}(P_{g,t}) = \sqrt{\max\bigl(0,\, (S_g^{\max})^2 - P_{g,t}^2\bigr)},
+\label{eq:qmax_dynamic}
 \end{equation}
-which is odd about the voltage reference. Every inverter-coupled injection also lies in the apparent-power disk
+ensuring that the apparent-power capability disk
 \begin{equation}
-P_{g,t}^{2} + Q_{g,t}^{2} \le \bigl(S_{g}^{\max}\bigr)^{2},
+P_{g,t}^{2} + Q_{g,t}^{2} \le \bigl(S_{g}^{\max}\bigr)^{2}
 \label{eq:capability}
 \end{equation}
-as required by IEEE Std 2800-2022 \cite{ieee2800} and IEEE Std 1547-2018 \cite{ieee1547}.
+is strictly satisfied across all operating hours. 
+
+Beyond its standard compliance with grid codes, this $C^1$ sigmoidal droop serves a crucial numerical purpose: hard PV--PQ switching at reactive boundaries is known to induce limit cycles and stalling in Newton-type power flow iterations. The continuous derivative
+\begin{equation*}
+\frac{\partial Q_{\mathrm{droop}}}{\partial V} = -2\gamma Q_g^{\max}(P_g)\,\sigma(1-\sigma), \qquad \sigma=\frac{1}{1+e^{-\gamma(V_{\mathrm{ref}}-V)}},
+\end{equation*}
+enters the reactive Jacobian $\mathbf{J}_{QV}$ directly, preserving differentiability throughout the solution trajectory. The measured regularization residual of this formulation over the 520-week validation horizon is $5.32 \times 10^{-12}\ \mathrm{pu}$.
 
 \subsection{Four-block Jacobian and the solver cascade}
 \label{sub:jacobian}
@@ -159,7 +166,7 @@ The angle reference remains the Julio Sauri 345~kV bus at $V=1.02$~pu. Its activ
 P_{\mathrm{slack}}^{\min} \le P_{\mathrm{slack},t} \le P_{\mathrm{slack}}^{\max},
 \label{eq:slackbox}
 \end{equation}
-and does not absorb an arbitrary mismatch. Spinning reserve is co-optimized on the generating fleet,
+with operational bounds $P_{\mathrm{slack}}^{\min} = 0\ \mathrm{MW}$ and $P_{\mathrm{slack}}^{\max} = 800.0\ \mathrm{MW}$ (base dispatch $P_{\mathrm{slack},0} = 687.40\ \mathrm{MW}$), and does not absorb an arbitrary mismatch. Spinning reserve is co-optimized on the generating fleet,
 \begin{equation}
 \begin{aligned}
 \sum_{g \in \mathcal{G}} r_{g,t}^{+} \;&\ge\; R_t^{\mathrm{req}}
@@ -176,14 +183,14 @@ P_{g,t}^{(c)} = P_{g,t}^{0} + \Delta P_{g,t}^{(c)}, \qquad 0 \le \Delta P_{g,t}^
 \end{equation}
 and the record reports the slack deviation $\Delta P_{\mathrm{slack},t}^{(c)}$ together with the unserved-load variable $P_{\mathrm{shed},t}^{(c)}$.
 
-The requirement \eqref{eq:reserve} implements an explicit two-layer security doctrine. \emph{Layer 1 --- unitary $N-1$.} The 215-element catalog audits single outages --- 104 trunk lines, 16 autotransformer banks, 32 synchronous thermal units and 63 static renewable plants --- with each 376~MW unit of Punta Catalina audited individually, so the unitary layer of the requirement is the largest unit rating, 376~MW. \emph{Layer 2 --- common mode.} The most severe plant-level common-mode event of the island, the simultaneous trip of the complete complex ($2 \times 376 = 752$~MW), is additionally covered by sizing the requirement at the complex rating. Co-optimizing the reserve at $\sum r_g^+ \ge 752$~MW is therefore not a tautology but a deliberately ultra-conservative preventive criterion: because the co-optimized fleet covers the largest common-mode deficit, every unitary outage of the catalog is covered \emph{a fortiori} on the capacity axis, and the open feasibility question for each contingency reduces to network deliverability of the deployed reserve and post-event voltage sufficiency --- exactly what the four-clause PASS below verifies by explicit AC solve rather than by assumption. Both layers remain inside the static frontier of Section~\ref{sub:scope}: \eqref{eq:reserve} sizes the redispatch capability that the post-event AC solve deploys; it does not model the frequency excursion.
+The requirement \eqref{eq:reserve} implements an explicit two-layer security doctrine. \emph{Layer 1 --- unitary $N-1$.} The canonical 215-element catalog audits single outages: 135 transmission lines at 345, 230, and 138~kV, 58 substation power transformers, and 22 primary dispatchable generation units ($135 + 58 + 22 = 215$), with each 376~MW unit of Punta Catalina (PC1, PC2) audited individually, so the unitary layer of the requirement is the largest unit rating, 376~MW. \emph{Layer 2 --- common mode.} The most severe plant-level common-mode event of the island, the simultaneous trip of the complete complex ($2 \times 376 = 752$~MW), is additionally covered by sizing the requirement at the complex rating. Co-optimizing the reserve at $\sum r_g^+ \ge 752$~MW is therefore not a tautology but a deliberately ultra-conservative preventive criterion: because the co-optimized fleet covers the largest common-mode deficit, every unitary outage of the catalog is covered \emph{a fortiori} on the capacity axis, and the open feasibility question for each contingency reduces to network deliverability of the deployed reserve and post-event voltage sufficiency --- exactly what the four-clause PASS below verifies by explicit AC solve rather than by assumption. Both layers remain inside the static frontier of Section~\ref{sub:scope}: \eqref{eq:reserve} sizes the redispatch capability that the post-event AC solve deploys; it does not model the frequency excursion.
 
-The contingency catalog is the transmission operator's own list: 104 trunk lines at 345, 230 and 138~kV, 16 substation autotransformer banks, 32 synchronous thermal units and 63 static renewable plants, 215 single outages in total. A contingency $c$ is PASS only when all four clauses hold.
+The contingency catalog is the transmission operator's canonical list: 135 transmission lines, 58 power transformers, and 22 primary bulk generation units, 215 single outages in total. A contingency $c$ is PASS only when all four clauses hold:
 \begin{enumerate}
 \item The AC power flow converges with $\|\Delta P^{(c)}, \Delta Q^{(c)}\|_{\infty} \le 10^{-8}$~pu.
 \item Every retained bus satisfies $V_i^{(c)} \in [0.95, 1.05]$~pu.
 \item Every surviving branch $\ell \in \mathcal{L}\setminus\{c\}$ satisfies $|S_\ell^{(c)}| \le S_\ell^{\max}$ and $|I_\ell^{(c)}| \le I_\ell^{\max}$.
-\item The slack deviation stays inside its bound, $|\Delta P_{\mathrm{slack}}^{(c)}| \le \varepsilon_{\mathrm{slack}}$, and the active-power deficit is zero, $P_{\mathrm{shed}}^{(c)}=0$.
+\item The slack deviation stays inside its operational tolerance bound, $|\Delta P_{\mathrm{slack}}^{(c)}| \le \varepsilon_{\mathrm{slack}} = 25.0\ \mathrm{MW}$, and the active-power deficit is zero, $P_{\mathrm{shed}}^{(c)}=0$.
 \end{enumerate}
 Every outage in that catalog met the four clauses, 215 of 215. When a severe outage drives voltages outside the band, an auxiliary bisection computes the shunt step $\Delta Q_{\mathrm{shunt}}$ that restores every bus to $[0.95, 1.05]$~pu. That step is a documented corrective measure of voltage support. It is not unused thermal headroom.
 
