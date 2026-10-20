@@ -18,7 +18,7 @@ SENI-142 is strictly a steady-state AC feasibility benchmark. Each solved state 
 
 The solver does not accept a loose file. Entry is a sealed input manifest whose digest is checked before any bus is instantiated, and the manifest selects the physical case. In the measured-estate mode, prospective technologies that are not in commercial operation remain outside the solved dispatch, so the base case is the Dominican system as operated. In the full doctoral-scenario mode those prospective assets may be instantiated; they stay labeled and are never mixed silently into the measured record.
 
-The physical census is the single-line survey already consolidated in Table~\ref{tab:parameters}: 171 fenced substations and 205 physical busbars, stratified as 6 at 345~kV, 3 at 230~kV, 106 at 138~kV and 90 at 69~kV, together with 482 branches of the unreduced estate. Those 482 branches belong to the drawing. They are not the 135 lines and 58 autotransformers of the condensed compute model defined below.
+The physical census is the single-line survey already consolidated in Table~\ref{tab:parameters}: the benchmark comprises 142 nodal compute buses derived from 112 bulk transmission substations (115 bulk buses at 345, 230, and 138~kV plus 27 condensed boundary ports at 69~kV), coupled by 135 transmission lines and 58 power transformers. The unreduced drawing census of the source survey remains an internal artifact of the single-line database; the released compute model is the condensed 142-bus estate defined below.
 
 Before any admittance is assembled, a normative screen rejects a record that violates IEEE C37 substation arity or the CIM exchange constraints of IEC 61970 \cite{iec61970}. Series reactances must satisfy $X > 0$, shunt susceptances $B \ge 0$, and two-winding and three-winding transformers must close their own balance. A record that fails the screen aborts the case. It is not repaired by a default.
 
@@ -38,7 +38,7 @@ The transmission system is modeled as a connected undirected graph $\mathcal{G} 
 S_i = P_i + jQ_i = V_i \sum_{j \in \mathcal{V}} Y_{ij}^{*}\, V_j^{*}, \qquad i \in \mathcal{V},
 \label{eq:balance}
 \end{equation}
-with buses classified as slack, PV, or PQ \cite{tinney1967}. The angle reference is the 345~kV bus of the Julio Sauri substation (JSAURI), held at $V = 1.02\ \mathrm{pu}$. Its active power is the bounded variable of \eqref{eq:slackbox} and is not an unbounded mismatch reservoir. That bus receives directly the injection of the largest thermal plant in the country (Section~\ref{sub:strata}). Where a physical substation hosts more than one voltage level, each voltage level is a distinct bus and the intervening autotransformer is a branch. The reconciliation of Section~\ref{sub:crosswalk} is what carries 112 transmission substations inside 171 fenced estates to the 142 compute nodes (Section~\ref{sub:substations}).
+with buses classified as slack, PV, or PQ \cite{tinney1967}. The angle reference is the 345~kV bus of the Julio Sauri substation (JSAURI), held at $V = 1.02\ \mathrm{pu}$. Its active power is the bounded variable of \eqref{eq:slackbox} and is not an unbounded mismatch reservoir. That bus receives directly the injection of the largest thermal plant in the country (Section~\ref{sub:strata}). Where a physical substation hosts more than one voltage level, each voltage level is a distinct bus and the intervening autotransformer is a branch. The reconciliation of Section~\ref{sub:crosswalk} is what carries the 112 bulk transmission substations to the 142 nodal compute buses (115 bulk buses at 345, 230, and 138~kV plus 27 condensed boundary ports at 69~kV; Section~\ref{sub:substations}).
 
 Figure~\ref{fig:topologia142} places the 142 solved nodes in the four electrical macrodomains of Law 368-22 ($\Omega_1$ Norte, $\Omega_2$ Sur, $\Omega_3$ Este, $\Omega_4$ Metropolitano). Bulk yards keep the color of their measured nominal voltage, 345~kV, 230~kV, or 138~kV. The 27 retained boundary terminals stay at the measured 69~kV and are drawn in green. The compute model counts 135 transmission lines. The figure draws a stroke for each pair the census closes: a yard record that names both terminals, or a colinear one-line trace that arrives at a second solved bus of the same voltage. A record whose far terminal is not a census bus is omitted.
 
@@ -427,9 +427,9 @@ Table~\ref{tab:crosswalk} states the census populations and the compute-model po
 \toprule
 Census object & Compute-model reading \\
 \midrule
-171 fenced estates & 112 transmission substations at 345/230/138~kV, plus 59 distribution and medium-voltage estates at 34.5/13.8~kV removed by reduction \\
-205 physical busbars & 115 bulk buses (6 at 345~kV, 3 at 230~kV, 106 at 138~kV) plus 27 retained 69~kV boundary terminals, equal to 142 compute nodes \\
-482 unreduced branches & 135 retained transmission lines, plus 58 compute-model transformers, plus 289 condensed radial and distribution branches \\
+112 bulk transmission substations & fenced transmission estates at 345/230/138~kV hosting the compute model; distribution and medium-voltage yards are not instantiated \\
+142 nodal compute buses & 115 bulk buses (6 at 345~kV, 3 at 230~kV, 106 at 138~kV) plus 27 condensed boundary ports at 69~kV \\
+193 compute-model branches & 135 transmission lines and 58 power transformers, the complete released branch set of the benchmark \\
 \bottomrule
 \end{tabular}
 \end{table}

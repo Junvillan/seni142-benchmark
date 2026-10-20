@@ -9,11 +9,11 @@
     "convergence_tolerance_pu": 1e-08,
     "frequency_and_dynamics_exclusion_disclaimer": "SENI-142 is strictly a steady-state AC feasibility benchmark F(x)=0. Dynamic EMT, frequency nadir, RoCoF, and protection transients are evaluated in external forensic frameworks.",
     "common_mode_reserve_dimensioning_clause": "GEN-PC-COMPLEX (752 MW) serves as the external spinning reserve dimensioning benchmark reference (R_req), outside the 215 single outage catalog.",
-    "version": 2,
+    "version": 3,
     "data_provenance": {
-      "censo_csv_sha512": "c2a186f936e18aebea60d4ec0afff9c28c2a8453d58dbca2d0d7b9c35b515d3cdffe3d718558fe9032724baefb9668e840cd25e48a05366694b195b1e00f6a10",
+      "censo_csv_sha512": "b79ed688f76669efaf269976fa9b64261a737cacc27b5808501f6bc06a9fcd675da89f96c9979847cc1aa3e5013e621dc539a9dba8d0d0dd5e308e7ec996301c",
       "ramas_csv_sha512": "22c81dda2f09f276e78814779cdd614560242a6fe213de11e4b918846a0440a4dc8eec4903b044694be4c7c3ef2eda5b52104b1947928ce8453ead05d0f9b0f3",
-      "matrices_npz_sha512": "11dda3accb5cba5fc716f9fdbb85612b6a200513706d771a92822e54bbf4962ad3470cfc30472027038f1166efe521452934185798b3655d4cc5cf227025a120",
+      "matrices_npz_sha512": "33db168560329e8321eda40a91ab423432689666785e4a645bdc82f541dddd5fc61bd43847132f10bcd2935840d8b13487983a872abb363898184b5673381811",
       "fuentes_datos": "SENI142_CENSO_CANONICO_BARRAS.csv (142 barras de transmisión), SENI142_RAMAS_LINEAS_Y_TRANSFORMADORES.csv (193 ramas y transformadores), matrices_sistema_seni142.npz (procedencia de levantamiento CAD unifilar calibrado y georreferenciado)"
     }
   },

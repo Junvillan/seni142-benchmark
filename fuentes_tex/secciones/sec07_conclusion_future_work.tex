@@ -55,7 +55,7 @@ PEM & Proton-exchange membrane (electrolysis) \\
 Table~\ref{tab:parameters} consolidates the structural and electrical parameters of the released benchmark as they are instantiated in the nodal model, so that the topology arithmetic of Sections~\ref{sec:topology}--\ref{sec:benchmarking} can be verified at a glance against the released dataset.
 
 \begin{table*}[!t]
-\caption{Consolidated Topological and Electrical Parameters of the SENI-142 Insular Benchmark. The upper block is the single-line CAD survey recovered in this work and constitutes the paper's own measured contribution; the lower block is the condensed nodal compute model on which all reported simulations run.}
+\caption{Consolidated Topological and Electrical Parameters of the SENI-142 Insular Benchmark. The upper block is the territorial instantiation recovered from the single-line CAD survey and constitutes the paper's own measured contribution; the lower block is the electrical compute model on which all reported simulations run.}
 \label{tab:parameters}
 \centering
 \footnotesize
@@ -63,23 +63,21 @@ Table~\ref{tab:parameters} consolidates the structural and electrical parameters
 \toprule
 \textbf{Quantity} & \textbf{Value} \\
 \midrule
-\multicolumn{2}{@{}l}{\textit{CAD single-line survey (this work, measured)}} \\
-Fenced substations resolved & 171 \\
-Physical busbars, 345~kV & 6 \\
-Physical busbars, 230~kV & 3 \\
-Physical busbars, 138~kV & 106 \\
-Physical busbars, 69~kV & 90 \\
-\textbf{Total physical busbars} & \textbf{205} \\
+\multicolumn{2}{@{}l}{\textit{Territorial instantiation (this work, measured)}} \\
+Bulk transmission substations & 112 \\
+Bulk transmission buses, 345~kV & 6 \\
+Bulk transmission buses, 230~kV & 3 \\
+Bulk transmission buses, 138~kV & 106 \\
+Boundary ports condensed from 69~kV & 27 \\
+\textbf{Total nodal compute buses} & \textbf{142} \\
 \midrule
-\multicolumn{2}{@{}l}{\textit{SENI-142 nodal compute model (derived, condensed)}} \\
-Bulk transmission nodes, 345/230/138~kV & 115 \\
-\textbf{Total compute buses} & \textbf{142} \\
+\multicolumn{2}{@{}l}{\textit{SENI-142 electrical compute model (derived, condensed)}} \\
 Transmission lines & 135 \\
-Power autotransformers & 58 \\
+Power transformers & 58 \\
 Installed generation capacity (nominal) & 5,420~MW \\ % 5,420 MW
 Maximum hourly demand (SCADA record) & 3,450~MW \\ % 3,450 MW
 \bottomrule
 \end{tabular}
 \end{table*}
 
-The bus census follows the nodal rule of Section~\ref{sub:substations}: one bus per voltage level per fenced estate, with transformer banks as branches. The upper block of Table~\ref{tab:parameters} is the single-line CAD survey recovered in this work and is the paper's own measured contribution: 205 physical busbars across 171 fenced substations, of which 115 lie in the 345, 230, and 138~kV bulk strata. The lower block is the condensed compute model actually exercised by the solver, in which the 69~kV subtransmission layer is replaced by the injection-preserving nodal equivalents of Section~\ref{sub:reduction}, giving a condensed model of 142 compute buses. The two blocks are reported separately and deliberately: the first is a measurement, the second is a modelling decision. The two verbatim protocol clauses of Section~\ref{sub:dataprotocol} and Section~\ref{sub:clause} remain the contractual core of the data layer and of the territorial instantiation, respectively, and are preserved character-for-character in this camera-ready text.
+The bus census follows the nodal rule of Section~\ref{sub:substations}: one bus per voltage level per fenced estate, with transformer banks as branches. The upper block of Table~\ref{tab:parameters} is the territorial instantiation recovered from the single-line CAD survey and is the paper's own measured contribution: 142 nodal compute buses across 112 bulk transmission substations, of which 115 are bulk buses in the 345, 230, and 138~kV strata and 27 are condensed boundary ports from the 69~kV layer. The lower block is the electrical compute model actually exercised by the solver --- 135 transmission lines and 58 power transformers over that 142-bus estate --- in which the 69~kV subtransmission layer is represented by the injection-preserving nodal equivalents of Section~\ref{sub:reduction}. The two blocks are reported separately and deliberately: the first is a measurement, the second is a modelling decision. The two verbatim protocol clauses of Section~\ref{sub:dataprotocol} and Section~\ref{sub:clause} remain the contractual core of the data layer and of the territorial instantiation, respectively, and are preserved character-for-character in this camera-ready text.

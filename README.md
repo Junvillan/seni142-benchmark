@@ -57,7 +57,7 @@ non-zero on every mutation while the intact control passes.
 ## Provenance
 
 The data layer carries calibrated single-line CAD survey provenance from the official one-line-diagram database: 205 physical
-busbars (`nivel_kv`, estate, drawing coordinates), 511 transformer records with
+busbars (`nivel_kv`, estate, drawing coordinates) --- from which the benchmark distills the 142 nodal compute buses (115 bulk buses at 345/230/138 kV plus 27 condensed 69 kV boundary ports) --- 511 transformer records with
 declared Ucc/MVA/vector group, and 1,181 circuit annotations with real km, conductor
 and circuit count (`LT_*kV: "27.5 km 559.5 MCM-AAAC 2C/F"`). The drawing scale is
 calibrated with the three surveyed corridor anchors (JSAURI–PALAMARA 70.5 km,

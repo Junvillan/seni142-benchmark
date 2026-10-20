@@ -17,7 +17,7 @@ SENI-142 es estrictamente un benchmark de factibilidad AC de régimen permanente
 
 El solver no admite un archivo suelto. La entrada es un manifiesto sellado cuyo digest se comprueba antes de instanciar cualquier barra, y el manifiesto selecciona el caso físico. En el modo de patrimonio medido, las tecnologías prospectivas que no están en operación comercial quedan fuera del despacho resuelto, de modo que el caso base es el sistema dominicano tal como se opera. En el modo de escenario doctoral completo esos activos prospectivos pueden instanciarse; permanecen etiquetados y no se mezclan en silencio con el registro medido.
 
-El censo físico es el levantamiento unifilar ya consolidado en la Tabla~\ref{tab:parameters}: 171 subestaciones cercadas y 205 barras físicas, estratificadas en 6 a 345~kV, 3 a 230~kV, 106 a 138~kV y 90 a 69~kV, junto con 482 ramas del patrimonio no reducido. Esas 482 ramas pertenecen al unifilar. No son las 135 líneas y 58 autotransformadores del modelo de cómputo condensado.
+El censo físico es el levantamiento unifilar ya consolidado en la Tabla~\ref{tab:parameters}: el benchmark comprende 142 barras de cómputo nodal derivadas de 112 subestaciones de transmisión troncal (115 barras troncales a 345, 230 y 138~kV más 27 puertos frontera condensados a 69~kV), acopladas por 135 líneas de transmisión y 58 transformadores de potencia. El censo no reducido del levantamiento fuente permanece como artefacto interno de la base unifilar; el modelo de cómputo liberado es el patrimonio condensado de 142 barras definido a continuación.
 
 Antes de ensamblar cualquier admitancia, un tamiz normativo rechaza un registro que viole la aridad de subestación de IEEE C37 o las restricciones de intercambio CIM de IEC 61970 \cite{iec61970}. Las reactancias serie deben cumplir $X > 0$, las susceptancias en derivación $B \ge 0$, y los transformadores de dos y de tres devanados deben cerrar su propio balance. Un registro que no supera el tamiz aborta el caso. No se repara con un valor por defecto.
 
@@ -37,7 +37,7 @@ El sistema de transmisión se modela como un grafo no dirigido conexo $\mathcal{
 S_i = P_i + jQ_i = V_i \sum_{j \in \mathcal{V}} Y_{ij}^{*}\, V_j^{*}, \qquad i \in \mathcal{V},
 \label{eq:balance}
 \end{equation}
-con las barras clasificadas como barra de referencia (\emph{slack}), PV o PQ \cite{tinney1967}. La referencia angular es la barra de 345~kV de la subestación Julio Sauri (JSAURI), mantenida en $V = 1.02$~pu. Su potencia activa es la variable acotada de \eqref{eq:slackbox} y no es un depósito ilimitado del desbalance. Esa barra recibe directamente la inyección de la mayor planta térmica del país (Sección~\ref{sub:strata}). Donde una subestación física alberga más de un nivel de tensión, cada nivel de tensión es una barra distinta y el autotransformador intermediario es una rama. La reconciliación de la Sección~\ref{sub:crosswalk} es la que lleva 112 subestaciones de transporte, dentro de 171 recintos cercados, a los 142 nodos de cómputo (Sección~\ref{sub:substations}).
+con las barras clasificadas como barra de referencia (\emph{slack}), PV o PQ \cite{tinney1967}. La referencia angular es la barra de 345~kV de la subestación Julio Sauri (JSAURI), mantenida en $V = 1.02$~pu. Su potencia activa es la variable acotada de \eqref{eq:slackbox} y no es un depósito ilimitado del desbalance. Esa barra recibe directamente la inyección de la mayor planta térmica del país (Sección~\ref{sub:strata}). Donde una subestación física alberga más de un nivel de tensión, cada nivel de tensión es una barra distinta y el autotransformador intermediario es una rama. La reconciliación de la Sección~\ref{sub:crosswalk} es la que lleva las 112 subestaciones de transmisión troncal a las 142 barras de cómputo nodal (115 barras troncales a 345, 230 y 138~kV más 27 puertos frontera condensados a 69~kV; Sección~\ref{sub:substations}).
 
 La Figura~\ref{fig:topologia142} sitúa los 142 nodos resueltos en los cuatro macrodominios eléctricos de la Ley 368-22 ($\Omega_1$ Norte, $\Omega_2$ Sur, $\Omega_3$ Este, $\Omega_4$ Metropolitano). Los patios de transporte conservan el color de su tensión nominal medida, 345~kV, 230~kV o 138~kV. Los 27 bornes de frontera retenidos permanecen en los 69~kV medidos y se dibujan en verde. El modelo de cómputo cuenta 135 líneas de transmisión. La figura dibuja un trazo por cada par que el censo cierra: un registro de patio que nombra ambos bornes, o un trazo colineal del unifilar que llega a una segunda barra resuelta de la misma tensión. Se omite el registro cuyo borne lejano no es una barra del censo.
 
@@ -420,9 +420,9 @@ La Tabla~\ref{tab:crosswalk} enuncia las poblaciones del censo físico y las del
 \toprule
 Objeto del censo & Lectura del modelo de cómputo \\
 \midrule
-171 recintos cercados & 112 subestaciones de transporte en 345/230/138~kV, más 59 recintos de distribución y media tensión en 34.5/13.8~kV retirados por la reducción \\
-205 barras físicas & 115 barras de masa (6 a 345~kV, 3 a 230~kV, 106 a 138~kV) más 27 bornes de frontera de 69~kV retenidos, iguales a 142 nodos de cómputo \\
-482 ramas no reducidas & 135 líneas de transmisión retenidas, más 58 transformadores del modelo de cómputo, más 289 ramas radiales y de distribución condensadas \\
+112 subestaciones de transmisión troncal & recintos de transmisión cercados en 345/230/138~kV que alojan el modelo de cómputo; los patios de distribución y media tensión no se instancian \\
+142 barras de cómputo nodal & 115 barras troncales (6 a 345~kV, 3 a 230~kV, 106 a 138~kV) más 27 puertos frontera condensados a 69~kV \\
+193 ramas del modelo de cómputo & 135 líneas de transmisión y 58 transformadores de potencia, el conjunto completo de ramas liberado del benchmark \\
 \bottomrule
 \end{tabular}
 \end{table}

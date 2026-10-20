@@ -1,7 +1,7 @@
 Bus_ID,Subestacion,Nivel_kV,Tipo_Barra,V_nom_pu,P_demanda_MW,Q_demanda_MVAR,Region_Planificacion_Ley368_22,Macrodominio_HBCF_Schur,Microred_Ley368_22,Origen_Territorial,Coord_X,Coord_Y
-BUS-345-BONAO_3,BONAO 3,345.0,PQ,1.00,15.8935,4.3916,Cibao Sur,Omega_Norte,Cibao Sur,ancla_geografica,175.4158,-855.7679
-BUS-345-EL_NARANJO,EL NARANJO,345.0,PQ,1.00,19.9777,5.5011,Valdesia,Omega_Sur,Valdesia,ancla_geografica,-37.3315,-946.9477
-BUS-345-GUERRA,GUERRA,345.0,PQ,1.00,98.4100,10.3589,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,340.9889,-870.5545
+BUS-345-BONAO_3,BONAO 3,345.0,PQ,1.00,0.0000,0.0000,Cibao Sur,Omega_Norte,Cibao Sur,ancla_geografica,175.4158,-855.7679
+BUS-345-EL_NARANJO,EL NARANJO,345.0,PQ,1.00,0.0000,0.0000,Valdesia,Omega_Sur,Valdesia,ancla_geografica,-37.3315,-946.9477
+BUS-345-GUERRA,GUERRA,345.0,PQ,1.00,0.0000,0.0000,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,340.9889,-870.5545
 BUS-345-JULIO_SAURI,JULIO SAURI,345.0,SLACK,1.02,0.0000,0.0000,Valdesia,Omega_Sur,Valdesia,vecino_dwg,-366.8472,-421.4166
 BUS-345-MANZANILLO_POWER_LAND,MANZANILLO POWER LAND,345.0,PQ,1.00,3.7643,5.8555,Cibao Noroeste,Omega_Norte,Cibao Noroeste,vecino_dwg,-660.4919,-302.0168
 BUS-345-PUNTA_CATALINA,PUNTA CATALINA,345.0,PV,1.01,0.0000,0.0000,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,vecino_dwg,-290.7154,-403.6464
@@ -10,24 +10,24 @@ BUS-230-QUISQUEYA_1,QUISQUEYA 1,230.0,PV,1.01,0.0000,0.0000,Higuamo,Omega_Este,H
 BUS-230-QUISQUEYA_2,QUISQUEYA 2,230.0,PV,1.01,0.0000,0.0000,Higuamo,Omega_Este,Higuamo,ancla_geografica,-278.3789,-312.8421
 BUS-138-AGUACATE,AGUACATE,138.0,PQ,1.00,28.0846,6.3697,Valdesia,Omega_Sur,Valdesia,vecino_dwg,-427.0851,-451.8033
 BUS-138-AGUA_CLARA,AGUA CLARA,138.0,PQ,1.00,14.8479,2.3004,Cibao Noroeste,Omega_Norte,Cibao Noroeste,vecino_dwg,-611.6466,-401.7554
-BUS-138-ARROYO_HONDO,ARROYO HONDO,138.0,PQ,1.00,6.2738,3.1369,Cibao Nordeste,Omega_Norte,Cibao Nordeste,ancla_geografica,-308.4159,-349.2798
+BUS-138-ARROYO_HONDO,ARROYO HONDO,138.0,PQ,1.00,0.0000,0.0000,Cibao Nordeste,Omega_Norte,Cibao Nordeste,ancla_geografica,-308.4159,-349.2798
 BUS-138-BARAHONA_CARBON,BARAHONA CARBON,138.0,PV,1.01,0.0000,0.0000,Enriquillo,Omega_Sur,Enriquillo,ancla_geografica,-606.0501,-460.5815
 BUS-138-BAYASOL,BAYASOL,138.0,PQ,1.00,6.6592,6.6592,Valdesia,Omega_Sur,Valdesia,vecino_dwg,-493.8591,-458.2226
-BUS-138-BOCA_CHICA,BOCA CHICA,138.0,PQ,1.00,99.4458,16.5743,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,-163.5912,-365.9729
-BUS-138-BONAO_2,BONAO 2,138.0,PQ,1.00,7.9468,2.7186,Cibao Sur,Omega_Norte,Cibao Sur,ancla_geografica,172.0929,-930.9648
-BUS-138-BONAO_3,BONAO 3,138.0,PQ,1.00,15.8935,4.3916,Cibao Sur,Omega_Norte,Cibao Sur,ancla_geografica,681.2925,-253.5244
+BUS-138-BOCA_CHICA,BOCA CHICA,138.0,PQ,1.00,0.0000,0.0000,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,-163.5912,-365.9729
+BUS-138-BONAO_2,BONAO 2,138.0,PQ,1.00,0.0000,0.0000,Cibao Sur,Omega_Norte,Cibao Sur,ancla_geografica,172.0929,-930.9648
+BUS-138-BONAO_3,BONAO 3,138.0,PQ,1.00,31.7870,8.7832,Cibao Sur,Omega_Norte,Cibao Sur,ancla_geografica,681.2925,-253.5244
 BUS-138-CALABAZA,CALABAZA,138.0,PQ,1.00,11.2918,2.6058,Valdesia,Omega_Sur,Valdesia,vecino_dwg,-413.1167,-462.5189
-BUS-138-CANABACOA,CANABACOA,138.0,PQ,1.00,17.9848,2.3004,Cibao Norte,Omega_Norte,Cibao Norte,ancla_geografica,-483.9067,-407.1334
+BUS-138-CANABACOA,CANABACOA,138.0,PQ,1.00,0.0000,0.0000,Cibao Norte,Omega_Norte,Cibao Norte,ancla_geografica,-483.9067,-407.1334
 BUS-138-CIP_LA_LUISA,CIP LA LUISA,138.0,PQ,1.00,34.0730,7.8629,Higuamo,Omega_Este,Higuamo,vecino_dwg,-149.8246,-290.9995
 BUS-138-CNP,CNP,138.0,PQ,1.00,101.5177,29.0050,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,vecino_dwg,-255.5121,-510.0992
 BUS-138-COASTAL,COASTAL,138.0,PQ,1.00,12.0565,4.1935,Yuma,Omega_Este,Yuma,vecino_dwg,-48.8654,-372.0287
 BUS-138-COTOPERI,COTOPERI,138.0,PQ,1.00,43.7032,3.9730,Higuamo,Omega_Este,Higuamo,vecino_dwg,539.2369,-882.1002
-BUS-138-CRUCE_DE_CABRAL_2,CRUCE DE CABRAL 2,138.0,PQ,1.00,5.5011,8.3964,Enriquillo,Omega_Sur,Enriquillo,ancla_geografica,-582.4594,-465.6591
+BUS-138-CRUCE_DE_CABRAL_2,CRUCE DE CABRAL 2,138.0,PQ,1.00,0.0000,0.0000,Enriquillo,Omega_Sur,Enriquillo,ancla_geografica,-582.4594,-465.6591
 BUS-138-CUMAYASA,CUMAYASA,138.0,PQ,1.00,40.8876,12.0565,Higuamo,Omega_Este,Higuamo,ancla_geografica,-33.4153,-389.7338
 BUS-138-DAJABON,DAJABON,138.0,PQ,1.00,6.2738,3.1369,Cibao Noroeste,Omega_Norte,Cibao Noroeste,ancla_geografica,-641.8167,-395.0385
-BUS-138-DAJAO,DAJAO,138.0,PQ,1.00,3.1369,2.0913,Cibao Noroeste,Omega_Norte,Cibao Noroeste,ancla_geografica,-181.3732,-365.9719
+BUS-138-DAJAO,DAJAO,138.0,PQ,1.00,0.0000,0.0000,Cibao Noroeste,Omega_Norte,Cibao Noroeste,ancla_geografica,-181.3732,-365.9719
 BUS-138-EL_BRISAL,EL BRISAL,138.0,PQ,1.00,3.5551,3.5551,Cibao Noroeste,Omega_Norte,Cibao Noroeste,vecino_dwg,-211.2355,-393.1328
-BUS-138-EL_NARANJO,EL NARANJO,138.0,PQ,1.00,19.9777,5.5011,Valdesia,Omega_Sur,Valdesia,ancla_geografica,-37.3261,-940.2202
+BUS-138-EL_NARANJO,EL NARANJO,138.0,PQ,1.00,39.9554,11.0022,Valdesia,Omega_Sur,Valdesia,ancla_geografica,-37.3261,-940.2202
 BUS-138-EL_SEIBO,EL SEIBO,138.0,PQ,1.00,18.3470,2.6210,Yuma,Omega_Este,Yuma,ancla_geografica,-79.9893,-327.2110
 BUS-138-EL_SOCO,EL SOCO,138.0,PQ,1.00,48.2264,6.2905,Yuma,Omega_Este,Yuma,vecino_dwg,-82.3045,-320.9603
 BUS-138-EMBAJADOR,EMBAJADOR,138.0,PQ,1.00,49.7229,13.4666,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,vecino_dwg,-269.7813,-497.3625
@@ -37,20 +37,20 @@ BUS-138-FALCONDO,FALCONDO,138.0,PQ,1.00,11.9202,3.5551,Cibao Sur,Omega_Norte,Cib
 BUS-138-GIRASOL,GIRASOL,138.0,PQ,1.00,26.0579,7.2383,Valdesia,Omega_Sur,Valdesia,vecino_dwg,-394.6694,-471.8279
 BUS-138-GUANILLO,GUANILLO,138.0,PQ,1.00,3.3460,3.3460,Cibao Noroeste,Omega_Norte,Cibao Noroeste,vecino_dwg,-611.6465,-393.8308
 BUS-138-GUAYUBIN,GUAYUBIN,138.0,PQ,1.00,4.1825,3.1369,Cibao Noroeste,Omega_Norte,Cibao Noroeste,ancla_geografica,-621.4979,-376.0632
-BUS-138-GUERRA,GUERRA,138.0,PQ,1.00,98.4100,10.3589,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,347.7163,-877.1075
+BUS-138-GUERRA,GUERRA,138.0,PQ,1.00,196.8200,20.7178,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,347.7163,-877.1075
 BUS-138-GUZMANCITO,GUZMANCITO,138.0,PQ,1.00,5.0190,3.9734,Cibao Noroeste,Omega_Norte,Cibao Noroeste,vecino_dwg,-608.0381,-378.7050
 BUS-138-HAINA,HAINA,138.0,PQ,1.00,3.6305,4.5381,Higuamo,Omega_Este,Higuamo,vecino_dwg,-305.7513,-498.6460
-BUS-138-HAINAMOSA,HAINAMOSA,138.0,PQ,1.00,97.3741,14.5025,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,339.0560,-887.7102
-BUS-138-HATO_MAYOR_2,HATO MAYOR 2,138.0,PQ,1.00,36.1697,15.2018,Higuamo,Omega_Este,Higuamo,ancla_geografica,-89.8841,-385.4387
-BUS-138-HERRERA,HERRERA,138.0,PQ,1.00,61.1178,19.6820,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,-308.4159,-446.4519
-BUS-138-HIGUEY,HIGUEY,138.0,PQ,1.00,32.5004,6.2905,Yuma,Omega_Este,Yuma,ancla_geografica,-51.0785,-327.2110
+BUS-138-HAINAMOSA,HAINAMOSA,138.0,PQ,1.00,0.0000,0.0000,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,339.0560,-887.7102
+BUS-138-HATO_MAYOR_2,HATO MAYOR 2,138.0,PQ,1.00,0.0000,0.0000,Higuamo,Omega_Este,Higuamo,ancla_geografica,-89.8841,-385.4387
+BUS-138-HERRERA,HERRERA,138.0,PQ,1.00,0.0000,0.0000,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,-308.4159,-446.4519
+BUS-138-HIGUEY,HIGUEY,138.0,PQ,1.00,0.0000,0.0000,Yuma,Omega_Este,Yuma,ancla_geografica,-51.0785,-327.2110
 BUS-138-ITABO,ITABO,138.0,PQ,1.00,50.3234,13.6292,Higuamo,Omega_Este,Higuamo,ancla_geografica,-340.0940,-490.9462
 BUS-138-ITABO_TG,ITABO TG,138.0,PQ,1.00,39.3149,5.2419,Higuamo,Omega_Este,Higuamo,ancla_geografica,-359.2258,-490.9837
 BUS-138-JIGUEY,JIGUEY,138.0,PQ,1.00,12.4499,6.6592,Valdesia,Omega_Sur,Valdesia,vecino_dwg,-433.9990,-448.3888
 BUS-138-JIMANI,JIMANI,138.0,PQ,1.00,9.5546,3.7639,Enriquillo,Omega_Sur,Enriquillo,ancla_geografica,-604.0464,-509.2252
 BUS-138-JUAN_DOLIO,JUAN DOLIO,138.0,PQ,1.00,46.0870,6.3568,Higuamo,Omega_Este,Higuamo,vecino_dwg,416.9497,-831.0369
 BUS-138-JULIO_SAURI,JULIO SAURI,138.0,PQ,1.00,0.0000,0.0000,Valdesia,Omega_Sur,Valdesia,vecino_dwg,-364.6577,-428.1441
-BUS-138-KM_15_DE_AZUA,KM 15 DE AZUA,138.0,PQ,1.00,12.4499,6.6592,Valdesia,Omega_Sur,Valdesia,ancla_geografica,-468.5881,-465.0824
+BUS-138-KM_15_DE_AZUA,KM 15 DE AZUA,138.0,PQ,1.00,0.0000,0.0000,Valdesia,Omega_Sur,Valdesia,ancla_geografica,-468.5881,-465.0824
 BUS-138-LA_GALLERA,LA GALLERA,138.0,PQ,1.00,15.8935,4.3916,Cibao Norte,Omega_Norte,Cibao Norte,vecino_dwg,-504.5199,-407.3270
 BUS-138-LA_ISABELA,LA ISABELA,138.0,PQ,1.00,14.0114,1.4639,Cibao Nordeste,Omega_Norte,Cibao Nordeste,vecino_dwg,-267.9539,-355.9606
 BUS-138-LA_ROMANA,LA ROMANA,138.0,PQ,1.00,25.1616,12.0565,Yuma,Omega_Este,Yuma,ancla_geografica,-27.0258,-376.5324
@@ -66,16 +66,16 @@ BUS-138-MATAFONGO,MATAFONGO,138.0,PQ,1.00,24.8998,3.1849,Valdesia,Omega_Sur,Vald
 BUS-138-MATA_DE_PALMA_2,MATA DE PALMA 2,138.0,PQ,1.00,71.4767,24.8614,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,vecino_dwg,-148.6815,-332.5721
 BUS-138-MATRISOL,MATRISOL,138.0,PQ,1.00,18.1939,3.5551,Cibao Nordeste,Omega_Norte,Cibao Nordeste,vecino_dwg,-502.3879,-289.9465
 BUS-138-METALDOM,METALDOM,138.0,PQ,1.00,90.1228,12.4308,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,vecino_dwg,-271.7394,-514.8029
-BUS-138-METROPOLITANO,METROPOLITANO,138.0,PQ,1.00,16.5743,21.7538,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,vecino_dwg,-272.4014,-485.5085
+BUS-138-METROPOLITANO,METROPOLITANO,138.0,PQ,1.00,0.0000,0.0000,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,vecino_dwg,-272.4014,-485.5085
 BUS-138-MIRASOL,MIRASOL,138.0,PQ,1.00,22.7896,7.2513,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,vecino_dwg,374.1614,-844.5712
 BUS-138-MOCA,MOCA,138.0,PQ,1.00,6.0646,1.8821,Cibao Norte,Omega_Norte,Cibao Norte,vecino_dwg,-480.9969,-356.1685
 BUS-138-MONCION,MONCION,138.0,PQ,1.00,10.6654,2.3004,Cibao Norte,Omega_Norte,Cibao Norte,vecino_dwg,-646.2532,-432.0460
 BUS-138-MONTE_CRISTI,MONTE CRISTI,138.0,PQ,1.00,13.3840,5.0190,Cibao Noroeste,Omega_Norte,Cibao Noroeste,vecino_dwg,-641.7735,-385.8617
 BUS-138-MONTE_RIO,MONTE RIO,138.0,PQ,1.00,19.3954,3.6694,Yuma,Omega_Este,Yuma,vecino_dwg,6.8730,88.4743
-BUS-138-NAGUA_2,NAGUA 2,138.0,PQ,1.00,19.8669,5.2281,Cibao Nordeste,Omega_Norte,Cibao Nordeste,ancla_geografica,-508.4446,-312.8389
+BUS-138-NAGUA_2,NAGUA 2,138.0,PQ,1.00,0.0000,0.0000,Cibao Nordeste,Omega_Norte,Cibao Nordeste,ancla_geografica,-508.4446,-312.8389
 BUS-138-NAVARRETE_2,NAVARRETE 2,138.0,PQ,1.00,20.0760,2.3004,Cibao Norte,Omega_Norte,Cibao Norte,ancla_geografica,-30.1927,-931.5363
 BUS-138-NIBAJE,NIBAJE,138.0,PQ,1.00,19.4487,4.8099,Cibao Norte,Omega_Norte,Cibao Norte,vecino_dwg,-524.9281,-432.1077
-BUS-138-PALAMARA,PALAMARA,138.0,PQ,1.00,87.0151,19.6820,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,-319.4318,-342.5910
+BUS-138-PALAMARA,PALAMARA,138.0,PQ,1.00,0.0000,0.0000,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,-319.4318,-342.5910
 BUS-138-PALENQUE,PALENQUE,138.0,PQ,1.00,27.7951,1.7372,Valdesia,Omega_Sur,Valdesia,vecino_dwg,-400.0498,-451.3708
 BUS-138-PALOMINO,PALOMINO,138.0,PQ,1.00,28.6635,2.6058,Valdesia,Omega_Sur,Valdesia,vecino_dwg,-508.3454,-465.2645
 BUS-138-PARAISO,PARAISO,138.0,PQ,1.00,51.7947,25.8974,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,vecino_dwg,-221.2246,-531.3531
@@ -83,12 +83,12 @@ BUS-138-PAYITA,PAYITA,138.0,PQ,1.00,20.7033,2.9278,Cibao Nordeste,Omega_Norte,Ci
 BUS-138-PEDERNALES,PEDERNALES,138.0,PQ,1.00,25.7684,2.6058,Enriquillo,Omega_Sur,Enriquillo,ancla_geografica,-638.7076,-460.5815
 BUS-138-PERAVIA,PERAVIA,138.0,PQ,1.00,25.7684,4.0535,Valdesia,Omega_Sur,Valdesia,vecino_dwg,-404.3994,-458.5744
 BUS-138-PIMENTEL,PIMENTEL,138.0,PQ,1.00,10.8745,1.4639,Cibao Nordeste,Omega_Norte,Cibao Nordeste,vecino_dwg,-477.0963,-307.2010
-BUS-138-PIZARRETE,PIZARRETE,138.0,PQ,1.00,21.4254,6.9488,Valdesia,Omega_Sur,Valdesia,ancla_geografica,-446.7632,-472.8007
+BUS-138-PIZARRETE,PIZARRETE,138.0,PQ,1.00,0.0000,0.0000,Valdesia,Omega_Sur,Valdesia,ancla_geografica,-446.7632,-472.8007
 BUS-138-PLAYA_DORADA,PLAYA DORADA,138.0,PQ,1.00,7.7376,4.6008,Cibao Nordeste,Omega_Norte,Cibao Nordeste,ancla_geografica,-573.9711,-329.6206
 BUS-138-POWERSHIP_KPS01,POWERSHIP KPS01,138.0,PQ,1.00,15.0557,3.4744,Enriquillo,Omega_Sur,Enriquillo,vecino_dwg,-552.0513,-476.2110
 BUS-138-POWERSHIP_KPS26,POWERSHIP KPS26,138.0,PQ,1.00,5.5011,6.9488,Enriquillo,Omega_Sur,Enriquillo,vecino_dwg,-556.1456,-468.6106
 BUS-138-POWERSHIP_KPS60,POWERSHIP KPS60,138.0,PQ,1.00,20.8463,4.9220,Enriquillo,Omega_Sur,Enriquillo,vecino_dwg,-563.9343,-468.6106
-BUS-138-PUERTO_PLATA_2,PUERTO PLATA 2,138.0,PQ,1.00,4.6008,4.6008,Cibao Nordeste,Omega_Norte,Cibao Nordeste,ancla_geografica,-37.2240,-877.6758
+BUS-138-PUERTO_PLATA_2,PUERTO PLATA 2,138.0,PQ,1.00,0.0000,0.0000,Cibao Nordeste,Omega_Norte,Cibao Nordeste,ancla_geografica,-37.2240,-877.6758
 BUS-138-PUNTA_CATALINA,PUNTA CATALINA,138.0,PV,1.01,0.0000,0.0000,Valdesia,Omega_Sur,Valdesia,vecino_dwg,-393.5278,-442.4076
 BUS-138-RIO_SAN_JUAN,RIO SAN JUAN,138.0,PQ,1.00,5.2281,1.0456,Cibao Nordeste,Omega_Norte,Cibao Nordeste,ancla_geografica,-537.8992,-294.1541
 BUS-138-SAJOMA,SAJOMA,138.0,PQ,1.00,14.4297,1.8821,Cibao Noroeste,Omega_Norte,Cibao Noroeste,vecino_dwg,-44.5691,-951.5653
@@ -99,7 +99,7 @@ BUS-138-SANTANASOL,SANTANASOL,138.0,PQ,1.00,22.8731,5.5011,Valdesia,Omega_Sur,Va
 BUS-138-SANTIAGO_RODRIGUEZ,SANTIAGO RODRIGUEZ,138.0,PQ,1.00,12.1293,5.8555,Cibao Norte,Omega_Norte,Cibao Norte,ancla_geografica,-642.9319,-405.6278
 BUS-138-SAN_CRISTOBAL_NORTE,SAN CRISTOBAL NORTE,138.0,PQ,1.00,28.0846,4.9220,Valdesia,Omega_Sur,Valdesia,ancla_geografica,-413.8963,-435.6444
 BUS-138-SAN_FELIPE,SAN FELIPE,138.0,PQ,1.00,37.2181,13.6292,Yuma,Omega_Este,Yuma,vecino_dwg,-102.8544,216.1946
-BUS-138-SAN_JUAN_2,SAN JUAN 2,138.0,PQ,1.00,20.2673,7.2383,Del Valle,Omega_Sur,Del Valle,ancla_geografica,-587.7710,-480.9278
+BUS-138-SAN_JUAN_2,SAN JUAN 2,138.0,PQ,1.00,0.0000,0.0000,Del Valle,Omega_Sur,Del Valle,ancla_geografica,-587.7710,-480.9278
 BUS-138-SAN_PEDRO_BIOENERGY,SAN PEDRO BIOENERGY,138.0,PQ,1.00,43.5085,12.0565,Higuamo,Omega_Este,Higuamo,ancla_geografica,-110.7112,-323.9288
 BUS-138-SIBA,SIBA,138.0,PQ,1.00,100.4817,7.2513,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,vecino_dwg,-149.1795,-331.4978
 BUS-138-SPM,SPM,138.0,PQ,1.00,0.0000,0.0000,Higuamo,Omega_Este,Higuamo,ancla_geografica,-96.2217,-392.8170
@@ -111,33 +111,33 @@ BUS-138-TIMBEQUE_2,TIMBEQUE 2,138.0,PQ,1.00,20.7034,1.8821,Cibao Noroeste,Omega_
 BUS-138-UASD,UASD,138.0,PQ,1.00,59.0459,7.2513,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,-276.0528,-522.3650
 BUS-138-VALDESIA,VALDESIA,138.0,PV,1.01,0.0000,0.0000,Valdesia,Omega_Sur,Valdesia,ancla_geografica,-384.3940,-453.9748
 BUS-138-VALVERDE_MAO,VALVERDE MAO,138.0,PQ,1.00,17.7757,2.0913,Cibao Noroeste,Omega_Norte,Cibao Noroeste,ancla_geografica,-64.2319,-944.2704
-BUS-138-VILLA_DUARTE,VILLA DUARTE,138.0,PQ,1.00,50.7588,30.0409,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,vecino_dwg,-226.9566,-457.5422
+BUS-138-VILLA_DUARTE,VILLA DUARTE,138.0,PQ,1.00,0.0000,0.0000,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,vecino_dwg,-226.9566,-457.5422
 BUS-138-VILLA_MELLA,VILLA MELLA,138.0,PQ,1.00,54.9024,13.4666,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,313.2884,-861.7045
-BUS-138-ZF_SANTIAGO,ZF SANTIAGO,138.0,PQ,1.00,18.6122,3.9734,Cibao Noroeste,Omega_Norte,Cibao Noroeste,ancla_geografica,-562.2387,-412.9558
-BUS-69-ARROYO_HONDO,ARROYO HONDO,69.0,PQ,1.00,6.2738,3.1369,Cibao Nordeste,Omega_Norte,Cibao Nordeste,ancla_geografica,282.3187,-738.4977
+BUS-138-ZF_SANTIAGO,ZF SANTIAGO,138.0,PQ,1.00,0.0000,0.0000,Cibao Noroeste,Omega_Norte,Cibao Noroeste,ancla_geografica,-562.2387,-412.9558
+BUS-69-ARROYO_HONDO,ARROYO HONDO,69.0,PQ,1.00,12.5476,6.2738,Cibao Nordeste,Omega_Norte,Cibao Nordeste,ancla_geografica,282.3187,-738.4977
 BUS-69-BARAHONA,BARAHONA CARBON,69.0,PQ,1.00,0.0000,0.0000,Enriquillo,Omega_Sur,Enriquillo,ancla_geografica,-55.6761,-857.5179
-BUS-69-BOCA_CHICA,BOCA CHICA,69.0,PQ,1.00,99.4458,16.5743,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,415.6426,-741.2546
-BUS-69-BONAO_2,BONAO 2,69.0,PQ,1.00,7.9468,2.7186,Cibao Sur,Omega_Norte,Cibao Sur,ancla_geografica,158.2021,-791.0076
-BUS-69-CANABACOA,CANABACOA,69.0,PQ,1.00,17.9848,2.3004,Cibao Norte,Omega_Norte,Cibao Norte,ancla_geografica,66.0462,-783.7566
-BUS-69-CRUCE_DE_CABRAL_2,CRUCE DE CABRAL 2,69.0,PQ,1.00,5.5011,8.3964,Enriquillo,Omega_Sur,Enriquillo,ancla_geografica,-27.5713,-857.2121
-BUS-69-DAJAO,DAJAO,69.0,PQ,1.00,3.1369,2.0913,Cibao Noroeste,Omega_Norte,Cibao Noroeste,ancla_geografica,396.7932,-741.2535
+BUS-69-BOCA_CHICA,BOCA CHICA,69.0,PQ,1.00,198.8916,33.1486,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,415.6426,-741.2546
+BUS-69-BONAO_2,BONAO 2,69.0,PQ,1.00,15.8936,5.4372,Cibao Sur,Omega_Norte,Cibao Sur,ancla_geografica,158.2021,-791.0076
+BUS-69-CANABACOA,CANABACOA,69.0,PQ,1.00,35.9696,4.6008,Cibao Norte,Omega_Norte,Cibao Norte,ancla_geografica,66.0462,-783.7566
+BUS-69-CRUCE_DE_CABRAL_2,CRUCE DE CABRAL 2,69.0,PQ,1.00,11.0022,16.7928,Enriquillo,Omega_Sur,Enriquillo,ancla_geografica,-27.5713,-857.2121
+BUS-69-DAJAO,DAJAO,69.0,PQ,1.00,6.2738,4.1826,Cibao Noroeste,Omega_Norte,Cibao Noroeste,ancla_geografica,396.7932,-741.2535
 BUS-69-HAINA,HAINA,69.0,PQ,1.00,4.1825,5.2281,Cibao Noroeste,Omega_Norte,Cibao Noroeste,vecino_dwg,250.6044,-886.8757
-BUS-69-HAINAMOSA,HAINAMOSA,69.0,PQ,1.00,97.3741,14.5025,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,356.5836,-755.6302
-BUS-69-HATO_MAYOR_2,HATO MAYOR 2,69.0,PQ,1.00,36.1697,15.2018,Higuamo,Omega_Este,Higuamo,ancla_geografica,496.9784,-755.1751
-BUS-69-HERRERA,HERRERA,69.0,PQ,1.00,61.1178,19.6820,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,254.3790,-825.7121
-BUS-69-HIGUEY,HIGUEY,69.0,PQ,1.00,32.5004,6.2905,Yuma,Omega_Este,Yuma,ancla_geografica,14.3290,-351.6101
-BUS-69-KM_15_DE_AZUA,KM 15 DE AZUA,69.0,PQ,1.00,12.4499,6.6592,Valdesia,Omega_Sur,Valdesia,ancla_geografica,84.6090,-856.6354
+BUS-69-HAINAMOSA,HAINAMOSA,69.0,PQ,1.00,194.7482,29.0050,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,356.5836,-755.6302
+BUS-69-HATO_MAYOR_2,HATO MAYOR 2,69.0,PQ,1.00,72.3394,30.4036,Higuamo,Omega_Este,Higuamo,ancla_geografica,496.9784,-755.1751
+BUS-69-HERRERA,HERRERA,69.0,PQ,1.00,122.2356,39.3640,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,254.3790,-825.7121
+BUS-69-HIGUEY,HIGUEY,69.0,PQ,1.00,65.0008,12.5810,Yuma,Omega_Este,Yuma,ancla_geografica,14.3290,-351.6101
+BUS-69-KM_15_DE_AZUA,KM 15 DE AZUA,69.0,PQ,1.00,24.8998,13.3184,Valdesia,Omega_Sur,Valdesia,ancla_geografica,84.6090,-856.6354
 BUS-69-LA_ROMANA,ROMANA,69.0,PQ,1.00,0.0000,0.0000,Yuma,Omega_Este,Yuma,ancla_geografica,545.1868,-747.5335
-BUS-69-METROPOLITANO,METROPOLITANO,69.0,PQ,1.00,16.5743,21.7538,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,vecino_dwg,281.8435,-824.5886
-BUS-69-NAGUA_2,NAGUA 2,69.0,PQ,1.00,19.8669,5.2281,Cibao Nordeste,Omega_Norte,Cibao Nordeste,ancla_geografica,49.2618,-684.5277
-BUS-69-PALAMARA,PALAMARA,69.0,PQ,1.00,87.0151,19.6820,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,258.1518,-738.5546
-BUS-69-PIZARRETE,PIZARRETE,69.0,PQ,1.00,21.4254,6.9488,Valdesia,Omega_Sur,Valdesia,ancla_geografica,144.9419,-855.8092
+BUS-69-METROPOLITANO,METROPOLITANO,69.0,PQ,1.00,33.1486,43.5076,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,vecino_dwg,281.8435,-824.5886
+BUS-69-NAGUA_2,NAGUA 2,69.0,PQ,1.00,39.7338,10.4562,Cibao Nordeste,Omega_Norte,Cibao Nordeste,ancla_geografica,49.2618,-684.5277
+BUS-69-PALAMARA,PALAMARA,69.0,PQ,1.00,174.0302,39.3640,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,ancla_geografica,258.1518,-738.5546
+BUS-69-PIZARRETE,PIZARRETE,69.0,PQ,1.00,42.8508,13.8976,Valdesia,Omega_Sur,Valdesia,ancla_geografica,144.9419,-855.8092
 BUS-69-PLAYA_DORADA,AUTO PLAYA DORADA,69.0,PQ,1.00,0.0000,0.0000,Cibao Nordeste,Omega_Norte,Cibao Nordeste,ancla_geografica,-12.1567,-716.0177
-BUS-69-PUERTO_PLATA_2,PUERTO PLATA 2,69.0,PQ,1.00,4.6008,4.6008,Cibao Nordeste,Omega_Norte,Cibao Nordeste,ancla_geografica,-32.0495,-728.7151
-BUS-69-SAN_JUAN_2,SAN JUAN 2,69.0,PQ,1.00,20.2673,7.2383,Del Valle,Omega_Sur,Del Valle,ancla_geografica,33.9412,-867.7583
+BUS-69-PUERTO_PLATA_2,PUERTO PLATA 2,69.0,PQ,1.00,9.2016,9.2016,Cibao Nordeste,Omega_Norte,Cibao Nordeste,ancla_geografica,-32.0495,-728.7151
+BUS-69-SAN_JUAN_2,SAN JUAN 2,69.0,PQ,1.00,40.5346,14.4766,Del Valle,Omega_Sur,Del Valle,ancla_geografica,33.9412,-867.7583
 BUS-69-SPM,SPM,69.0,PQ,1.00,0.0000,0.0000,Higuamo,Omega_Este,Higuamo,ancla_geografica,480.5994,-759.2543
 BUS-69-S_F_M,SFM,69.0,PQ,1.00,0.0000,0.0000,Cibao Nordeste,Omega_Norte,Cibao Nordeste,ancla_geografica,80.8808,-714.7034
 BUS-69-TIMBEQUE,TIMBEQUE,69.0,PQ,1.00,0.0000,0.0000,Cibao Noroeste,Omega_Norte,Cibao Noroeste,ancla_geografica,352.9458,-949.1193
 BUS-69-TIMBEQUE_2,TIMBEQUE,69.0,PQ,1.00,0.0000,0.0000,Cibao Noroeste,Omega_Norte,Cibao Noroeste,ancla_geografica,352.9458,-949.1193
-BUS-69-VILLA_DUARTE,VILLA DUARTE,69.0,PQ,1.00,50.7588,30.0409,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,vecino_dwg,364.3776,-817.2892
-BUS-69-ZF_SANTIAGO,ZF SANTIAGO,69.0,PQ,1.00,18.6122,3.9734,Cibao Noroeste,Omega_Norte,Cibao Noroeste,ancla_geografica,-2.4339,-791.3249
+BUS-69-VILLA_DUARTE,VILLA DUARTE,69.0,PQ,1.00,101.5176,60.0818,Ozama-Metropolitana,Omega_Metro,Ozama-Metropolitana,vecino_dwg,364.3776,-817.2892
+BUS-69-ZF_SANTIAGO,ZF SANTIAGO,69.0,PQ,1.00,37.2244,7.9468,Cibao Noroeste,Omega_Norte,Cibao Noroeste,ancla_geografica,-2.4339,-791.3249

@@ -54,7 +54,7 @@ PEM & Membrana de intercambio protónico (electrólisis) \\
 La Tabla~\ref{tab:parameters} consolida los parámetros estructurales y eléctricos del benchmark publicado tal como se instancian en el modelo nodal, de modo que la aritmética de topología de las Secciones~\ref{sec:topology}--\ref{sec:benchmarking} pueda verificarse de un vistazo contra el conjunto de datos liberado.
 
 \begin{table*}[!t]
-\caption{Parámetros Topológicos y Eléctricos Consolidados del Benchmark Insular SENI-142. El bloque superior es el levantamiento del plano unifilar en CAD recuperado en este trabajo y constituye la contribución propia medida del artículo; el bloque inferior es el modelo nodal condensado sobre el que se ejecutan todas las simulaciones reportadas.}
+\caption{Parámetros Topológicos y Eléctricos Consolidados del Benchmark Insular SENI-142. El bloque superior es la instanciación territorial recuperada del plano unifilar en CAD en este trabajo y constituye la contribución propia medida del artículo; el bloque inferior es el modelo eléctrico de cómputo sobre el que se ejecutan todas las simulaciones reportadas.}
 \label{tab:parameters}
 \centering
 \footnotesize
@@ -62,23 +62,21 @@ La Tabla~\ref{tab:parameters} consolida los parámetros estructurales y eléctri
 \toprule
 \textbf{Cantidad} & \textbf{Valor} \\
 \midrule
-\multicolumn{2}{@{}l}{\textit{Levantamiento del unifilar CAD (este trabajo, medido)}} \\
-Subestaciones cercadas resueltas & 171 \\
-Barras físicas, 345~kV & 6 \\
-Barras físicas, 230~kV & 3 \\
-Barras físicas, 138~kV & 106 \\
-Barras físicas, 69~kV & 90 \\
-\textbf{Total de barras físicas} & \textbf{205} \\
+\multicolumn{2}{@{}l}{\textit{Instanciación territorial (este trabajo, medida)}} \\
+Subestaciones de transmisión troncal & 112 \\
+Barras troncales de transmisión, 345~kV & 6 \\
+Barras troncales de transmisión, 230~kV & 3 \\
+Barras troncales de transmisión, 138~kV & 106 \\
+Puertos frontera condensados de 69~kV & 27 \\
+\textbf{Total de barras de cómputo nodal} & \textbf{142} \\
 \midrule
-\multicolumn{2}{@{}l}{\textit{Modelo nodal de cómputo SENI-142 (derivado, condensado)}} \\
-Nodos de transmisión en masa, 345/230/138~kV & 115 \\
-\textbf{Total de nodos de cómputo} & \textbf{142} \\
+\multicolumn{2}{@{}l}{\textit{Modelo eléctrico de cómputo SENI-142 (derivado, condensado)}} \\
 Líneas de transmisión & 135 \\
-Autotransformadores de potencia & 58 \\
+Transformadores de potencia & 58 \\
 Capacidad instalada de generación (nominal) & 5,420 MW \\
 Demanda horaria máxima (registro SCADA) & 3,450 MW \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-El censo de barras sigue la regla nodal de la Sección~\ref{sub:substations}: una barra por nivel de tensión por recinto cercado, con los bancos de transformadores como ramas. El bloque superior de la Tabla~\ref{tab:parameters} es el levantamiento del unifilar en CAD recuperado en este trabajo y es la contribución propia medida del artículo: 205 barras físicas en 171 subestaciones cercadas, de las cuales 115 pertenecen a los estratos de masa de 345, 230 y 138~kV. El bloque inferior es el modelo de cómputo condensado que realmente ejercita el solver, en el que la capa de subtransmisión de 69~kV se sustituye por los equivalentes nodales que preservan inyecciones de la Sección~\ref{sub:reduction}, dando un modelo condensado de 142 nodos de cómputo. Los dos bloques se reportan por separado y deliberadamente: el primero es una medición, el segundo es una decisión de modelado. Las dos cláusulas de protocolo verbatim de la Sección~\ref{sub:dataprotocol} y la Sección~\ref{sub:clause} permanecen como el núcleo contractual de la capa de datos y de la instanciación territorial, respectivamente, y se preservan carácter a carácter en la edición inglesa canónica.
+El censo de barras sigue la regla nodal de la Sección~\ref{sub:substations}: una barra por nivel de tensión por recinto cercado, con los bancos de transformadores como ramas. El bloque superior de la Tabla~\ref{tab:parameters} es la instanciación territorial recuperada del unifilar en CAD y es la contribución propia medida del artículo: 142 barras de cómputo nodal sobre 112 subestaciones de transmisión troncal, de las cuales 115 son barras troncales en los estratos de 345, 230 y 138~kV y 27 son puertos frontera condensados de la capa de 69~kV. El bloque inferior es el modelo eléctrico de cómputo que realmente ejercita el solver --- 135 líneas de transmisión y 58 transformadores de potencia sobre ese patrimonio de 142 barras --- en el que la capa de subtransmisión de 69~kV se representa mediante los equivalentes nodales que preservan inyecciones de la Sección~\ref{sub:reduction}. Los dos bloques se reportan por separado y deliberadamente: el primero es una medición, el segundo es una decisión de modelado. Las dos cláusulas de protocolo verbatim de la Sección~\ref{sub:dataprotocol} y la Sección~\ref{sub:clause} permanecen como el núcleo contractual de la capa de datos y de la instanciación territorial, respectivamente, y se preservan carácter a carácter en la edición inglesa canónica.
