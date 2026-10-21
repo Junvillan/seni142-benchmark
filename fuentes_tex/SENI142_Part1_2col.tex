@@ -1,0 +1,79 @@
+\documentclass[10pt, journal]{IEEEtran}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath, amssymb, amsthm, mathtools, bm}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\usepackage{siunitx}
+\sisetup{locale = US, detect-all = true, exponent-product = \cdot}
+\usepackage{booktabs, array, tabularx, multirow, makecell, colortbl}
+\usepackage{graphicx}
+\graphicspath{{figuras/}}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc, shapes.geometric}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{cite}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+
+%% --- Paleta cromática institucional SENI-IA ---
+\definecolor{seni-blue}{RGB}{0,45,98}
+\definecolor{seni-red}{RGB}{206,17,38}
+\definecolor{seni-gold}{RGB}{201,168,76}
+\definecolor{seni-green}{RGB}{0,122,51}
+\definecolor{seni-dark}{RGB}{26,26,26}
+
+%% ====================================================================
+%% CUADRO DE TÍTULOS SOBERANOS (4 OPCIONES CANÓNICAS EN PORTADA)
+\title{SENI-142: An Open-Access Resilient Insular Transmission Benchmark of the Dominican Republic with Diakoptic Territorial Decomposition under Spatial Planning Law 368-22 --- Part~1: Network Architecture and Diakoptic HBCF Formulation}
+\author{Junior~Alexis~Villanueva-Rosario,~\IEEEmembership{Ms.C., Ph.D.(c)}\\[0.3em]
+{\normalsize\textnormal{\textbf{V-TECH} \textbar\ \textbf{V-CORE TECH S.R.L.} / \textbf{Villa-Core Technologies, S.L.}}}\\[0.15em]
+{\footnotesize\textnormal{\textit{Department of Electrical Grids and Renewable Energy (EERR) Research}}}\\[0.15em]
+{\footnotesize\textnormal{\textit{Doctoral Chair in Power Systems and Artificial Intelligence}}}\\[0.15em]
+{\footnotesize\textnormal{Santo Domingo, Dominican Republic \textbar\ \texttt{ingjavillanueva@gmail.com}}}%
+\thanks{J. A. Villanueva-Rosario is with the Department of Electrical Grids and Renewable Energy (EERR) Research, V-TECH (V-CORE TECH S.R.L. / Villa-Core Technologies, S.L.), Santo Domingo, Dominican Republic (e-mail: ingjavillanueva@gmail.com).}}
+
+% --- Optimización de ubicación de figuras y tablas flotantes ---
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.95}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.8}
+\renewcommand{\dbltopfraction}{0.95}
+\renewcommand{\dblfloatpagefraction}{0.8}
+\setcounter{topnumber}{4}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{6}
+\setcounter{dbltopnumber}{4}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+This paper presents Part~I of SENI-142, an open, fully georeferenced benchmark of the complete bulk transmission system of the Dominican Republic. The physical infrastructure encompasses 171 fenced physical utility yards, reduced across spatial planning boundaries to 112 transmission-level substations (345/230/138~kV) and mapped into 142 nodal computation buses (115 bulk transmission buses and 27 condensed 69~kV boundary ports), with 135 transmission lines and 58 power transformers; the radial 69\,kV subtransmission layer is condensed into multiport equivalents preserving complex boundary injections and short-circuit impedances. The network is partitioned into ten planning regions aligned with national Law 368-22 and aggregated into four electrical macro-domains. A hierarchical boundary-coordinate formulation (HBCF) is applied, wherein the linear systems arising at each Newton--Raphson iteration are condensed exactly via the Schur complement, with an algebraic domain-decomposition residual of $\delta = 2.788 \times 10^{-14}$\,pu relative to a monolithic reference. Part~I states the graph representation, the equivalent reduction, the formal condensation proofs, the fail-closed digital-twin lifecycle, the OSB/OVB release architecture, the empirical data protocol, and the benchmark topology census, and defines the operator's own $N-1$ catalog of 215 contingencies under a two-layer reserve doctrine. The dataset, network parameters, and open validation harness are released through a public repository. The companion Part~II develops the multi-temporal multi-vector AC optimal power flow and reports the 87,360-state silicon campaign.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Benchmark testing, diakoptics, digital twins, insular power systems, power system resilience, Schur complement, spatial planning, transmission networks.
+\end{IEEEkeywords}
+
+\input{partes/p1_sec01_introduction.tex}
+\input{partes/p1_sec02_diakoptic_hbcf.tex}
+\input{partes/p1_sec03_topology.tex}
+\input{partes/p1_sec08_conclusion.tex}
+
+\noindent\textbf{Data Availability.}~The SENI-142 dataset, network parameters, validation harness, and sealed resilience record are openly available at \url{https://github.com/Junvillan/seni142-benchmark} and archived under DOI:~\href{https://doi.org/10.5281/zenodo.23484704}{10.5281/zenodo.23484704}. High-resolution vector figures are available and resolved via the repository's \texttt{figuras/} directory. The release ships the data-driven verifier \texttt{verify\_seni142\_benchmark.py}, which re-derives every sealed quantity of the release from the canonical CSV/NPZ bundle --- 41/41 checks PASS (bus and branch censuses, peak load, unique slack, block-diagonal Schur structure, and the eight contingency balances).
+
+
+\section*{Acknowledgment}
+The author dedicates this work to the memory of Eng.~Arturo Lamarche (E.P.D., in memoriam)---an esteemed mentor, master of Dominican power systems, and tireless guardian of the national grid. His lifelong devotion, technical rigor, and unwavering vigilance over the integrity of the Dominican electrical system during the pivotal expansion of the 345/138\,kV bulk network left an indelible mark on generations of electrical engineers. His legacy endures in every bus, corridor, and protective boundary analyzed in this benchmark.
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{referencias}
+
+\end{document}

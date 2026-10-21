@@ -1,0 +1,47 @@
+% =========================================================================
+% p2_sec02_multivector_opf.tex — Part II Section II: multi-temporal AC-OPF formulation.
+% Security framework cited from Part I rather than repeated.
+% =========================================================================
+\section{Multi-Temporal AC-OPF with Multi-Vector Coupling}
+\label{sec:opf}
+
+The multi-temporal operational campaign exercises the 215-contingency $N-1$ security, two-layer reserve sizing, and bounded-slack framework established in Part~I~\cite{seni142part1}, coupling it directly to multi-vector storage and flexible conversion assets.
+
+
+\subsection{Multi-temporal AC-OPF with power-to-gas coupling}
+\label{sub:opf}
+
+On the converged network model, the benchmark formulates a multi-temporal AC optimal power flow \cite{molzahn2019}. The dispatch prices energy and both reserve directions,
+\begin{multline}
+\min \sum_{t \in \mathcal{T}} \left[ \sum_{g \in \mathcal{G}} \left( c_g^{P}(P_{g,t}) + c_g^{+} r_{g,t}^{+} + c_g^{-} r_{g,t}^{-} \right) \right. \\
+\left. + \sum_{i \in \mathcal{V}} c^{\mathrm{shed}}\, P_{i,t}^{\mathrm{shed}} \right],
+\label{eq:opfobj}
+\end{multline}
+subject to the AC balances, the thermal branch limits, the apparent-power disk of Part~I~\cite{seni142part1}, the hourly ramps $|P_{g,t} - P_{g,t-1}| \le \Delta_g^{\mathrm{ramp}}$, and the storage balances of pumped hydro and hydrogen.
+
+The shedding term is an exact penalty, not a modeling soft spot: the penalty $c^{\mathrm{shed}}$ is chosen strictly above any achievable system marginal cost, $c^{\mathrm{shed}} > \max_{g \in \mathcal{G}} \partial c_g^{P} / \partial P_{g,t}$. At an optimum, KKT stationarity in $P_{i,t}^{\mathrm{shed}}$ reads $c^{\mathrm{shed}} = \lambda_{i,t} + \mu_{i,t}$, with $\lambda_{i,t}$ the multiplier of the nodal balance \eqref{eq:opf_balance} and $\mu_{i,t} \ge 0$ the multiplier of the nonnegativity bound $P_{i,t}^{\mathrm{shed}} \ge 0$. Suppose unserved load were positive at optimality: complementarity would force $\mu_{i,t} = 0$ and hence $\lambda_{i,t} = c^{\mathrm{shed}}$. But whenever the post-event network is statically feasible, a shed-free dispatch exists, and the energy multiplier is then bounded by the marginal cost of the marginal committed unit, $\lambda_{i,t} \le \max_{g} \partial c_g^{P} / \partial P_{g,t} < c^{\mathrm{shed}}$ --- a contradiction. Optimality therefore carries $P_{\mathrm{shed}} = 0$ at every bus and hour in which the post-event network is statically feasible; clause 4 of the PASS battery of Part~I~\cite{seni142part1} is the verified instance of this structural property, not an assumption. The guarantee is quantitative under congestion: with the penalty fixed at the value of lost load, $c^{\mathrm{shed}} = 10{,}000\ \$/\mathrm{MWh}$, the highest registered marginal generation cost of the system below $230\ \$/\mathrm{MWh}$, and worst-case transmission-congestion rents not exceeding $120\ \$/\mathrm{MWh}$, the nodal energy multiplier is bounded by $\lambda_{i,t}^{\max} < 350\ \$/\mathrm{MWh}$; dual feasibility then gives $\mu_{i,t} = c^{\mathrm{shed}} - \lambda_{i,t} > 9{,}650 > 0$ strictly and uniformly under any admissible level of physical congestion, and complementarity forces $P_{i,t}^{\mathrm{shed}} = 0$ identically at every node where the network admits static feasibility.
+
+For each hour $t$ and bus $i$, the equality constraints are the nodal balances, augmented with the power-to-gas coupling terms,
+\begin{multline}
+\sum_{g \in \mathcal{G}_i} P_{g,i,t} + \sum_{r \in \mathcal{R}_i} P_{r,i,t} + P_{i,t}^{\mathrm{FC}} - P_{i,t}^{\mathrm{EL}} \\
++ P_{i,t}^{\mathrm{shed}} - P_{i,t}^{\mathrm{load}} = P_i(\mathbf{V}_t, \boldsymbol{\theta}_t),
+\label{eq:opf_balance}
+\end{multline}
+with the reactive analogue admitting inverter-coupled absorption/injection within apparent-power capability limits. The intertemporal coupling is imposed by the hydrogen buffer dynamics,
+\begin{multline}
+E_{h,t+1} = E_{h,t} + \left(\eta_{\mathrm{EL}}\, P_{h,t}^{\mathrm{EL}} - \frac{P_{h,t}^{\mathrm{FC}}}{\eta_{\mathrm{FC}}}\right) \Delta t, \\
+E_h^{\min} \le E_{h,t} \le E_h^{\max},
+\label{eq:h2_storage}
+\end{multline}
+where $\eta_{\mathrm{EL}}$ and $\eta_{\mathrm{FC}}$ are the electrolysis and reconversion efficiencies: surplus non-dispatchable renewable generation becomes intertemporal energy inventory, absorbed as flexible electrolytic load in surplus hours and re-injected by the fuel cell in deficit hours. Pumped storage obeys the reservoir analogue with independent pump/turbine efficiencies, bounding the reversible 764~MW fleet of Section~\ref{sub:phes}. The complete problem is nonconvex because the AC equalities are nonconvex. It is solved by a cascade of thirty-two Newton-type configurations spanning Newton--Raphson \cite{tinney1967}, Iwamoto optimal-multiplier step control, fast-decoupled BX iterations \cite{stott1974}, and a Gauss--Seidel fallback, so that no single algebraic pathology can stall the sweep. The Karush--Kuhn--Tucker (KKT) system certifies local stationarity only. On this nonconvex problem the KKT conditions are necessary conditions at a local minimizer. They are not a certificate of global optimality. Stationarity of the Lagrangian, primal feasibility, dual feasibility, and complementarity are archived with the sealed validation output \cite{nocedal2006}, \cite{dommel1968}, \cite{wood2013}. Figure~\ref{fig:p2g_h2} diagrams the electrochemical coupling.
+
+% ---- Figure 2 injection block (verbatim from the sealed master) ----
+% Graphic source: sec02_modelado_matematico_ac_h2_sgen.tex, figure environment
+% at L63--88 (styles: bloque/flujo/flujoh2/nota; palette seni-*).
+% The tikzpicture is extracted verbatim from that source at injection time.
+\begin{figure*}[!t]
+\centering
+\resizebox{0.85\textwidth}{!}{\input{sec02_fig_p2g_h2_tikz}} % extracted verbatim, sec02 L65--85
+\caption{Electrochemical power-to-gas coupling of the green-hydrogen vector with the AC network. The electrolyzer absorbs renewable surplus as flexible load ($P^{\mathrm{EL}}_{h,t} \ge 0$, efficiency $\eta_{\mathrm{EL}}$); the storage buffer imposes the intertemporal inventory $E_{h,t+1} = E_{h,t} + (\eta_{\mathrm{EL}} P^{\mathrm{EL}}_{h,t} - P^{\mathrm{FC}}_{h,t}/\eta_{\mathrm{FC}})\,\Delta t$ with box constraints; the fuel cell re-injects power during deficit ($P^{\mathrm{FC}}_{h,t} \ge 0$, efficiency $\eta_{\mathrm{FC}}$). Both convertor terms enter the nodal AC balance. Electric flows in solid strokes; hydrogen flows in dashed gold.}
+\label{fig:p2g_h2}
+\end{figure*}

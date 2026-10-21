@@ -1,0 +1,66 @@
+% =========================================================================
+% p1_sec03_topology.tex — Part I topology & census (verbatim sec03 with
+% cross-part reference fixes toward Part II and authorized condensations).
+% =========================================================================
+% =========================================================================
+% sec03_benchmark_seni142_topology.tex — Section III of the sealed master
+% sealed master paper_seni142_ieee_transactions_en.md; editorial injection pass 2026-10-17.
+% =========================================================================
+\section{The Dominican Republic SENI-142 Benchmark Topology}
+\label{sec:topology}
+
+\subsection{From 112 substations to 142 nodal buses}
+\label{sub:substations}
+
+The physical transmission infrastructure encompasses 171 fenced utility yards, reduced across spatial planning boundaries to 112 transmission substations (345/230/138~kV) and mapped into 142 computation buses: 115 bulk transmission buses plus 27 condensed 69~kV boundary ports (Section~\ref{sub:reduction}). The distinction between yards, substations, and buses is topological, as illustrated for the Julio Sauri estate in Fig.~\ref{fig:jsauri}: a fenced substation is a real-estate entity, whereas a bus is a Kirchhoff node. Where autotransformers couple two voltage levels, the yards are electrically decoupled nodes connected via transformer branch impedance. At JSAURI, the 345~kV yard evacuating Punta Catalina and the 138~kV regional yard are decoupled by autotransformer banks T1/T2, forming two distinct buses. Applying this rule uniformly across all voltage strata yields exactly 142 nodal buses over 135 transmission lines and 58 power transformers.
+
+% ---- Figure 3 injection block (verbatim from the sealed master;
+%      resolved through \graphicspath{{figuras/}} in the host preamble) ----
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.78\textwidth]{fig_diagrama_1_jsauri_345_138.pdf}
+\caption{Kirchhoff decoupling at the Julio Sauri 345/138 kV substation. The 345 kV super-highway that evacuates the Punta Catalina complex ($2 \times 376$ MW) terminates in its own yard, decoupled by the impedance of the T1/T2 autotransformer banks from the regional 138 kV yard that feeds the San Crist\'obal corridor and the metropolitan ring. Wherever a transformation exists, the fenced estate yields two buses; modeled across all voltage strata, the network totals exactly 142 nodal buses.}
+\label{fig:jsauri}
+\end{figure*}
+
+\subsection{The bulk strata and the metropolitan 138 kV ring}
+\label{sub:strata}
+
+Three strategic substations articulate the grid: \textbf{JSAURI} (345/138~kV, system slack at $V = 1.02\ \mathrm{pu}$, receiving Punta Catalina's $2 \times 376 = 752$~MW coal generation); \textbf{PALA} (metropolitan load center, 1,645~MW demand with three 10.77~MW local backup units); and \textbf{SCN} (southwestern renewable hub: 58.9~MW hydro, 95~MW solar, 34~MW wind). Modular decarbonization testbed assets (a 50~MW PEM electrolyzer and 1,400~MW modular PWR units across JSAURI and SCN) are non-operational, excluded from the installed capacity (\texttt{in\_service = false} in \texttt{seni\_real\_base}), preserving operational fidelity while providing transition benchmark readiness. The metropolitan Ozama region consumes $>40\%$ of national demand, served via the geometric redundancy of the JSAURI--PALA--SCN 138~kV triangle (corridors of 70.5~km, 22.1~km, and 30.86~km, reinforced by a 230~kV tie). The loss of any single circuit is absorbed by surviving paths, satisfying the $N-1$ resilience criteria evaluated in Part~II~\cite{seni142part2}.
+
+The 1,645~MW demand at PALA represents the aggregate load center of the metropolitan macro-domain, distributed across 28 metropolitan 138~kV substations (no single bus exceeding 120~MW), supported by $\approx 250$~MW of local generation. At the 3,450~MW national peak state, the reported inter-domain transfers across the four Law 368-22 macro-domains are: $\Omega_{\mathrm{Metro}}$ imports a net 1,395~MW across border set $\Gamma$; $\Omega_{\mathrm{Sur}}$ exports $+930$~MW (Punta Catalina and hydro); $\Omega_{\mathrm{Este}}$ exports $+420$~MW (Quisqueya, AES Andr\'es); and $\Omega_{\mathrm{Norte}}$ maintains local balance. The metropolitan import is carried by 345, 230, and 138~kV corridors totaling $>2,200$~MVA capacity at 63--72\% peak loading, ensuring post-contingency thermal compliance under all $N-1$ conditions (Part~II~\cite{seni142part2}).
+
+\subsection{Ten sovereign territorial microgrids}
+\label{sub:microgrids}
+
+Law 368-22 organizes the national territory into ten planning regions; the benchmark adopts them as its ten territorial microgrids and bundles them, for numerical condensation, into the four electrical macro-subdomains of the HBCF. The mapping and the representative anchors of each region as they appear in the operational record are listed in the released dataset.
+
+Figure~\ref{fig:hbcf_schur} displays the resulting diakoptic map: four macro-subdomains $\Omega$ over the insular geography, the trunk borders $\Gamma$ (the 230/138~kV ties cut by Kron reduction), and the silicon key performance indicators of the condensed solve. Numerically, the partition assigns the 112 interior buses to the four macro-subdomains as $\mathbf{A} = \operatorname{diag}(18, 28, 23, 43)$ (Metropolitan, South, East, North), closed by a minimal boundary $\Gamma$ of 30 buses ($112 + 30 = 142$ nodal buses).
+
+% ---- Figure 4 injection block (verbatim from the sealed master;
+%      resolved through \graphicspath{{figuras/}} in the host preamble) ----
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.75\textwidth]{fig_diagrama_2_schur_hbcf.pdf}
+\caption{Spatial HBCF diakoptic partitioning of the insular grid. The ten territorial microgrids of Law 368-22 bundle into four electrical macro-subdomains $\Omega$ (North/Cibao, South, East, Metropolitan); only the trunk borders $\Gamma$ --- the 230/138 kV ties cut by Kron reduction --- travel to the Schur complement $\mathbf{S} = \mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B}$, with block structure $\mathbf{A}, \mathbf{B}, \mathbf{C}, \mathbf{D}$ over the interior/border ordering. Silicon key performance indicators: 2.65 ms per national AC state, 473 MiB resident, over the standardized horizon of 520 complete weekly cycles (87,360 h; OC-SENI telemetry), with fasorial border-coupling residual $\delta = 2.788 \times 10^{-14}$ pu.}
+\label{fig:hbcf_schur}
+\end{figure*}
+
+\subsection{Data provenance and the boundary-state manifest}
+\label{sub:provenance}
+
+Physical substation footprints, topological bus connections, and geographical corridor
+trajectories are derived directly from the official single-line CAD blueprints maintained by the
+transmission system operator (ETED). The associated branch electrical parameters
+($R$, $X$, $B$, and MVA thermal ratings) and operational baseline setpoints are adopted from the
+official OC-SENI and ETED reference system datasets \cite{ocseni}, \cite{eted}, structured under
+the Common Information Model (CIM) conventions of IEC 61970 \cite{iec61970}. Power-quality-relevant
+quantities follow the measurement definitions of IEC 61000-4-30 \cite{iec61000} and IEEE Std 1459
+\cite{ieee1459}. Every coupling term reaching the master solver --- the $(P_g, Q_g)$ injections of the flexibility constellation of Part~II~\cite{seni142part2} --- travels through a boundary-state manifest chained and signed with SHA-512. Provenance thus runs unbroken from operator archives \cite{ocseni}, \cite{eted} to solver input to published figures --- guaranteeing reproducible verification.
+
+\subsection{The synthetic canon versus the measured island}
+\label{sub:canon}
+
+The contrast between SENI-142 and synthetic benchmarks centers on two empirical axes: \emph{temporal depth} and \emph{consequence}. Synthetic cases provide static, idealized snapshots; SENI-142 supplies 87,360 consecutive hourly states across 520 complete weeks (2016--2025 archive), enabling hypothesis testing against realized weather, demand, and dispatch. Furthermore, while synthetic networks carry no real-world operating histories, every SENI trunk corridor reflects documented outage logs, maintenance records, and contingency events under insular operating conditions.
+
+% ---- Table II (verbatim content of the sealed master) ----
