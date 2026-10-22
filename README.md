@@ -14,7 +14,7 @@
 |---|---|
 | `SENI142_CENSO_CANONICO_BARRAS.csv` | Canonical 142-bus census: one slack (`BUS-345-JULIO_SAURI`, 1.02 pu), regional assignment (Law 368-22), HBCF macro-domain, calibrated nodal peak (Σ = 3,450.0 MW). Names and coordinates with calibrated single-line CAD survey provenance from the official one-line-diagram extract. |
 | `SENI142_RAMAS_LINEAS_Y_TRANSFORMADORES.csv` | 193 canonical branches (135 lines + 58 transformers) with calibrated single-line CAD survey provenance: circuit lengths and conductors from the drawing's own LT annotations, transformer Ucc/MVA/vector-group from the estate survey. Canonical IDs (`LINE-345-PC-JS`, `CORR-138-PALA-SCNU`, `LINE-230-JS-SCNU`, `LINE-138-CUM-SPMI`, `XFMR-345-138-JS`, …). |
-| `matrices_sistema_seni142.npz` | System state: Ybus (142×142, 193 branch pairs), per-branch admittances, HBCF partition (block-diagonal A over the four macro-domains, minimal border set Γ), Schur complement S, measured decomposition residual δ and border condition number κ₂. Input hashes embedded. |
+| `matrices_sistema_seni142.npz` | System state: Ybus (142×142, 193 branch pairs), per-branch admittances, HBCF partition (block-diagonal A over the four macro-domains, trunk-induced boundary set Γ), Schur complement S, measured decomposition residual δ and border condition number κ₂. Input hashes embedded. |
 | `ARTEFACTO_B1_8_CONTINGENCIAS_CANONICAS_142BARRAS.json` | The eight canonical contingency solutions (215-element catalog screened), with per-solution SHA-512 digests, unit-level redispatch breakdown, station-service reconciliation for the 345 kV trunk (748.3 + 3.70 = 752.00 MW isolated), and the dual loss-ratio convention (0.887 % over redispatch / 0.811 % over total deficit). |
 | `SENI142_CATALOGO_215_CONTINGENCIAS.csv` | Canonical N-1 screening catalog: 135 transmission lines + 58 power transformers + 22 major generating units = 215 single contingencies (identity, modeled bus where applicable, screening criterion; nameplate MW only where sealed by the release canon). |
 | `verify_seni142_benchmark.py` | Official verification harness: loads the four artifacts and checks every structural, topological, matrix and accounting property from the data (no solver outputs are hardcoded). Exits non-zero on any failure. |
@@ -23,6 +23,45 @@
 | `SENI142_IEEE_2col.pdf` / `SENI142_IEEE_1col.pdf` / `SENI142_IEEE_ES_1col.pdf` | Compiled manuscript (two-column, one-column, Spanish). |
 | `CARTA_*`, `DOSSIER_*`, `MATRIZ_*` | Transmittal dossier and cross-reference matrix of the review correspondence. |
 | `NOTA_PROPIEDAD_INTELECTUAL_SOLVER_ES_SENI142_20261019.md` / `IP_PATENT_SOLVER_STATEMENT_EN_SENI142_20261019.md` | Intellectual-property doctrine of the submission: benchmark-paper scope per IEEE PES Task Force practice (open model + open validation harness) versus the patent-pending multi-vector optimization solver. |
+
+## Errata and clarifications (2026-10-22)
+
+Auditor-driven clarifications on branch-rating semantics and modeling conventions. None of
+them alters any data artifact: the four sealed artifacts (census CSV, branch CSV, NPZ,
+ARTEFACTO B1 JSON) and the verifier are untouched, and `verify_seni142_benchmark.py`
+still reports 41/41 PASS.
+
+1. **`S_max_MVA` is a per-circuit rating.** The aggregate thermal capability of a
+   multi-circuit branch is `S_max_MVA × Circuitos`:
+   `LINE-345-PC-JS` 421.3 MVA × 3 (3C/F, three 559.5 MCM AAAC per phase) = 1,263.9 MVA;
+   `CORR-138-PALA-SCNU` 236.2 × 2 = 472.4 MVA; `LINE-138-CUM-SPMI` 168.5 × 2 = 337.0 MVA.
+2. **Base-case loading of the 345 kV Punta Catalina trunk.** Under the bundle rating
+   above, the pre-event flow of 748.3 MW over `LINE-345-PC-JS` is a 59.2% bundle loading
+   (plus 3.70 MW of local station service, i.e. 752.00 MW of gross isolated injection,
+   as sealed in ARTEFACTO B1).
+3. **Terminals of `LINE-138-CUM-SPMI`.** The canonical census terminals are
+   `BUS-138-CUMAYASA` → `BUS-138-JUAN_DOLIO` (the San Pedro de Macorís corridor; the
+   "SPMI" suffix refers to the SPM1 substation estate where the November 2025 collapse
+   initiated). Earlier prose glosses such as "SPM–Cumayasa" must be read against the
+   canonical `From_Bus`/`To_Bus` columns.
+4. **`LINE-230-JS-SCNU` is the benchmark's single composite branch** (census subtipo
+   `Linea_transmision_compuesta`): it links the 345 kV JSAURI bar to the 138 kV
+   San Cristóbal Norte bus through integrated port autotransformation, with the branch
+   impedance referenced to the 230 kV trunk base. The verifier whitelists it explicitly
+   in its dielectric-coherence check.
+5. **Double-circuit corridors are archived as a single equivalent branch** (column
+   `Circuitos` = 2). A "one circuit out of service" contingency is screened at corridor
+   level; post-event flows are determined by the corrective stage (automatic
+   corrective-overload control and fast topological redispatch deployed with the
+   co-optimized reserve), not by the passive impedance split alone.
+6. **Inertia constants (H) and per-unit synchronous ratings are not yet published.**
+   Community RoCoF/frequency-nadir computation requires them; their addition is a
+   planned dynamic extension of the release.
+7. **Manuscript-notation alignment pending.** The reactive-limit regularization is
+   reformulated in the two-part manuscript suite as a two-sided smoothed
+   Fischer–Burmeister complementarity on [Q_min, Q_max] whose limit recovers the rigid
+   PV→PQ characteristic. The master markdown still carries the earlier centered
+   sigmoidal notation; it will be aligned in the next release.
 
 ## Verification
 
