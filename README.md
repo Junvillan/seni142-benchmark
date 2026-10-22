@@ -1,6 +1,6 @@
 # SENI-142: An Open-Access Resilient Transmission and Sovereign Decoupling Benchmark for the Dominican Republic Power Grid (IEEE TPWRS Submission Dataset & Verification Harness)
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23484705.svg)](https://doi.org/10.5281/zenodo.23484705)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23484704.svg)](https://doi.org/10.5281/zenodo.23484704)
 
 **Manuscript:** *TPWRS-SENI-142-2026* — IEEE Transactions on Power Systems
 **Author:** Ing. Junior Alexis Villanueva Rosario, Ms.C., Ph.D.(c)
@@ -39,8 +39,56 @@ line parameters; Ybus ≡ branch table (<1e-9); block-diagonal A; Schur identity
 
 The catalog `SENI142_CATALOGO_215_CONTINGENCIAS.csv` enumerates the 215 screened single contingencies; the release certifies the eight canonical contingency balances in `ARTEFACTO_B1`.
 
-### Scope of the Verification Harness
-The open verification harness (`verify_seni142_benchmark.py`) validates structural, topological, and algebraic consistency directly from the released bundle: nodal censuses, 193 branch parameters, exact Schur complement identity $\|\mathbf{S} - (\mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B})\|_\infty < 10^{-12}$, unique slack assignment, and static contingency reserve accounting. Full non-linear AC Newton-Raphson iterations, multi-temporal OPF optimizations, and dynamic EMT simulations belong to the solver engine domain (the author's research C++/Sparse engine reports 2.65 ms / 473 MiB as an experimental baseline on an 8-thread workstation). The 87,360-state multi-temporal campaign and the 215-contingency screening are results of the author's patent-pending C++/Sparse engine; the released bundle certifies the network model, the condensed-solve invariants and the eight canonical contingency balances.
+### Recommended clean execution environment
+
+The harness depends only on `numpy`. On macOS — or in any Conda-preloaded shell where older
+scientific packages may already shadow the interpreter — run from a fresh standard virtual
+environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install numpy
+python3 verify_seni142_benchmark.py
+```
+
+The verifier is strictly read-only: it opens the four data artefacts, prints
+`RESULTADO: 41/41 chequeos PASS`, and writes nothing to disk.
+
+### Scope of the Verification Harness: Consistency vs. Field Provenance
+
+To guarantee deterministic, license-free reproducibility — no commercial power-flow solver
+(PSS/E, PowerFactory) or proprietary environment required — this release states its
+verification boundary in three explicit layers.
+
+**1. What the open harness rigorously validates.** `verify_seni142_benchmark.py`
+recomputes the 41 structural, topological and algebraic invariants listed above directly
+from the canonical arrays, with no solver output hardcoded and a fail-closed non-zero exit
+on any failure. This is an internal-consistency proof: it certifies that the released
+arrays are mutually coherent under the declared electrical identities — not that they are
+physically correct.
+
+**2. Where field accuracy comes from.** The physical grounding of the calibrated
+3,450.0 MW system peak, the 1,645 / 520 / 680 / 605 MW macro-domain demand split, and the
+ten-region partition under Spatial Planning Law 368-22 derive from 520 complete
+consecutive 168-hour weeks — 87,360 hourly operational states over 3,640
+Monday-to-Sunday days — selected without a single interpolated hour from the 2016–2025
+archive of Dominican system-operator telemetry (OC-SENI / ETED), against which the
+calibrated CAD network reconstruction is validated. Thirteen civil days are excluded by
+construction (six calendar-boundary orphan days and the seven days of the final festive
+week) so that the atypical year-end collapse of industrial demand cannot contaminate the
+covariance structure of the block bootstrap.
+
+**3. What is deliberately not in this repository.** Full non-linear AC Newton-Raphson
+iterations, multi-temporal AC-OPF optimization and dynamic EMT simulation belong to the
+solver-engine domain, together with the 2.65 ms / 473 MiB execution figures — an
+experimental reference measurement of the author's patent-pending C++/Sparse research engine
+on an 8-thread Linux workstation, which this open harness does **not** and cannot
+reproduce. That engine is protected as industrial secret under a pending patent
+application; access to it is available to reviewers under confidential peer-review
+agreement per the IEEE PES Data Availability policy. This release certifies the network
+model, the condensed-solve invariants and the eight canonical contingency balances, and
+nothing beyond them.
 
 ## Mutation robustness
 
