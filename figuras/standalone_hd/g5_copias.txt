@@ -1,0 +1,10 @@
+== cmp figuras/ ==
+DIFF fig_hd1_jsauri_desacoplamiento_345_138.pdf
+DIFF fig_hd2_schur_hbcf_macrodominios.pdf
+DIFF fig_hd3_triangulo_metropolitano_redundancia.pdf
+DIFF fig_hd4_grafo_completo_seni142.pdf
+== cmp r5_worktree/figuras_hd ==
+DIFF fig_hd1_jsauri_desacoplamiento_345_138.pdf
+DIFF fig_hd2_schur_hbcf_macrodominios.pdf
+DIFF fig_hd3_triangulo_metropolitano_redundancia.pdf
+DIFF fig_hd4_grafo_completo_seni142.pdf

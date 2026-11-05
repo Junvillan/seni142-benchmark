@@ -1,0 +1,118 @@
+% ============================================================================
+% fig_diagrama_3_constelacion_microsolvers_en.tex
+% DIAGRAM 3 (EN variant) — The dedicated-physics micro-solver constellation
+%              and the fleet supervisor: (Pg, Qg) injection into the 142-bus
+%              SENI master solver. English artwork for the EN/Part/ZH
+%              documents; the ES documents keep the Spanish original.
+%              Derived from fig_diagrama_3_constelacion_microsolvers.tex.
+% Dossier TPWRS-SENI-142-2026 · Author: Ing. J. A. Villanueva Rosario
+% ----------------------------------------------------------------------------
+% Standalone build:
+%   nice -n 19 pdflatex -interaction=nonstopmode fig_diagrama_3_constelacion_microsolvers_en.tex
+% Geometry and node coordinates are identical to the Spanish original.
+% ============================================================================
+\documentclass[border=12pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds,babel}
+
+\begin{document}
+% ==================== IEEETRAN-INSERTABLE BLOCK: START ====================
+\tikzset{
+  >={Stealth[length=2.5mm,width=1.8mm]},
+  doble/.style={{Stealth[length=2.5mm,width=1.8mm]}-{Stealth[length=2.5mm,width=1.8mm]}}
+}
+\definecolor{seniNavy}{RGB}{26,54,93}   % institutional navy
+\definecolor{seniBlue}{RGB}{43,108,176} % HV blue
+\definecolor{seniGold}{RGB}{217,194,130}% V-Core gold
+\definecolor{seniRed}{RGB}{155,44,44}   % 345 kV red / master solver
+\definecolor{seniGreen}{RGB}{39,103,73} % renewable green
+\definecolor{seniBg}{RGB}{247,250,252}  % box background
+\begin{tikzpicture}[
+  font=\small,
+  sup/.style={align=center, text width=112mm, minimum height=13mm,
+              rounded corners=2pt, draw=seniNavy, fill=seniNavy,
+              text=white, font=\small\bfseries},
+  solver/.style={align=center, text width=52mm, minimum height=17mm,
+                 rounded corners=2pt, draw=seniBlue, line width=1pt,
+                 fill=seniBg, font=\scriptsize},
+  canal/.style={align=center, text width=172mm, minimum height=12mm,
+                rounded corners=2pt, draw=seniGold!60!black, line width=1.2pt,
+                fill=seniGold!30, font=\footnotesize},
+  maestro/.style={align=center, text width=88mm, minimum height=12mm,
+                  rounded corners=2pt, draw=seniRed, line width=1.4pt,
+                  fill=seniRed!12, font=\small\bfseries},
+  titulo/.style={align=center, text width=176mm, minimum height=8mm,
+                 rounded corners=2pt, draw=seniNavy, fill=seniNavy,
+                 text=white, font=\small\bfseries},
+  rotulo/.style={align=center, font=\scriptsize, text=seniNavy}
+]
+
+% ---- Title band ----
+\node[titulo] (tit) at (9.5, 13.0)
+  {Dedicated-physics micro-solver constellation: $(P_g,\,Q_g)$ injection
+   into the 142-bus master solver};
+
+% ---- Top level: generator supervisor ----
+\node[sup] (sup) at (9.5, 11.3)
+  {GENERATOR SUPERVISOR\\[0.4mm]
+   {\footnotesize decoupled orchestrator · Zero-Trust policy ·
+    protected shared memory}};
+
+% ---- Left column: renewables and energy storage ----
+\node[solver] (solar) at (4.2, 9.4)
+  {\texttt{\footnotesize\bfseries\textcolor{seniNavy}{villa-solr-core}}\\[0.4mm]
+   photovoltaic · smooth-complementarity $Q$--$V$\\ duck-curve suppression};
+\node[solver] (eolica) at (4.2, 7.3)
+  {\texttt{\footnotesize\bfseries\textcolor{seniNavy}{villa-eolic-core}}\\[0.4mm]
+   aerodynamic $C_p(\lambda,\beta)$\\ synthetic inertia};
+\node[solver] (h2) at (4.2, 5.2)
+  {\texttt{\footnotesize\bfseries\textcolor{seniNavy}{villa-h2core}}\\[0.4mm]
+   electrolysis · 700 bar compression\\ 740 refuelling stations};
+
+% ---- Right column: biochemical, thermal, pumped hydro ----
+\node[solver] (bio) at (14.8, 9.4)
+  {\texttt{\footnotesize\bfseries\textcolor{seniNavy}{villa-biocore}}\\[0.4mm]
+   ADM1 biochemical model\\ sargasso/vinasse digestion};
+\node[solver] (termica) at (14.8, 7.3)
+  {\texttt{\footnotesize\bfseries\textcolor{seniNavy}{thermal-core}}\\[0.4mm]
+   thermal heat-rate curves\\ synchronous $P$--$Q$ dispatch};
+\node[solver] (phes) at (14.8, 5.2)
+  {\texttt{\footnotesize\bfseries\textcolor{seniNavy}{hydro/phes-core}}\\[0.4mm]
+   764 MW reversible PHES cycle\\ Sabaneta / Dos Bocas};
+
+% ---- Exchange channel: boundary-state manifest ----
+\node[canal] (canal) at (9.5, 2.75)
+  {\texttt{\textbf{BOUNDARY\_STATE\_MANIFEST.json}}\\[0.4mm]
+   {\scriptsize SHA-512 signatures · net $(P_g,\,Q_g)$ injections
+    delivered to the master solver}};
+
+% ---- Bottom level: 142-bus master solver ----
+\node[maestro] (maestro) at (9.5, 1.1)
+  {SENI power-flow master solver --- 142 nodal buses};
+
+% ---- Central state bus (supervisor <-> manifest spine) ----
+\draw[doble, line width=1.8pt, seniNavy] (sup.south) -- (canal.north);
+
+% ---- Bus branches toward each micro-solver (dispatch/telemetry) ----
+\draw[doble, line width=1pt, seniBlue] (9.5, 9.4) -- (solar.east);
+\draw[doble, line width=1pt, seniBlue] (9.5, 7.3) -- (eolica.east);
+\draw[doble, line width=1pt, seniBlue] (9.5, 5.2) -- (h2.east);
+\draw[doble, line width=1pt, seniBlue] (9.5, 9.4) -- (bio.west);
+\draw[doble, line width=1pt, seniBlue] (9.5, 7.3) -- (termica.west);
+\draw[doble, line width=1pt, seniBlue] (9.5, 5.2) -- (phes.west);
+
+% ---- Bus label ----
+\node[rotulo, text width=36mm] at (11.9, 3.85)
+  {state bus\\ (dispatch / telemetry)};
+
+% ---- Injection delivery to the master solver ----
+\draw[->, line width=2pt, seniGold!60!black] (canal.south) -- (maestro.north)
+  node[rotulo, pos=0.5, right=1.5mm]{$(P_g,\,Q_g)$ per bus};
+
+\end{tikzpicture}
+% ===================== IEEETRAN-INSERTABLE BLOCK: END =====================
+\end{document}

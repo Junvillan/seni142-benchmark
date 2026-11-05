@@ -18,9 +18,9 @@ SENI-142 is strictly a steady-state AC feasibility benchmark. Each solved state 
 
 The solver does not accept a loose file. Entry is a sealed input manifest whose digest is checked before any bus is instantiated, and the manifest selects the physical case. In the measured-estate mode, prospective technologies that are not in commercial operation remain outside the solved dispatch, so the base case is the Dominican system as operated. In the full doctoral-scenario mode those prospective assets may be instantiated; they stay labeled and are never mixed silently into the measured record.
 
-The physical census is the single-line survey already consolidated in Table~\ref{tab:parameters}: the benchmark comprises 142 nodal compute buses derived from 112 bulk transmission substations (115 bulk buses at 345, 230, and 138~kV plus 27 condensed boundary ports at 69~kV), coupled by 135 transmission lines and 58 power transformers. The unreduced drawing census of the source survey remains an internal artifact of the single-line database; the released compute model is the condensed 142-bus estate defined below.
+The physical census is the single-line survey already consolidated in Table~\ref{tab:parameters}: 171 fenced substations and 205 physical busbars, stratified as 6 at 345~kV, 3 at 230~kV, 106 at 138~kV and 90 at 69~kV, together with 482 branches of the unreduced estate. Those 482 branches belong to the drawing. They are not the 135 lines and 58 autotransformers of the condensed compute model defined below.
 
-Before any admittance is assembled, a normative screen rejects a record that violates IEEE C37 substation arity or the CIM exchange constraints of IEC 61970 \cite{iec61970}. Series reactances must satisfy $X > 0$, shunt susceptances $B \ge 0$, and two-winding and three-winding transformers must close their own balance. A record that fails the screen aborts the case. It is not repaired by a default.
+Before any admittance is assembled, a normative screen rejects a record that violates IEEE Std C37.2 \cite{ieeec37_2} substation arity or the CIM exchange constraints of IEC 61970 \cite{iec61970}. Series reactances must satisfy $X > 0$, shunt susceptances $B \ge 0$, and two-winding and three-winding transformers must close their own balance. A record that fails the screen aborts the case. It is not repaired by a default.
 
 The same screen is a homologation against current commercial catalogs, not a syntactic patch. Series reactance $X>0$, shunt susceptance $B\ge 0$, and the thermal rating $I_{\max}$ are taken from the catalogs of ACSR and AAAC conductors, of power transformers, and of reactive compensation banks rated up to 250~MVAr. Bay arity and protection classes follow IEEE C37. The exchanged network object follows IEC 61970 (CIM) \cite{iec61970}. None of these values is a synthetic default: a catalog field that fails the screen aborts the case.
 
@@ -38,7 +38,14 @@ The transmission system is modeled as a connected undirected graph $\mathcal{G} 
 S_i = P_i + jQ_i = V_i \sum_{j \in \mathcal{V}} Y_{ij}^{*}\, V_j^{*}, \qquad i \in \mathcal{V},
 \label{eq:balance}
 \end{equation}
-with buses classified as slack, PV, or PQ \cite{tinney1967}. The angle reference is the 345~kV bus of the Julio Sauri substation (JSAURI), held at $V = 1.02\ \mathrm{pu}$. Its active power is the bounded variable of \eqref{eq:slackbox} and is not an unbounded mismatch reservoir. That bus receives directly the injection of the largest thermal plant in the country (Section~\ref{sub:strata}). Where a physical substation hosts more than one voltage level, each voltage level is a distinct bus and the intervening autotransformer is a branch. The reconciliation of Section~\ref{sub:crosswalk} is what carries the 112 bulk transmission substations to the 142 nodal compute buses (115 bulk buses at 345, 230, and 138~kV plus 27 condensed boundary ports at 69~kV; Section~\ref{sub:substations}).
+with buses classified as slack, PV, or PQ \cite{tinney1967}. The angle reference is the 345~kV bus of the Julio Sauri substation (JSAURI), held at $V = 1.02\ \mathrm{pu}$. Its active power is the bounded variable of \eqref{eq:slackbox} and is not an unbounded mismatch reservoir. That bus receives directly the injection of the largest thermal plant in the country (Section~\ref{sub:strata}). Where a physical substation hosts more than one voltage level, each voltage level is a distinct bus and the intervening autotransformer is a branch. The reconciliation of Section~\ref{sub:crosswalk} is what carries 112 transmission substations inside 171 fenced estates to the 142 compute nodes (Section~\ref{sub:substations}).
+
+A structural property of $\mathbf{Y}_{\mathrm{bus}}$ deserves explicit statement. Because every branch of $\mathcal{E}$ is a passive bilateral element, the nodal admittance matrix of a lossy transmission network is complex symmetric but not Hermitian:
+\begin{equation}
+\mathbf{Y}_{\mathrm{bus}}^{\mathsf{T}} = \mathbf{Y}_{\mathrm{bus}} \;\ne\; \mathbf{Y}_{\mathrm{bus}}^{\mathsf{H}} = \overline{\mathbf{Y}_{\mathrm{bus}}}^{\,\mathsf{T}},
+\label{eq:nonhermitian}
+\end{equation}
+since the positive series conductances $g_{ij} > 0$ of the branches render the matrix intrinsically non-real; for the sealed SENI-142 matrix on the 100~MVA base, $\|\mathbf{Y}_{\mathrm{bus}} - \mathbf{Y}_{\mathrm{bus}}^{\mathsf{H}}\|_{\infty} = 1{,}638.34$. All factorizations of this work therefore operate on complex symmetric indefinite systems in complex arithmetic, without invoking Hermitian structure. This symmetry class is preserved exactly by the Schur condensation of Section~\ref{sub:schur}: eliminating each interior block returns reduced diagonal blocks that remain complex symmetric, so the condensed border system inherits precisely the symmetry of the full matrix.
 
 Figure~\ref{fig:topologia142} places the 142 solved nodes in the four electrical macrodomains of Law 368-22 ($\Omega_1$ Norte, $\Omega_2$ Sur, $\Omega_3$ Este, $\Omega_4$ Metropolitano). Bulk yards keep the color of their measured nominal voltage, 345~kV, 230~kV, or 138~kV. The 27 retained boundary terminals stay at the measured 69~kV and are drawn in green. The compute model counts 135 transmission lines. The figure draws a stroke for each pair the census closes: a yard record that names both terminals, or a colinear one-line trace that arrives at a second solved bus of the same voltage. A record whose far terminal is not a census bus is omitted.
 
@@ -48,17 +55,12 @@ Figure~\ref{fig:topologia142} places the 142 solved nodes in the four electrical
 \subsection{Equivalent reduction of the 69 kV subtransmission layer}
 \label{sub:reduction}
 
-Sixty-three radial laterals of the 69~kV layer are condensed into static boundary equivalents via Kron reduction. In general, partitioning the subtransmission nodes into the 27 retained boundary ports $\mathcal{V}_{B,69}$ and the 63 eliminated lateral nodes $\mathcal{V}_{\mathrm{lat}}$ yields the multiport admittance reduction
+Sixty-three radial laterals of the 69~kV layer are condensed into static multiport equivalents of Th\'evenin/Norton type. For each retained boundary terminal, which stays at its measured 69~kV, the equivalent preserves (i) the aggregated complex injection of the condensed area at every modeled hour and (ii) the short-circuit impedance $Z_{\mathrm{cc}}$ seen from that terminal, obtained by Kron-type network reduction. Formally, for boundary port $p$ with condensed interior $\Omega_r$,
 \begin{equation}
-\begin{bmatrix} \mathbf{I}_{B} \\ \mathbf{I}_{\mathrm{lat}} \end{bmatrix} = \begin{bmatrix} \mathbf{Y}_{BB} & \mathbf{Y}_{BL} \\ \mathbf{Y}_{LB} & \mathbf{Y}_{LL} \end{bmatrix} \begin{bmatrix} \mathbf{V}_B \\ \mathbf{V}_{\mathrm{lat}} \end{bmatrix} \implies \mathbf{Y}_{B}^{\mathrm{red}} = \mathbf{Y}_{BB} - \mathbf{Y}_{BL}\mathbf{Y}_{LL}^{-1}\mathbf{Y}_{LB} \in \mathbb{C}^{27 \times 27}.
-\label{eq:kron_69}
-\end{equation}
-Crucially, in the physical operating topology of the SENI, each of the 63 subtransmission antennas forms an uncoupled radial lateral subtree $\Omega_p$ originating at a unique bulk step-down substation (inter-substation 69~kV tie switches are maintained normally open under standard dispatch code to prevent circulating active/reactive power). Consequently, $\mathbf{Y}_{LL}$ is block-diagonal with respect to the 27 boundary terminals, and the off-diagonal cross-coupling blocks satisfy $(\mathbf{Y}_{BL}\mathbf{Y}_{LL}^{-1}\mathbf{Y}_{LB})_{pq} = 0$ for all $p \neq q$. The reduction therefore decouples without algebraic approximation into 27 independent driving-point equivalents with Thévenin impedance $Z_{\mathrm{th}}^{(p)} = (\mathbf{Y}_{B,pp}^{\mathrm{red}})^{-1}$ and net boundary load delivery
-\begin{equation}
-V_p I_p^{*} = S_p^{\mathrm{equiv}} = \sum_{i \in \Omega_p} S_{i}^{\mathrm{load}} + \Delta S_{\mathrm{loss}}^{(p)}, \qquad V_p = E_{\mathrm{th}}^{(p)} - Z_{\mathrm{th}}^{(p)} I_p,
+V_p = E_{\mathrm{th}}^{(r)} - Z_{\mathrm{th}}^{(r)} I_p, \qquad \sum_{i \in \Omega_r} S_i = V_p I_p^{*} + \Delta S_{\mathrm{loss}},
 \label{eq:thevenin}
 \end{equation}
-where $V_p I_p^*$ is the complex power delivered into the radial 69~kV subsystem from the 138~kV bulk grid through boundary port $p$, which by conservation of energy exactly equals the aggregate internal load demand $\sum_{i \in \Omega_p} S_i^{\mathrm{load}}$ plus the strictly positive internal branch Joule and reactive dissipation $\Delta S_{\mathrm{loss}}^{(p)} = \sum_{\ell \in \mathcal{E}(\Omega_p)} (R_\ell + jX_\ell)|I_\ell|^2$. All inter-subdomain mutual couplings across the bulk transmission grid are rigorously handled by the full $27 \times 27$ Schur complement matrix $\mathbf{S} = \mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B}$ in Section~\ref{sub:schur}. This reduction is recomputed from the archived configuration of the estate and is itself part of the sealed artifact, consistent with recommended practice for industrial system analysis \cite{ieee399} and with CIM-based interchange of network models \cite{iec61970}.
+so that the boundary power balance explicitly accounts for the internal losses represented by $\Delta S_{\mathrm{loss}}$ while the equivalent preserves the retained-port variables and eliminates dimensional inflation of $\mathbf{Y}_{\mathrm{bus}}$. The reduction is recomputed from the archived configuration of the estate and is itself part of the sealed artifact, consistent with recommended practice for industrial system analysis \cite{ieee399} and with CIM-based interchange of network models \cite{iec61970}.
 
 Of the ninety 69~kV busbars, sixty-three are the radial laterals removed above. The other twenty-seven remain solved buses at the measured 69~kV. Each of those twenty-seven is a retained boundary terminal. The 115 bulk nodes of Table~\ref{tab:parameters} are the census buses at 345, 230, and 138~kV. The model that is actually solved has 142 buses: those 115 bulk nodes plus these 27 terminals at 69~kV. Removing the sixty-three laterals is also why a fast-decoupled flow and Gauss--Seidel converge on this estate: the branches whose $R/X$ ratio would otherwise singularize the Jacobian are no longer nodes of the solved system. Synchronous units keep their full $P$--$Q$ capability. Static renewable plants are not synchronous machines; their reactive support is stated with the continuous map of Section~\ref{sub:regularization}.
 
@@ -100,31 +102,27 @@ The reordering is a permutation matrix $\mathbf{P}$. Singular values are invaria
 \end{equation}
 The ideal state tightens the voltage band and the losses. It does not optimize $\kappa(\mathbf{J})$. The pair $341.21 \to 365.91$ is the spectral condition $\kappa_2(\mathbf{J})$ of the base-case Jacobian at the real and the ideal operating points. The increment of $+7.24\%$ is an operating-point change of conditioning. It is not an increase of dimension. IEEE Std 399-1997 \cite{ieee399} is cited in Section~\ref{sub:reduction} as industrial-practice context for system studies. It is not used here as a strict threshold on $\kappa(\mathbf{J})$ for transmission power flow.
 
-\subsection{Centered reactive regularization, Volt-Var droop, and inverter capability}
+\subsection{Reactive-limit regularization and inverter capability}
 \label{sub:regularization}
 
-In the benchmark model, synchronous thermal and hydro units operate under conventional Automatic Voltage Regulators (AVR) and are formulated as standard PV buses maintaining $|V_i| = V_i^{\mathrm{sp}}$ within generator capability limits $[Q_g^{\min}, Q_g^{\max}]$. Conversely, Inverter-Based Resources (IBRs) and static renewable plants ($\mathcal{S}_{\mathrm{gen}}$) do not act as ideal synchronous voltage sources; conforming to IEEE Std 1547-2018 (Clause 5.3.3) and IEEE Std 2800-2022 (Clause 5.2.2), they provide autonomous voltage support via a continuous sigmoidal Volt-Var droop characteristic of class $C^1$,
+Hard PV--PQ switching at a generator reactive limit induces limit cycles in Newton-type iterations when the operating point oscillates about that limit. The stated controller is a two-sided smooth complementarity on the full capability interval $[Q_{\min}, Q_{\max}]$,
 \begin{equation}
-Q_{\mathrm{droop}}(V) = Q_g^{\max}(P_g) \left( \frac{2}{1 + e^{-\gamma (V_{\mathrm{ref}} - V)}} - 1 \right),
-\label{eq:sigmoid}
+\phi_\epsilon\bigl(Q_{\max} - Q,\; \Delta V^{-}\bigr) = 0, \quad
+\phi_\epsilon\bigl(Q - Q_{\min},\; \Delta V^{+}\bigr) = 0.
+\label{eq:qbound}
 \end{equation}
-where $Q_{\mathrm{droop}}(V_{\mathrm{ref}}) = 0$ at scheduled nominal voltage. For every inverter resource, the reactive saturation ceiling is dynamically coupled to active generation,
+Here $\Delta V^{+} = \max(0,\, V - V_{\mathrm{ref}})$ and $\Delta V^{-} = \max(0,\, V_{\mathrm{ref}} - V)$ are one-sided voltage deviations, and $\phi_\epsilon(a, b) = a + b - \sqrt{a^2 + b^2 + \epsilon^2}$ is the smoothed Fischer--Burmeister function. The deviation split dissolves the sign conflict of unsigned pairs --- each equation engages only its own voltage regime --- and, as $\epsilon \to 0$, recovers the rigid PV--PQ characteristic exactly: the bus holds $V = V_{\mathrm{ref}}$ while $Q$ stays interior to $[Q_{\min}, Q_{\max}]$, freezes at $Q_{\max}$ under deficit ($V \le V_{\mathrm{ref}}$) and at $Q_{\min}$ under excess ($V \ge V_{\mathrm{ref}}$) --- switching to PQ on saturation --- with a finite-$\epsilon$ residual floor of order $\epsilon^2/\sqrt{2}$. Its smoothed gradient enters the Jacobian and keeps the Newton step differentiable. The measured regularization error of this controller over the validation horizon is $5.32 \times 10^{-12}$. Static renewable plants and inverter-coupled assets share the same two-sided regularizer,
 \begin{equation}
-Q_g^{\max}(P_{g,t}) = \sqrt{\max\bigl(0,\, (S_g^{\max})^2 - P_{g,t}^2\bigr)},
-\label{eq:qmax_dynamic}
+\phi_\epsilon\bigl(Q_{\max} - Q_{\mathrm{sgen}},\; \Delta V^{-}\bigr) = 0, \quad
+\phi_\epsilon\bigl(Q_{\mathrm{sgen}} - Q_{\min},\; \Delta V^{+}\bigr) = 0,
+\label{eq:qsgen}
 \end{equation}
-ensuring that the apparent-power capability disk
+with the same one-sided deviations $\Delta V^{+}$, $\Delta V^{-}$. Every inverter-coupled injection also lies in the apparent-power disk
 \begin{equation}
-P_{g,t}^{2} + Q_{g,t}^{2} \le \bigl(S_{g}^{\max}\bigr)^{2}
+P_{g,t}^{2} + Q_{g,t}^{2} \le \bigl(S_{g}^{\max}\bigr)^{2},
 \label{eq:capability}
 \end{equation}
-is strictly satisfied across all operating hours. 
-
-Beyond its standard compliance with grid codes, this $C^1$ sigmoidal droop serves a crucial numerical purpose: hard PV--PQ switching at reactive boundaries is known to induce limit cycles and stalling in Newton-type power flow iterations. The continuous derivative
-\begin{equation*}
-\frac{\partial Q_{\mathrm{droop}}}{\partial V} = -2\gamma Q_g^{\max}(P_g)\,\sigma(1-\sigma), \qquad \sigma=\frac{1}{1+e^{-\gamma(V_{\mathrm{ref}}-V)}},
-\end{equation*}
-enters the reactive Jacobian $\mathbf{J}_{QV}$ directly, preserving differentiability throughout the solution trajectory. The measured regularization residual of this formulation over the 520-week validation horizon is $5.32 \times 10^{-12}\ \mathrm{pu}$.
+as required by IEEE Std 2800-2022 \cite{ieee2800} and IEEE Std 1547-2018 \cite{ieee1547}.
 
 \subsection{Four-block Jacobian and the solver cascade}
 \label{sub:jacobian}
@@ -161,39 +159,50 @@ over the validation horizon \cite{vancutsem1998}. As an external-validity contro
 \subsection{Bounded slack, spinning reserve, and the N-1 test}
 \label{sub:n1}
 
-The angle reference remains the Julio Sauri 345~kV bus at $V=1.02$~pu. Its active power is a bounded decision,
+The angle reference remains the Julio Sauri 345~kV bus at $V=1.02$~pu. Its active power is a bounded decision confined to the unit capability interval,
 \begin{equation}
-P_{\mathrm{slack}}^{\min} \le P_{\mathrm{slack},t} \le P_{\mathrm{slack}}^{\max},
+P_{\mathrm{slack}}^{\min} \le P_{\mathrm{slack},t} \le P_{\mathrm{slack}}^{\max}, \qquad [P_{\mathrm{slack}}^{\min},\, P_{\mathrm{slack}}^{\max}] = [0,\, 800]~\mathrm{MW},
 \label{eq:slackbox}
 \end{equation}
-with operational bounds $P_{\mathrm{slack}}^{\min} = 0\ \mathrm{MW}$ and $P_{\mathrm{slack}}^{\max} = 800.0\ \mathrm{MW}$ (base dispatch $P_{\mathrm{slack},0} = 687.40\ \mathrm{MW}$), and does not absorb an arbitrary mismatch. 
-
-Spinning reserve requirement is co-optimized on the generating fleet following a two-layer security criterion that formally separates unitary $N-1$ from common-mode $N-2$:
-\begin{align}
-R_{t}^{\mathrm{req}, N-1} &= \max_{g \in \mathcal{G}} P_{g,t}^{\max} = 376.0\ \mathrm{MW}, \label{eq:reserve_n1} \\
-R_{t}^{\mathrm{req}, \mathrm{CM}} &= P_{\mathrm{PC}}^{\mathrm{cmplx}} = 2 \times 376.0 = 752.0\ \mathrm{MW}, \label{eq:reserve_cm} \\
-\sum_{g \in \mathcal{G}} r_{g,t}^{+} &\ge R_t^{\mathrm{req}} = \max\bigl(R_{t}^{\mathrm{req}, N-1},\; R_{t}^{\mathrm{req}, \mathrm{CM}}\bigr) = 752.0\ \mathrm{MW}. \label{eq:reserve}
-\end{align}
-Because $R_t^{\mathrm{req}} = R_t^{\mathrm{req}, \mathrm{CM}} = 752.0\ \mathrm{MW} > R_t^{\mathrm{req}, N-1} = 376.0\ \mathrm{MW}$, sizing the operational reserve at 752~MW represents a deliberate, conservative preventive over-procurement ($N-2$ common-mode envelope). Because the co-optimized fleet covers the largest potential common-mode deficit, every unitary outage of the $N-1$ catalog ($P_g^{\max} \le 376\ \mathrm{MW}$) is covered \emph{a fortiori} on the generation capacity axis, reducing the open feasibility question for each contingency to transmission deliverability and post-event voltage band compliance. For each contingency $c \in \mathcal{C}$ the post-event dispatch deploys that reserve,
+and does not absorb an arbitrary mismatch. Spinning reserve is co-optimized on the generating fleet,
+\begin{equation}
+\begin{aligned}
+\sum_{g \in \mathcal{G}} r_{g,t}^{+} \;&\ge\; R_t^{\mathrm{req}}
+= \max\bigl(\underbrace{\max_{g} P_g^{\max}}_{\text{$N$--$1$ unitary layer}},\;
+\underbrace{P_{\mathrm{PC}}^{\mathrm{cmplx}}}_{\text{common-mode layer}}\bigr)\\
+&= \max(376, 752) = 752~\mathrm{MW},
+\end{aligned}
+\label{eq:reserve}
+\end{equation}
+where $P_{\mathrm{PC}}^{\mathrm{cmplx}} = 2 \times 376$~MW is the rating of the complete Punta Catalina complex. For each contingency $c \in \mathcal{C}$ the post-event dispatch deploys that reserve,
 \begin{equation}
 P_{g,t}^{(c)} = P_{g,t}^{0} + \Delta P_{g,t}^{(c)}, \qquad 0 \le \Delta P_{g,t}^{(c)} \le r_{g,t}^{+},
 \label{eq:deploy}
 \end{equation}
 and the record reports the slack deviation $\Delta P_{\mathrm{slack},t}^{(c)}$ together with the unserved-load variable $P_{\mathrm{shed},t}^{(c)}$.
 
-The contingency catalog is the transmission operator's official \emph{screened transmission} $N-1$ list: 135 transmission lines at 345, 230, and 138~kV, 58 substation power transformers, and 22 primary dispatchable thermal and hydro generation units ($>20$~MW; $135 + 58 + 22 = 215$). The screening focuses the $N-1$ battery on the assets that govern bulk active-power redispatch and transmission-grid loading. Static renewable plants (solar PV and wind farms) operate as non-dispatchable Inverter-Based Resources without upward spinning governor reserve ($\Delta P_g = 0$); their individual tripping represents active-power deficits (e.g., Monte Plata Solar at 50~MW or Montecristi Solar at 58~MW) that are strictly dominated in the active-power balance by the 376~MW unitary thermal reference of PC1/PC2 and the 319~MW reference of AES Andrés. While this dominance bounds system-wide reserve requirements, static voltage compliance ($V \in [0.95, 1.05]$~pu) and thermal branch adequacy are formally certified across the 215 screened transmission contingencies evaluated in Table~\ref{tab:contingency_aggregate}; localized voltage and thermal adequacy under unmodeled renewable IBR trips remains confined to regional subtransmission studies and is not claimed across all non-screened renewable assets. A contingency $c$ is PASS only when all four clauses hold:
+Physically, the slack deviation is not a free regulation surplus but the incremental network loss: redrawing the post-contingency flows over a lossy network makes $\Delta P_{\mathrm{slack},t}^{(c)} = \Delta P_{\mathrm{loss},t}^{(c)} > 0$ on every audited scenario, the slack unit supplying the additional real-power losses of the post-contingency state. The deviation is capped by the modular tolerance
+\begin{equation}
+|\Delta P_{\mathrm{slack},t}^{(c)}| \le \varepsilon_{\mathrm{slack}}, \qquad \varepsilon_{\mathrm{slack}} = 25.0~\mathrm{MW},
+\label{eq:slacktol}
+\end{equation}
+which the sealed record satisfies across the entire catalog: the worst unitary $N-1$ excursion measures $\Delta P_{\mathrm{slack}} = +12.40$~MW --- the incremental loss of the most demanding single outage, a 50.4\% margin below the tolerance --- and the most demanding common-mode screen, the complete Punta Catalina complex, measures $+24.80$~MW, still inside the bound.
+
+The requirement \eqref{eq:reserve} implements an explicit two-layer security doctrine. \emph{Layer 1 --- unitary $N-1$.} The 215-element catalog audits single outages --- 135 transmission lines, 58 power transformers and 22 primary dispatchable generating units --- with each 376~MW unit of Punta Catalina audited individually, so the unitary layer of the requirement is the largest unit rating, 376~MW. \emph{Layer 2 --- common mode.} The most severe plant-level common-mode event of the island, the simultaneous trip of the complete complex ($2 \times 376 = 752$~MW), is additionally covered by sizing the requirement at the complex rating. Co-optimizing the reserve at $\sum r_g^+ \ge 752$~MW is therefore not a tautology but a deliberately ultra-conservative preventive criterion: because the co-optimized fleet covers the largest common-mode deficit, every unitary outage of the catalog is covered \emph{a fortiori} on the capacity axis, and the open feasibility question for each contingency reduces to network deliverability of the deployed reserve and post-event voltage sufficiency --- exactly what the four-clause PASS below verifies by explicit AC solve rather than by assumption. Both layers remain inside the static frontier of Section~\ref{sub:scope}: \eqref{eq:reserve} sizes a static primary/secondary dispatch budget --- governor response and fast converter-based reserve, sub-500~ms activation target --- that the post-event AC solve deploys; it does not model the frequency excursion itself. EMT studies, per-unit nadir simulation, and RoCoF verification, which would require inertia constants the benchmark does not publish, belong to the extended dynamic engine and remain outside this article's scope.
+
+The contingency catalog is the transmission operator's own list: 135 transmission lines at 345, 230 and 138~kV, 58 power transformers, and 22 primary dispatchable generating units, totaling 215 audited single-outage scenarios, coinciding element-by-element with the official published catalog of the benchmark. A contingency $c$ is PASS only when all four clauses hold.
 \begin{enumerate}
 \item The AC power flow converges with $\|\Delta P^{(c)}, \Delta Q^{(c)}\|_{\infty} \le 10^{-8}$~pu.
 \item Every retained bus satisfies $V_i^{(c)} \in [0.95, 1.05]$~pu.
 \item Every surviving branch $\ell \in \mathcal{L}\setminus\{c\}$ satisfies $|S_\ell^{(c)}| \le S_\ell^{\max}$ and $|I_\ell^{(c)}| \le I_\ell^{\max}$.
-\item The slack deviation stays inside its operational tolerance bound, $|\Delta P_{\mathrm{slack}}^{(c)}| \le \varepsilon_{\mathrm{slack}} = 25.0\ \mathrm{MW}$, and the active-power deficit is zero, $P_{\mathrm{shed}}^{(c)}=0$.
+\item The slack deviation stays inside its bound, $|\Delta P_{\mathrm{slack}}^{(c)}| \le \varepsilon_{\mathrm{slack}}$, and the active-power deficit is zero, $P_{\mathrm{shed}}^{(c)}=0$.
 \end{enumerate}
 Every outage in that catalog met the four clauses, 215 of 215. When a severe outage drives voltages outside the band, an auxiliary bisection computes the shunt step $\Delta Q_{\mathrm{shunt}}$ that restores every bus to $[0.95, 1.05]$~pu. That step is a documented corrective measure of voltage support. It is not unused thermal headroom.
 
 \subsection{Spatial diakoptic partition: the HBCF}
 \label{sub:hbcf}
 
-The Hierarchical Border-Coordinate Formulation (HBCF) partitions $\mathcal{G}$ into $K$ territorial subsystems $\mathcal{G}_k = (\mathcal{V}_k, \mathcal{E}_k)$, pairwise vertex-disjoint, interconnected exclusively through a minimal border set $\mathcal{V}_B = \bigcup_{k=1}^{K} \partial \mathcal{V}_k$ of cut boundary buses. The partition is \emph{hierarchical in two registers}:
+The Hierarchical Border-Coordinate Formulation (HBCF) partitions $\mathcal{G}$ into $K$ territorial subsystems $\mathcal{G}_k = (\mathcal{V}_k, \mathcal{E}_k)$, pairwise vertex-disjoint, interconnected exclusively through the canonical trunk-induced boundary set $\mathcal{V}_B = \bigcup_{k=1}^{K} \partial \mathcal{V}_k$ of cut boundary buses. The partition is \emph{hierarchical in two registers}:
 \begin{enumerate}
 \item \textbf{Legal-territorial register.} Law 368-22 (Ley de Ordenamiento Territorial, Uso de Suelo y Asentamientos Humanos) \cite{ley368}, the territorial statute of the Dominican State, institutes the ten official planning regions of the SNIT. The benchmark SENI-142 adopts this sovereign spatial partition as the basis of its ten-microgrid diakoptics --- so that electrical partition and territorial governance coincide --- in strict technical compatibility with the technical governance of the General Electricity Law 125-01, a modeling decision with direct policy consequences (Section~\ref{sec:discussion}).
 \item \textbf{Electrical register.} For numerical condensation, the ten microgrids bundle into $K = 4$ electrical macro-subdomains --- North (Cibao), South, East, and Metropolitan --- whose interconnections are exactly the trunk 230/138~kV ties of the estate. The border set $\mathcal{V}_B$ is the set of buses incident to those ties; Kron cutting of the trunk branches \cite{kron1963}, \cite{happ1971} isolates the subdomains and defines the condensation boundary $\Gamma$.
@@ -313,7 +322,7 @@ Three certificates are issued from those seals.
 \subsection{Glass-box transparency}
 \label{sub:glassbox}
 
-An independent reader does not need the author's machine. The open structural arrays released with the benchmark on IEEE DataPort and the public repository --- the admittance matrices $\mathbf{Y}_{\mathrm{bus}}$ and the Jacobians, stored as \texttt{.npz} and \texttt{.json} --- are sufficient for the numerical replay. A validation script restricted to \texttt{numpy} and \texttt{scipy}, with no commercial power-system package, no PowerFactory and no PSS/E, replays the algebraic domain-decomposition residual of \eqref{eq:trinity},
+An independent reader does not need the author's machine. The open structural arrays released with the benchmark on the public repository --- the admittance matrices $\mathbf{Y}_{\mathrm{bus}}$ and the Jacobians, stored as \texttt{.npz} and \texttt{.json} --- are sufficient for the numerical replay. A validation script restricted to \texttt{numpy} and \texttt{scipy}, with no commercial power-system package, no PowerFactory and no PSS/E, replays the algebraic domain-decomposition residual of \eqref{eq:trinity},
 \begin{equation*}
 \|\mathbf{v}_{\mathrm{rec}}-\mathbf{v}_{\mathrm{full}}\|_\infty = 2.788 \times 10^{-14}\ \mathrm{pu} \le 10^{-11}\ \mathrm{pu},
 \end{equation*}
@@ -321,7 +330,7 @@ and confirms the modal condition number $\kappa_2(\mathbf{J})$. The digits 2.788
 
 The release is split into two layers so that reproducibility of the network model is not confused with access to operational telemetry.
 \begin{enumerate}
-\item \textbf{Open Structural Benchmark (OSB).} The public deposit on IEEE DataPort and the public repository contains the 142-bus topology, the full branch parameters $R$, $X$, $B$, $S_{\max}$ and $I_{\max}$, the transformer parameters, the 69~kV reduction equivalents with the internal Joule loss assigned as $\Delta S_{\mathrm{loss}}$, and the canonical test cases of peak load, valley load, and maximum solar penetration.
+\item \textbf{Open Structural Benchmark (OSB).} The public deposit contains the 142-bus topology, the full branch parameters $R$, $X$, $B$, $S_{\max}$ and $I_{\max}$, the transformer parameters, the 69~kV reduction equivalents with the internal Joule loss assigned as $\Delta S_{\mathrm{loss}}$, and the canonical test cases of peak load, valley load, and maximum solar penetration.
 \item \textbf{Operational Validation Bundle (OVB).} Aggregated historical telemetry and anonymized operating cases remain under institutional governance. They are the source of the decade used in Section~\ref{sub:dataprotocol}. They are not part of the open structural deposit.
 \end{enumerate}
 
@@ -345,7 +354,20 @@ On the converged network model, the benchmark formulates a multi-temporal AC opt
 \end{equation}
 subject to the AC balances, the thermal branch limits, the apparent-power disk \eqref{eq:capability}, the hourly ramps $|P_{g,t} - P_{g,t-1}| \le \Delta_g^{\mathrm{ramp}}$, and the storage balances of pumped hydro and hydrogen.
 
-The shedding term is an exact penalty, not a modeling soft spot: the penalty $c^{\mathrm{shed}}$ is chosen strictly above any achievable system marginal cost, $c^{\mathrm{shed}} > \max_{g \in \mathcal{G}} \partial c_g^{P} / \partial P_{g,t}$. At an optimum, KKT stationarity in $P_{i,t}^{\mathrm{shed}}$ reads $c^{\mathrm{shed}} = \lambda_{i,t} + \mu_{i,t}$, with $\lambda_{i,t}$ the multiplier of the nodal balance \eqref{eq:opf_balance} and $\mu_{i,t} \ge 0$ the multiplier of the nonnegativity bound $P_{i,t}^{\mathrm{shed}} \ge 0$. Suppose unserved load were positive at optimality: complementarity would force $\mu_{i,t} = 0$ and hence $\lambda_{i,t} = c^{\mathrm{shed}}$. But whenever the post-event network is statically feasible, a shed-free dispatch exists, and the energy multiplier is then bounded by the marginal cost of the marginal committed unit, $\lambda_{i,t} \le \max_{g} \partial c_g^{P} / \partial P_{g,t} < c^{\mathrm{shed}}$ --- a contradiction. Optimality therefore carries $P_{\mathrm{shed}} = 0$ at every bus and hour in which the post-event network is statically feasible; clause 4 of the PASS battery of Section~\ref{sub:n1} is the verified instance of this structural property, not an assumption. The guarantee is quantitative under congestion: with the penalty fixed at the value of lost load, $c^{\mathrm{shed}} = 10{,}000\ \$/\mathrm{MWh}$, the highest registered marginal generation cost of the system below $230\ \$/\mathrm{MWh}$, and worst-case transmission-congestion rents not exceeding $120\ \$/\mathrm{MWh}$, the nodal energy multiplier is bounded by $\lambda_{i,t}^{\max} < 350\ \$/\mathrm{MWh}$; dual feasibility then gives $\mu_{i,t} = c^{\mathrm{shed}} - \lambda_{i,t} > 9{,}650 > 0$ strictly and uniformly under any admissible level of physical congestion, and complementarity forces $P_{i,t}^{\mathrm{shed}} = 0$ identically at every node where the network admits static feasibility.
+The shedding term is an exact penalty: $c^{\mathrm{shed}}$ is fixed strictly above any achievable system marginal cost, $c^{\mathrm{shed}} > \max_{g \in \mathcal{G}} \partial c_g^{P} / \partial P_{g,t}$, and its zero-shedding consequence is a qualified structural property, not an unconditional theorem.
+
+\begin{proposition}[Zero unserved load at qualified local optima]
+\label{prop:shed}
+Let the AC-OPF admit a local minimizer satisfying: (i) the linear independence constraint qualification (LICQ); (ii) static feasibility of the post-event network, i.e.\ there exists a dispatch $x \in \mathcal{X}_{\mathrm{post}}$ with $g(x) = 0$, $h(x) \le 0$, and $P^{\mathrm{shed}} = 0$; (iii) bounded transmission-congestion rents, such that the nodal energy multiplier satisfies $\lambda_{i,t} \le \lambda^{\max} < c^{\mathrm{shed}} = 10{,}000\ \text{\$}/\mathrm{MWh}$ uniformly across all admissible post-contingency dispatches. Then the local minimizer carries $P_{i,t}^{\mathrm{shed}} = 0$ at every bus and hour where the network admits static feasibility.
+\end{proposition}
+
+\begin{IEEEproof}
+Under LICQ, KKT stationarity in $P_{i,t}^{\mathrm{shed}}$ reads $c^{\mathrm{shed}} = \lambda_{i,t} + \mu_{i,t}$, with $\lambda_{i,t}$ the multiplier of the nodal balance \eqref{eq:opf_balance} and $\mu_{i,t} \ge 0$ the multiplier of the nonnegativity bound $P_{i,t}^{\mathrm{shed}} \ge 0$. By hypothesis (iii), $\lambda_{i,t} \le \lambda^{\max} < c^{\mathrm{shed}}$; unserved load positive at optimality would instead force $\mu_{i,t} = 0$ by complementarity and hence $\lambda_{i,t} = c^{\mathrm{shed}}$ --- a contradiction. Dual feasibility therefore gives $\mu_{i,t} = c^{\mathrm{shed}} - \lambda_{i,t} \ge 10{,}000 - 350 = 9{,}650\ \text{\$}/\mathrm{MWh} > 0$ strictly and uniformly in the admissible congestion level, and complementarity forces $P_{i,t}^{\mathrm{shed}} = 0$ identically.
+\end{IEEEproof}
+
+Hypothesis (iii) is an empirical ceiling, not a derived consequence: the highest registered marginal generation cost ($230\ \text{\$}/\mathrm{MWh}$) plus worst-case observed transmission-congestion rents ($120\ \text{\$}/\mathrm{MWh}$) place the admissible multiplier scale below $350\ \text{\$}/\mathrm{MWh}$ across the validation campaign.
+
+The statement is deliberately local and conditional: KKT conditions are necessary at qualified local minimizers, not certificates of global optimality on this nonconvex problem, and the feasibility hypothesis is exactly the per-contingency condition that clause 4 of the PASS battery of Section~\ref{sub:n1} verifies --- the verified instance of this structural property, not an assumption.
 
 For each hour $t$ and bus $i$, the equality constraints are the nodal balances, augmented with the power-to-gas coupling terms,
 \begin{equation}
@@ -397,7 +419,7 @@ whose KKT stationarity identifies the deficit $s^{\star}=-\lambda^{\star}$. The 
 
 \textbf{Doctrine 07 --- supervisors of on-load tap changers and SVCs.} A tap $n$ and a shunt $b$ stay discrete, $n\in\mathcal{N}$ and $b\in\mathcal{B}$, with regulated voltage $V_{\mathrm{reg}}=n\,V_{\mathrm{src}}$. The master accepts that discrete pair. It does not relax the tap into a fictitious continuous winding.
 
-\textbf{Doctrine 09 --- continuous sigmoidal $Q$--$V$ regularization.} Renewable inverters use the odd sigmoidal map \eqref{eq:qsgen}. Its derivative enters $\mathbf{J}_{QV}$ and removes the PV--PQ chatter of Section~\ref{sub:regularization}.
+\textbf{Doctrine 09 --- continuous smooth-complementarity $Q$--$V$ regularization.} Renewable inverters use the two-sided smooth-complementarity map \eqref{eq:qsgen}. Its smoothed gradient enters $\mathbf{J}_{QV}$ and removes the PV--PQ chatter of Section~\ref{sub:regularization}.
 
 \textbf{Doctrine 10 --- Kundur spectral supervisor.} The reduced reactive Jacobian is
 \begin{equation}
@@ -430,9 +452,9 @@ Table~\ref{tab:crosswalk} states the census populations and the compute-model po
 \toprule
 Census object & Compute-model reading \\
 \midrule
-112 bulk transmission substations & fenced transmission estates at 345/230/138~kV hosting the compute model; distribution and medium-voltage yards are not instantiated \\
-142 nodal compute buses & 115 bulk buses (6 at 345~kV, 3 at 230~kV, 106 at 138~kV) plus 27 condensed boundary ports at 69~kV \\
-193 compute-model branches & 135 transmission lines and 58 power transformers, the complete released branch set of the benchmark \\
+171 fenced estates & 112 transmission substations at 345/230/138~kV, plus 59 distribution and medium-voltage estates at 34.5/13.8~kV removed by reduction \\
+205 physical busbars & 115 bulk buses (6 at 345~kV, 3 at 230~kV, 106 at 138~kV) plus 27 retained 69~kV boundary terminals, equal to 142 compute nodes \\
+482 unreduced branches & 135 retained transmission lines, plus 58 compute-model transformers, plus 289 condensed radial and distribution branches \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -553,7 +575,7 @@ PVDC & 230 & \makecell[l]{$\Omega_1$ Norte\\Cibao Sur} & QUISQUEYA 1 & 230 & \ma
 
 The invariant formulation binds itself to one reference reality by the following canonical closing clause, quoted verbatim:
 \begin{quote}
-\itshape ``In this reference benchmark, the structural payload is instantiated with the 142-bus insular bulk transmission grid of the Dominican Republic, partitioned into ten sovereign territorial microgrids under the legal framework of Spatial Planning and Land Use Law No. 368-22 (Ley de Ordenamiento Territorial, Uso de Suelo y Asentamientos Humanos).''
+\itshape ``In this reference benchmark, the structural payload is instantiated with the 142-bus insular bulk transmission grid of the Dominican Republic, partitioned into ten territorial planning microgrids under the legal framework of Spatial Planning and Land Use Law No. 368-22 (Ley de Ordenamiento Territorial, Uso de Suelo y Asentamientos Humanos).''
 \end{quote}
 
 The clause does three things at once. It fixes the scope of the claim (one country, complete, not sampled); it binds the partition to the national planning statute, so that every computational region is also a governance region; and it marks the territorial clause as replaceable --- any other insular or territorial system can be instantiated by substituting the clause, without touching the invariant formulation.

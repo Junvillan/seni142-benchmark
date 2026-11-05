@@ -53,6 +53,12 @@ case "$TARGET" in
   es|es1col)
     compilar_job "SENI142_IEEE_ES_1col" "pdflatex"
     ;;
+  part1)
+    compilar_job "SENI142_Part1_2col" "pdflatex"
+    ;;
+  part2)
+    compilar_job "SENI142_Part2_2col" "pdflatex"
+    ;;
   zh|zh1col)
     compilar_job "SENI142_IEEE_ZH_1col" "xelatex"
     ;;
@@ -72,7 +78,7 @@ case "$TARGET" in
     echo "==> [SCOUT PROTOCOL PASS] Todos los PDFs compilados y depositados en raíz."
     ;;
   *)
-    echo "Uso: $0 {1col|2col|es1col|zh1col|sec2_es|sec2_en|all}"
+    echo "Uso: $0 {1col|2col|es1col|zh1col|part1|part2|sec2_es|sec2_en|all}"
     exit 2
     ;;
 esac

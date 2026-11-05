@@ -214,7 +214,7 @@
       "pre_event_flow_or_gen_mw": 206.4,
       "post_event_min_voltage_pu": 0.9755,
       "post_event_min_voltage_bus": "BUS-138-SAN_CRISTOBAL_NORTE",
-      "post_event_max_branch_loading_pct": 87.6,
+      "post_event_max_branch_loading_pct": 87.5,
       "post_event_max_branch_id": "CORR-138-PALA-SCNU",
       "delta_P_slack_mw": 5.2,
       "delta_Pg_redispatch_mw": 158.3,
@@ -233,7 +233,7 @@
         "rated_capacity_aggregate_corridor_MVA": 472.4,
         "line_length_km": 22.1,
         "pre_event_circuit_loading_pct": 87.4,
-        "post_event_surviving_circuit_loading_pct": 87.6
+        "post_event_surviving_circuit_loading_pct": 87.5
       },
       "redispatch_breakdown_mw": {
         "SCNU_HYDRO_AND_SOLAR": 70.0,
@@ -246,7 +246,7 @@
         "comment": "Marginal loss of 3.29% on 158.3 MW redispatch"
       },
       "post_event_ref_note": "circuito sobreviviente del corredor (fila única de corredor, 2 circuitos)",
-      "sha512_solution_digest": "d1289cfabf929bf82c8819d56e19e082d3e1987dadd091bd4cca9b14815e3efaa8c0dadc7998114edf8ec263f28a360c8da4c569f3d3c3ce1a9f09c4c36631d4"
+      "sha512_solution_digest": "9742012167496c9d3e9d395b094b3b883c35382baeb28e92fb38d9d84b59016e79da565de341798c2450fdf7276dfea13dba3d9cbe1e7042890088bd8921f17c"
     },
     {
       "contingency_id": "LINE-230-JS-SCNU",

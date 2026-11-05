@@ -18,7 +18,7 @@ The physical transmission infrastructure encompasses 171 fenced utility yards, r
 %      resolved through \graphicspath{{figuras/}} in the host preamble) ----
 \begin{figure*}[!t]
 \centering
-\includegraphics[width=0.78\textwidth]{fig_diagrama_1_jsauri_345_138.pdf}
+\includegraphics[width=0.72\textwidth]{fig_diagrama_1_jsauri_345_138_en.pdf}
 \caption{Kirchhoff decoupling at the Julio Sauri 345/138 kV substation. The 345 kV super-highway that evacuates the Punta Catalina complex ($2 \times 376$ MW) terminates in its own yard, decoupled by the impedance of the T1/T2 autotransformer banks from the regional 138 kV yard that feeds the San Crist\'obal corridor and the metropolitan ring. Wherever a transformation exists, the fenced estate yields two buses; modeled across all voltage strata, the network totals exactly 142 nodal buses.}
 \label{fig:jsauri}
 \end{figure*}
@@ -30,18 +30,18 @@ Three strategic substations articulate the grid: \textbf{JSAURI} (345/138~kV, sy
 
 The 1,645~MW demand at PALA represents the aggregate load center of the metropolitan macro-domain, distributed across 28 metropolitan 138~kV substations (no single bus exceeding 120~MW), supported by $\approx 250$~MW of local generation. At the 3,450~MW national peak state, the reported inter-domain transfers across the four Law 368-22 macro-domains are: $\Omega_{\mathrm{Metro}}$ imports a net 1,395~MW across border set $\Gamma$; $\Omega_{\mathrm{Sur}}$ exports $+930$~MW (Punta Catalina and hydro); $\Omega_{\mathrm{Este}}$ exports $+420$~MW (Quisqueya, AES Andr\'es); and $\Omega_{\mathrm{Norte}}$ maintains local balance, where these figures represent inter-domain boundary exchanges rather than a closed island ledger; the minor residual reflects transmission losses across corridors. The metropolitan import is carried by 345, 230, and 138~kV corridors totaling $>2,200$~MVA capacity at 63--72\% peak loading, ensuring post-contingency thermal compliance under all $N-1$ conditions (Part~II~\cite{seni142part2}).
 
-\subsection{Ten sovereign territorial microgrids}
+\subsection{Ten territorial planning microgrids}
 \label{sub:microgrids}
 
-Law 368-22 organizes the national territory into ten planning regions; the benchmark adopts them as its ten territorial microgrids and bundles them, for numerical condensation, into the four electrical macro-subdomains of the HBCF. The mapping and the representative anchors of each region as they appear in the operational record are listed in the released dataset.
+Law 368-22 organizes the national territory into ten planning regions; the benchmark adopts them as its ten territorial planning microgrids --- governance demarcations adopted as the diakoptic partition, not electrically islandable subgraphs --- and bundles them, for numerical condensation, into the four electrical macro-subdomains of the HBCF. The mapping and the representative anchors of each region as they appear in the operational record are listed in the released dataset.
 
-Figure~\ref{fig:hbcf_schur} displays the resulting diakoptic map: four macro-subdomains $\Omega$ over the insular geography, the trunk borders $\Gamma$ (the 230/138~kV ties cut by Kron reduction), and the silicon key performance indicators of the condensed solve. Numerically, the partition assigns the 112 interior buses to the four macro-subdomains as $\mathbf{A} = \operatorname{diag}(18, 28, 23, 43)$ (Metropolitan, South, East, North), closed by a minimal boundary $\Gamma$ of 30 buses ($112 + 30 = 142$ nodal buses).
+Figure~\ref{fig:hbcf_schur} displays the resulting diakoptic map: four macro-subdomains $\Omega$ over the insular geography, the trunk borders $\Gamma$ (the 230/138~kV ties cut by Kron reduction), and the silicon key performance indicators of the condensed solve. Numerically, the partition assigns the 112 interior buses to the four macro-subdomains as $\mathbf{A} = \operatorname{diag}(18, 28, 23, 43)$ (Metropolitan, South, East, North), closed by the trunk-induced boundary $\Gamma$ of 30 buses ($112 + 30 = 142$ nodal buses).
 
 % ---- Figure 4 injection block (verbatim from the sealed master;
 %      resolved through \graphicspath{{figuras/}} in the host preamble) ----
 \begin{figure*}[!t]
 \centering
-\includegraphics[width=0.75\textwidth]{fig_diagrama_2_schur_hbcf.pdf}
+\includegraphics[width=0.70\textwidth]{fig_diagrama_2_schur_hbcf_en.pdf}
 \caption{Spatial HBCF diakoptic partitioning of the insular grid. The ten territorial microgrids of Law 368-22 bundle into four electrical macro-subdomains $\Omega$ (North/Cibao, South, East, Metropolitan); only the trunk borders $\Gamma$ --- the 230/138 kV ties cut by Kron reduction --- travel to the Schur complement $\mathbf{S} = \mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B}$, with block structure $\mathbf{A}, \mathbf{B}, \mathbf{C}, \mathbf{D}$ over the interior/border ordering. Silicon key performance indicators: 2.65 ms per national AC state, 473 MiB resident, over the standardized horizon of 520 complete weekly cycles (87,360 h; OC-SENI telemetry), with fasorial border-coupling residual $\delta = 2.788 \times 10^{-14}$ pu.}
 \label{fig:hbcf_schur}
 \end{figure*}

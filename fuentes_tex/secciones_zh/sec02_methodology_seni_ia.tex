@@ -29,9 +29,9 @@ V_p = E_{\mathrm{th}}^{(r)} - Z_{\mathrm{th}}^{(r)} I_p, \qquad \sum_{i \in \Ome
 \subsection{空间网络分块：HBCF}
 \label{sub:hbcf}
 
-分层边界-坐标列式（HBCF）将 $\mathcal{G}$ 划分为 $K$ 个两两点不相交的领土子系统 $\mathcal{G}_k = (\mathcal{V}_k, \mathcal{E}_k)$，仅通过最小割边集 $\mathcal{V}_B = \bigcup_{k=1}^{K} \partial \mathcal{V}_k$ 互连。该划分\emph{在两个层级上分层}：
+分层边界-坐标列式（HBCF）将 $\mathcal{G}$ 划分为 $K$ 个两两点不相交的领土子系统 $\mathcal{G}_k = (\mathcal{V}_k, \mathcal{E}_k)$，仅通过干线联络诱导的规范边界集 $\mathcal{V}_B = \bigcup_{k=1}^{K} \partial \mathcal{V}_k$ 互连。该划分\emph{在两个层级上分层}：
 \begin{enumerate}
-\item \textbf{法域-领土层级。}国家领土规划法令——第368-22号法律（领土规划、土地利用与定居点法）\cite{ley368}——将全国领土组织为十个规划区。基准采纳这十个区作为其十个主权领土微电网，使电气划分与领土治理重合——一个具有直接政策后果的建模决策（第~\ref{sec:discussion}节）。
+\item \textbf{法域-领土层级。}国家领土规划法令——第368-22号法律（领土规划、土地利用与定居点法）\cite{ley368}——将全国领土组织为十个规划区。基准采纳这十个区作为其十个规划性领土微电网，使电气划分与领土治理重合——一个具有直接政策后果的建模决策（第~\ref{sec:discussion}节）。
 \item \textbf{电气层级。}为数值凝聚，十个微电网捆绑为 $K = 4$ 个电气宏域——北部（Cibao）、南部、东部与都市区——其间互连恰为资产的230/138~kV干线联络。边界集 $\mathcal{V}_B$ 即这些联络的关联节点集；对干线支路执行Kron切割\cite{kron1963}、\cite{happ1971}即可隔离各子域并定义凝聚边界 $\Gamma$。
 \end{enumerate}
 
@@ -138,12 +138,13 @@ $N$ 节点系统的稠密分解代价为 $O(N^3)$；分块求解的代价是一�
 \subsection{无功限值的连续正则化}
 \label{sub:regularization}
 
-当运行点围绕限值振荡时，发电机无功限值处的PV--PQ硬切换会在牛顿型迭代中诱发极限环——这是商业软件的经典抖振。基准以带自适应斜率的连续激活替代二值切换：
+当运行点围绕限值振荡时，发电机无功限值处的PV--PQ硬切换会在牛顿型迭代中诱发极限环——这是商业软件的经典抖振。基准以覆盖完整能力区间 $[Q_{\min}, Q_{\max}]$ 的双侧光滑互补替代二值切换：
 \begin{equation}
-Q_g^{\mathrm{eff}}(V_i) = Q_g^{\lim} \cdot \sigma\!\left(\alpha\,(V_i^{\mathrm{ref}} - V_i)\right), \qquad \sigma(z) = \frac{1}{1 + e^{-z}},
-\label{eq:sigmoid}
+\phi_\epsilon\bigl(Q_{\max} - Q,\; \Delta V^{-}\bigr) = 0, \quad
+\phi_\epsilon\bigl(Q - Q_{\min},\; \Delta V^{+}\bigr) = 0.
+\label{eq:qbound}
 \end{equation}
-其解析导数 $\partial Q_g^{\mathrm{eff}} / \partial V_i = -\alpha\, Q_g^{\lim} \sigma(\cdot)(1 - \sigma(\cdot))$ 被注入雅可比矩阵，在端电压逼近限值时平滑地劣化无功能力的同时，保持迭代的二次收敛。该控制器在验证水平域上的实测正则化误差为 $5.32 \times 10^{-12}$，即连续控制器在数值上与理想不连续策略不可区分，同时消除了引发振荡的不连续性。
+其中 $\Delta V^{+} = \max(0,\, V - V_{\mathrm{ref}})$、$\Delta V^{-} = \max(0,\, V_{\mathrm{ref}} - V)$ 为单侧电压偏差，$\phi_\epsilon(a, b) = a + b - \sqrt{a^2 + b^2 + \epsilon^2}$ 为双侧光滑Fischer--Burmeister互补函数。偏差分解消除了无符号配对的符号冲突——每条方程只在自己的电压域内起作用——且当 $\epsilon \to 0$ 时精确恢复刚性PV--PQ特性：当 $Q$ 位于 $[Q_{\min}, Q_{\max}]$ 内部时节点保持 $V = V_{\mathrm{ref}}$；亏缺时（$V \le V_{\mathrm{ref}}$）在 $Q_{\max}$ 处冻结，过剩时（$V \ge V_{\mathrm{ref}}$）在 $Q_{\min}$ 处冻结——饱和即切换为PQ节点；$\epsilon$ 有限时残差下限为 $\epsilon^2/\sqrt{2}$ 量级。其光滑化梯度被注入雅可比矩阵，保持迭代的二次收敛。该控制器在验证水平域上的实测正则化误差为 $5.32 \times 10^{-12}$。
 
 \subsection{耦合电转气的多时段AC-OPF}
 \label{sub:opf}
@@ -158,7 +159,20 @@ Q_g^{\mathrm{eff}}(V_i) = Q_g^{\lim} \cdot \sigma\!\left(\alpha\,(V_i^{\mathrm{r
 E_{h,t+1} = E_{h,t} + \left(\eta_{\mathrm{EL}}\, P_{h,t}^{\mathrm{EL}} - \frac{P_{h,t}^{\mathrm{FC}}}{\eta_{\mathrm{FC}}}\right) \Delta t, \qquad E_h^{\min} \le E_{h,t} \le E_h^{\max},
 \label{eq:h2_storage}
 \end{equation}
-其中 $\eta_{\mathrm{EL}}$ 与 $\eta_{\mathrm{FC}}$ 为电解与再转换效率：过剩的不可调度可再生能源成为跨时段能量库存，在过剩小时作为柔性电解负荷吸收，在亏缺小时由燃料电池再注入。抽水蓄能服从具有独立泵/轮机效率的水库类比，为第~\ref{sub:phes}节的764~MW可逆机组群划定边界。完整问题——因交流等式约束而非凸——由横跨牛顿-拉夫逊\cite{tinney1967}、Iwamoto最优乘子步长控制、快速解耦BX迭代\cite{stott1974}与高斯-赛德尔回退的三十二种牛顿型配置的级联求解，使任何单一代数病态都无法阻断扫描。最优性在KKT条件处认证：拉格朗日函数对所有原始变量的平稳性、等式与不等式的原始可行性、乘子的对偶可行性以及互补乘积的消失；乘子符号与互补残差是封存验证输出的组成部分\cite{nocedal2006}、\cite{dommel1968}、\cite{wood2013}。图~\ref{fig:p2g_h2}给出电化学耦合的图示。
+其中 $\eta_{\mathrm{EL}}$ 与 $\eta_{\mathrm{FC}}$ 为电解与再转换效率：过剩的不可调度可再生能源成为跨时段能量库存，在过剩小时作为柔性电解负荷吸收，在亏缺小时由燃料电池再注入。抽水蓄能服从具有独立泵/轮机效率的水库类比，为第~\ref{sub:phes}节的764~MW可逆机组群划定边界。完整问题——因交流等式约束而非凸——由横跨牛顿-拉夫逊\cite{tinney1967}、Iwamoto最优乘子步长控制、快速解耦BX迭代\cite{stott1974}与高斯-赛德尔回退的三十二种牛顿型配置的级联求解，使任何单一代数病态都无法阻断扫描。最优性在KKT条件处认证：拉格朗日函数对所有原始变量的平稳性、等式与不等式的原始可行性、乘子的对偶可行性以及互补乘积的消失；乘子符号与互补残差是封存验证输出的组成部分\cite{nocedal2006}、\cite{dommel1968}、\cite{wood2013}。
+
+\begin{proposition}[合格局部最优解下的零切负荷]
+\label{prop:shed}
+设AC-OPF存在满足以下条件的局部极小点：(i) 线性无关约束规格（LICQ）；(ii) 事件后网络静态可行，即存在调度 $x \in \mathcal{X}_{\mathrm{post}}$ 使 $g(x) = 0$、$h(x) \le 0$ 且 $P^{\mathrm{shed}} = 0$；(iii) 有界的输电阻塞租金，使节点能量乘子满足 $\lambda_{i,t} \le \lambda^{\max} < c^{\mathrm{shed}} = 10{,}000\ \text{\$}/\mathrm{MWh}$，在所有容许的事件后调度中一致成立。则该局部极小点在静态可行的每个节点与每个小时均满足 $P_{i,t}^{\mathrm{shed}} = 0$。
+\end{proposition}
+
+\begin{IEEEproof}[证明]
+在LICQ下，$P_{i,t}^{\mathrm{shed}}$ 处的KKT平稳性给出 $c^{\mathrm{shed}} = \lambda_{i,t} + \mu_{i,t}$，其中 $\lambda_{i,t}$ 为节点平衡 \eqref{eq:opf_balance} 的乘子，$\mu_{i,t} \ge 0$ 为非负下界的乘子。由假设(iii)，$\lambda_{i,t} \le \lambda^{\max} < c^{\mathrm{shed}}$；若最优处切负荷为正，互补性将迫使 $\mu_{i,t} = 0$ 从而 $\lambda_{i,t} = c^{\mathrm{shed}}$——矛盾。因此对偶可行性给出 $\mu_{i,t} = c^{\mathrm{shed}} - \lambda_{i,t} \ge 10{,}000 - 350 = 9{,}650\ \text{\$}/\mathrm{MWh} > 0$，在容许阻塞水平下严格且一致地为正，互补性迫使 $P_{i,t}^{\mathrm{shed}} = 0$ 恒成立。
+\end{IEEEproof}
+
+假设(iii)是经验上限，而非推导结论：系统最高注册边际发电成本（$230\ \text{\$}/\mathrm{MWh}$）加观测到的最坏输电阻塞租金（$120\ \text{\$}/\mathrm{MWh}$），将容许乘子尺度置于 $350\ \text{\$}/\mathrm{MWh}$ 之下，覆盖整个验证战役。
+
+该命题刻意为局部且条件性的：KKT条件在合格的局部极小点处是必要条件，而非此非凸问题的全局最优性证书；其可行性假设恰为逐事故验证的四条款通过准则所检验的条件——该结构属性的已验证实例，而非启发式假设。图~\ref{fig:p2g_h2}给出电化学耦合的图示。
 
 % ---- 图2注入块（英文图形，中文图注）----
 \begin{figure*}[!t]
@@ -173,7 +187,7 @@ E_{h,t+1} = E_{h,t} + \left(\eta_{\mathrm{EL}}\, P_{h,t}^{\mathrm{EL}} - \frac{P
 
 不变列式以如下规范性收尾条款（逐字引用）绑定到参考现实：
 \begin{quote}
-\itshape “在本参考基准中，结构载荷以多米尼加共和国142节点岛屿输电网实例化，并依据《第368-22号法律：领土规划、土地利用与定居点法》划分为十个主权领土微电网。”（译文；英文原文为契约条款）
+\itshape “在本参考基准中，结构载荷以多米尼加共和国142节点岛屿输电网实例化，并依据《第368-22号法律：领土规划、土地利用与定居点法》划分为十个规划性领土微电网。”（译文；英文原文为契约条款）
 \end{quote}
 
 该条款同时完成三件事。它固定主张的范围（一个国家、完整、非抽样）；它将划分绑定到国家规划法令，使每个计算区域同时是一个治理区域；它将领土条款标记为可替换——任何其他岛屿或领土系统都可以通过替换该条款来实例化，而不触动不变列式。

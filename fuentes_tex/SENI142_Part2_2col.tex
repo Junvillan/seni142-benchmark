@@ -61,6 +61,14 @@ This paper presents Part~II of SENI-142, the operational campaign layer built on
 Benchmark testing, energy storage, hydrogen, insular power systems, optimal power flow, power system resilience, pumped-storage hydroelectricity.
 \end{IEEEkeywords}
 
+% --- Compensacion tipografica (directiva 20261022): ajuste fino de espacios ---
+\setlength{\textfloatsep}{12pt plus 2pt minus 4pt}%
+\setlength{\dbltextfloatsep}{12pt plus 2pt minus 4pt}%
+\setlength{\abovedisplayskip}{7pt plus 2pt minus 3pt}%
+\setlength{\belowdisplayskip}{7pt plus 2pt minus 3pt}%
+\setlength{\abovedisplayshortskip}{3pt plus 1pt minus 2pt}%
+\setlength{\belowdisplayshortskip}{4pt plus 1pt minus 2pt}%
+
 \input{partes/p2_sec01_introduction.tex}
 \input{partes/p2_sec02_multivector_opf.tex}
 \input{partes/p2_sec03_constellation.tex}
@@ -68,7 +76,7 @@ Benchmark testing, energy storage, hydrogen, insular power systems, optimal powe
 \input{partes/p2_sec05_discussion.tex}
 \input{partes/p2_sec06_conclusion.tex}
 
-\noindent\textbf{Data Availability.}~The SENI-142 dataset, network parameters, validation harness, and sealed resilience record are openly available at \url{https://github.com/Junvillan/seni142-benchmark} and archived under DOI:~\href{https://doi.org/10.5281/zenodo.23484704}{10.5281/zenodo.23484704}. High-resolution vector figures are available and resolved via the repository's \texttt{figuras/} directory. The release ships the data-driven verifier \texttt{verify\_seni142\_benchmark.py}, which re-derives every sealed quantity of the release from the canonical CSV/NPZ bundle --- 41/41 checks PASS (bus and branch censuses, peak load, unique slack, block-diagonal Schur structure, and the eight contingency balances).
+\noindent\textbf{Data Availability.}~The SENI-142 dataset, network parameters, validation harness, and the eight canonical contingency balances are openly available at \url{https://github.com/Junvillan/seni142-benchmark} and archived under DOI:~\href{https://doi.org/10.5281/zenodo.23484704}{10.5281/zenodo.23484704}. High-resolution vector figures are resolved via the repository's \texttt{figuras/} directory. The release ships the data-driven verifier \texttt{verify\_seni142\_benchmark.py}, which re-derives every sealed quantity of the release from the canonical CSV/NPZ bundle --- 41/41 checks PASS (bus and branch censuses, peak load, unique slack, block-diagonal Schur structure, and the eight contingency balances).
 
 
 \section*{Acknowledgment}

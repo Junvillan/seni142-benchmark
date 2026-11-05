@@ -12,7 +12,7 @@
 % ---- 图3 ----
 \begin{figure*}[!t]
 \centering
-\includegraphics[width=0.88\textwidth]{fig_diagrama_1_jsauri_345_138.pdf}
+\includegraphics[width=0.88\textwidth]{fig_diagrama_1_jsauri_345_138_en.pdf}
 \caption{胡利奥·萨乌里（JSAURI）345/138 kV变电站的基尔霍夫解耦。送出蓬塔卡塔利纳综合体（$2 \times 376$ MW）的345 kV超级干线终止于其专属场地，经T1/T2自耦变压器组阻抗与供电圣克里斯托瓦尔（San Cristóbal）走廊及都市环网的138 kV区域场地解耦。凡存在变压之处，围栏场站即产生两个节点；对所有电压层建模后，网络总计恰好142个节点。}
 \label{fig:jsauri}
 \end{figure*}
@@ -22,10 +22,10 @@
 
 三座战略变电站支撑起整个系统。\textbf{JSAURI}运行于两个电压等级——345~kV与138~kV——其345~kV母线为系统平衡节点（$V = 1.02$~pu），直接接收\textbf{蓬塔卡塔利纳}的注入，后者为全国最大火电厂，$2 \times 376$~MW（752~MW，燃煤），经345~kV干线送出。\textbf{PALA（帕拉马拉）}位于都市区，是主要负荷中心，聚合建模需求1,645~MW，并有三台10.77~MW燃油机组自13.8~kV升压的本地备用。\textbf{SCN}是西南部的可再生整合枢纽：58.9~MW水电、95~MW光伏与34~MW风电，均自13.8~kV升压。此外，为博士论文脱碳扩展情景设计的可研模块化资产——SCN的50~MW PEM电解区块，以及分布于JSAURI（$2 \times 400$~MW）与SCN（$2 \times 300$~MW）的1,400~MW模块化PWR核电试验单元——在基准运行数据集（\texttt{seni\_real\_base}）中一律配置为 \texttt{in\_service = false}，确保基准仿真状态严格代表物理电网，同时为能源转型基准保留模块化就绪能力。全国百分之四十以上的负荷集中在奥萨马（Ozama）都市区，由138~kV环网供电，其冗余是几何性的：JSAURI--PALA--SCN三角形，走廊线路实长70.5~km（138~kV JSAURI--PALA）、22.1~km（138~kV PALA--SCN）与30.86~km（230~kV JSAURI--SCN路径实长），并以230~kV JSAURI--SCN联络增强。三角形的任一回路的损失可由其余两回承担——这正是第~\ref{sub:contingencies}节韧性测试系统化演练的 $N-1$ 属性。带真实走廊距离的完整几何，是经济性证明（第~\ref{sub:zonal}节）与预想事故目录（第~\ref{sub:contingencies}节）的参考区域。
 
-\subsection{十个主权领土微电网}
+\subsection{十个规划性领土微电网}
 \label{sub:microgrids}
 
-第368-22号法律将国家领土组织为十个规划区；基准将其采纳为十个领土微电网，并为数值凝聚捆绑为HBCF的四个电气宏域。表~\ref{tab:microgrids}给出映射及各区域在运行记录中的代表性锚点。
+第368-22号法律将国家领土组织为十个规划区；基准将其采纳为十个规划性领土微电网——作为分块划分采纳的治理区划，而非可电气孤立的子图——并为数值凝聚捆绑为HBCF的四个电气宏域。表~\ref{tab:microgrids}给出映射及各区域在运行记录中的代表性锚点。
 
 % ---- 表I ----
 \begin{table*}[!t]
@@ -56,7 +56,7 @@ Cibao Noroeste（西北锡瓦奥） & $\Omega_{\mathrm{Norte}}$ & Montecristi光
 % ---- 图4 ----
 \begin{figure*}[!t]
 \centering
-\includegraphics[width=0.85\textwidth]{fig_diagrama_2_schur_hbcf.pdf}
+\includegraphics[width=0.85\textwidth]{fig_diagrama_2_schur_hbcf_en.pdf}
 \caption{岛屿电网的HBCF空间网络分块。第368-22号法律的十个领土微电网捆绑为四个电气宏域 $\Omega$（北部/Cibao、南部、东部、都市区）；仅干线边界 $\Gamma$——经Kron化简切割的230/138 kV联络——进入舒尔补 $\mathbf{S} = \mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B}$，在内部/边界排序上呈分块结构 $\mathbf{A}, \mathbf{B}, \mathbf{C}, \mathbf{D}$。硅上关键性能指标：每个国家级交流状态2.65 ms、常驻473 MiB、覆盖87,360小时水平域（10年OC-SENI遥测），相量边界耦合残差 $\delta = 2.788 \times 10^{-14}$ pu。}
 \label{fig:hbcf_schur}
 \end{figure*}

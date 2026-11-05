@@ -1,0 +1,8 @@
+Pages:           1 Page size:       713.117 x 526.833 pts <- fig_hd1_jsauri_desacoplamiento_345_138
+198452 B fig_hd1_jsauri_desacoplamiento_345_138.pdf
+Pages:           1 Page size:       717.491 x 347.723 pts <- fig_hd2_schur_hbcf_macrodominios
+249106 B fig_hd2_schur_hbcf_macrodominios.pdf
+Pages:           1 Page size:       708.311 x 272.443 pts <- fig_hd3_triangulo_metropolitano_redundancia
+223815 B fig_hd3_triangulo_metropolitano_redundancia.pdf
+Pages:           1 Page size:       841.686 x 578.923 pts <- fig_hd4_grafo_completo_seni142
+104237 B fig_hd4_grafo_completo_seni142.pdf

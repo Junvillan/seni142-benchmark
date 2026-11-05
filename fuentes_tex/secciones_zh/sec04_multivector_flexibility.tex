@@ -7,13 +7,13 @@
 \subsection{灵活性星座}
 \label{sub:constellation}
 
-多向量层组织为六个专责物理求解器构成的星座，经签名边界状态清单向142节点主求解器供数：（i）光伏发电，采用连续S形 $Q$--$V$ 控制以抑制鸭子曲线；（ii）风电，采用气动 $C_p(\lambda, \beta)$ 建模与合成惯量；（iii）氢向量——电解、压缩至700~bar，以及规划模型中全国740座加氢站网络；（iv）生化转化，经由一号厌氧消化模型（ADM1）\cite{batstone2002}，将马尾藻与酒糟废液底物消化为可调度生物甲烷；（v）火电，采用热耗曲线与同步 $P$--$Q$ 调度；（vi）764~MW可逆抽水蓄能机组群（Sabaneta / Dos Bocas）。零信任调度监督器在受保护的状态总线上编排该星座：任何求解器都不得读取他者内存，所有交换均由封存清单承载。图~\ref{fig:constellation}给出星座图示。
+多向量层组织为六个专责物理求解器构成的星座，经签名边界状态清单向142节点主求解器供数：（i）光伏发电，采用连续光滑互补（Fischer--Burmeister）$Q$--$V$ 控制以抑制鸭子曲线；（ii）风电，采用气动 $C_p(\lambda, \beta)$ 建模与合成惯量；（iii）氢向量——电解、压缩至700~bar，以及规划模型中全国740座加氢站网络；（iv）生化转化，经由一号厌氧消化模型（ADM1）\cite{batstone2002}，将马尾藻与酒糟废液底物消化为可调度生物甲烷；（v）火电，采用热耗曲线与同步 $P$--$Q$ 调度；（vi）764~MW可逆抽水蓄能机组群（Sabaneta / Dos Bocas）。零信任调度监督器在受保护的状态总线上编排该星座：任何求解器都不得读取他者内存，所有交换均由封存清单承载。图~\ref{fig:constellation}给出星座图示。
 
 % ---- 图5 ----
 \begin{figure*}[!t]
 \centering
-\includegraphics[width=0.85\textwidth]{fig_diagrama_3_constelacion_microsolvers.pdf}
-\caption{多向量灵活性星座。六个专责物理求解器——光伏（S形 $Q$--$V$ 控制）、风电（带合成惯量的 $C_p(\lambda,\beta)$）、氢能（电解、700 bar压缩、740座加氢站）、生化（马尾藻与酒糟废液的ADM1消化）、火电（热耗调度）与可逆抽蓄（764 MW，Sabaneta/Dos Bocas）——经零信任调度监督器与SHA-512签名的边界状态清单，向国家电网的142节点主求解器交付其净注入 $(P_g, Q_g)$。}
+\includegraphics[width=0.85\textwidth]{fig_diagrama_3_constelacion_microsolvers_en.pdf}
+\caption{多向量灵活性星座。六个专责物理求解器——光伏（光滑互补 $Q$--$V$ 控制）、风电（带合成惯量的 $C_p(\lambda,\beta)$）、氢能（电解、700 bar压缩、740座加氢站）、生化（马尾藻与酒糟废液的ADM1消化）、火电（热耗调度）与可逆抽蓄（764 MW，Sabaneta/Dos Bocas）——经零信任调度监督器与SHA-512签名的边界状态清单，向国家电网的142节点主求解器交付其净注入 $(P_g, Q_g)$。}
 \label{fig:constellation}
 \end{figure*}
 
