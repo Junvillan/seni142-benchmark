@@ -250,7 +250,7 @@
     },
     {
       "contingency_id": "LINE-230-JS-SCNU",
-      "asset": "230 kV JSAURI--SCNU tie (50.0 km)",
+      "asset": "230 kV JSAURI--SCNU tie (30.86 km)",
       "outage_type": "Line N-1",
       "classification": "Metropolitan 230 kV tie reinforcing the ring",
       "pre_event_flow_or_gen_mw": 356.2,
@@ -278,7 +278,7 @@
         "comment": "Marginal loss of 2.68% on 141.7 MW redispatch"
       },
       "post_event_ref_note": "tras losing del enlace 230 kV, máxima carga en el triángulo 138 kV JSAURI–PALA",
-      "sha512_solution_digest": "810bbd89d458a598691302cb2ecb2efff6130603abe4d43caba6cc6d717e794391d86d6f6c01cb7984f271ee66ae5830550fe777554aa79ce311d0b1f515ad33"
+      "sha512_solution_digest": "333c15f69355df15a2ddb243b92ec6df350cc0fa1bbc642b5af6a1d56b4bc7bfcca65ce77c689d7a88eb5089716f317648ac58392038dd67ac2f33e40aeeafa5"
     },
     {
       "contingency_id": "GEN-AES-ANDRES",

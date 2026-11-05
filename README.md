@@ -24,15 +24,16 @@
 | `CARTA_*`, `DOSSIER_*`, `MATRIZ_*` | Transmittal dossier and cross-reference matrix of the review correspondence. |
 | `NOTA_PROPIEDAD_INTELECTUAL_SOLVER_ES_SENI142_20261019.md` / `IP_PATENT_SOLVER_STATEMENT_EN_SENI142_20261019.md` | Intellectual-property doctrine of the submission: benchmark-paper scope per IEEE PES Task Force practice (open model + open validation harness) versus the patent-pending multi-vector optimization solver. |
 
-## Errata and clarifications (2026-10-22)
+## Errata and clarifications (2026-10-22, rev. 2026-11-05)
 
-Auditor-driven clarifications on branch-rating semantics and modeling conventions. None of
-them alters any data artifact: the four sealed artifacts (census CSV, branch CSV, NPZ,
-ARTEFACTO B1 JSON) and the verifier are untouched, and `verify_seni142_benchmark.py`
-still reports 41/41 PASS.
+Auditor-driven clarifications on branch-rating semantics and modeling conventions. Items 1–7
+were issued 2026-10-22 and altered no data artifact. The 2026-11-05 addendum (items 8–15)
+closes the remaining auditor findings; item 12 alone amends a data artifact — one descriptive
+string in ARTEFACTO B1, transparently, with its per-solution integrity digest recomputed —
+and `verify_seni142_benchmark.py` still reports 41/41 PASS.
 
-1. **`S_max_MVA` is a per-circuit rating.** The aggregate thermal capability of a
-   multi-circuit branch is `S_max_MVA × Circuitos`:
+1. **`S_max_MVA` is a per-unit rating.** The aggregate thermal capability of a
+   multi-unit branch is `S_max_MVA × Circuitos`:
    `LINE-345-PC-JS` 421.3 MVA × 3 (3C/F, three 559.5 MCM AAAC per phase) = 1,263.9 MVA;
    `CORR-138-PALA-SCNU` 236.2 × 2 = 472.4 MVA; `LINE-138-CUM-SPMI` 168.5 × 2 = 337.0 MVA.
 2. **Base-case loading of the 345 kV Punta Catalina trunk.** Under the bundle rating
@@ -43,7 +44,8 @@ still reports 41/41 PASS.
    `BUS-138-CUMAYASA` → `BUS-138-JUAN_DOLIO` (the San Pedro de Macorís corridor; the
    "SPMI" suffix refers to the SPM1 substation estate where the November 2025 collapse
    initiated). Earlier prose glosses such as "SPM–Cumayasa" must be read against the
-   canonical `From_Bus`/`To_Bus` columns.
+   canonical `From_Bus`/`To_Bus` columns. The 172.1 MW pre-event flow is 51.1% of the
+   337.0 MVA aggregate corridor capability (not "per circuit").
 4. **`LINE-230-JS-SCNU` is the benchmark's single composite branch** (census subtipo
    `Linea_transmision_compuesta`): it links the 345 kV JSAURI bar to the 138 kV
    San Cristóbal Norte bus through integrated port autotransformation, with the branch
@@ -57,11 +59,86 @@ still reports 41/41 PASS.
 6. **Inertia constants (H) and per-unit synchronous ratings are not yet published.**
    Community RoCoF/frequency-nadir computation requires them; their addition is a
    planned dynamic extension of the release.
-7. **Manuscript-notation alignment pending.** The reactive-limit regularization is
-   reformulated in the two-part manuscript suite as a two-sided smoothed
-   Fischer–Burmeister complementarity on [Q_min, Q_max] whose limit recovers the rigid
-   PV→PQ characteristic. The master markdown still carries the earlier centered
-   sigmoidal notation; it will be aligned in the next release.
+7. **Manuscript-notation alignment (RESOLVED).** The reactive-limit regularization is
+   formulated — consistently across the two-part suite and the master markdown — as a
+   two-sided smoothed Fischer–Burmeister complementarity on [Q_min, Q_max] with
+   one-sided voltage deviations ΔV⁺ = max(0, V−V_ref), ΔV⁻ = max(0, V_ref−V). Each
+   complementarity pair engages only its own voltage regime, and as ε→0 the system
+   recovers the rigid PV→PQ characteristic including the saturation transition,
+   without the sign conflict that unsigned deviation pairs incur for ε > 0.
+
+### Addendum (2026-11-05) — closure of the remaining auditor findings
+
+8. **`LINE-345-PC-JS` rating is per conductor of the triplex bundle.** The trunk
+   carries a triplex bundled conductor (3C/F AAAC 559.5 MCM — three conductors per
+   phase, per the CAD annotation `42 km 559.5 MCM-AAAC 3C/F`); the rating in the
+   branch CSV reflects per-conductor capacity, yielding
+   3 × 421.3 = 1,263.9 MVA of aggregate thermal capacity at 345 kV (refines item 1:
+   for bundled lines the unit is the conductor; for double-circuit corridors the unit
+   is the circuit). The tabulated `X_pu` remains the archived per-branch equivalent
+   parameter; bundle-geometry impedance reduction is not modeled in the simplified
+   public census.
+9. **A passive (uncorrected) share-out on `CORR-138-PALA-SCNU` would overload the
+   surviving circuit.** A DC LODF sensitivity recomputation on the released data gives
+   124.0%–139.0% on the surviving circuit, depending on whether the tabulated `X_pu`
+   is read as the corridor-equivalent or the per-circuit parameter. The published
+   post-event figure is therefore the state reached after the automatic
+   corrective-overload and fast topological-redispatch action of the co-optimized
+   reserve, not a passive impedance split (quantifies item 5).
+10. **Loss-accounting identities: 6.10 MW vs 24.8 MW.** The two figures are different
+    quantities over different bases. (a) `LINE-345-PC-JS` sizing event:
+    687.40 MW (redispatch) + 58.50 MW (storage) + 6.10 MW (slack residual = marginal
+    transport losses) = 752.00 MW is gross-at-the-unit accounting — the 752.00 MW
+    gross trip equals 748.3 MW of network injection plus 3.70 MW of station service
+    consumed inside the plant island. (b) `GEN-PC-COMPLEX` common-mode event: the
+    full 752.00 MW is redispatched across geographically remote units, so the slack
+    residual is physically the incremental transport loss of rerouting the whole
+    block, +24.8 MW. The declared dual ratios (0.887%/0.811%; 3.30%) are accounting
+    ratios over their stated bases, not a physical loss model; post-event (V, θ)
+    states are engine telemetry and are not part of this release.
+11. **Generation consigns for AC power-flow reproduction.** The census ships demand
+    only. The operating-consign schema of the reference solves: slack =
+    `BUS-345-JULIO_SAURI` at V = 1.02 pu (active power bounded to 0–800 MW);
+    generation buses `JULIO_SAURI-345`, `PUNTA_CATALINA-345`, `PUNTA_CATALINA-138`,
+    `QUISQUEYA_1`, `QUISQUEYA_2`, `BARAHONA_CARBON`, `VALDESIA`; units not indexed as
+    individual buses (AES Andrés, Estrella del Mar, Monte Plata, Sabaneta, Dos Bocas)
+    enter as external merit-order boundary injections at their transmission
+    substation interconnection nodes. A complete MATPOWER-format case
+    (P_g / Q_min / Q_max / V_set columns with reference AC solutions) is planned for
+    a future minor release.
+12. **`LINE-230-JS-SCNU` length reconciled to 30.86 km.** The descriptive `asset`
+    string of the JS–SCNU solution in
+    `ARTEFACTO_B1_8_CONTINGENCIAS_CANONICAS_142BARRAS.json` read `"(50.0 km)"`;
+    the physical survey value is 30.86 km (branch CSV `30.860`; route anchor
+    JSAURI–San Cristóbal). On 2026-11-05 the string was amended to `"(30.86 km)"`
+    and that solution's `sha512_solution_digest` was recomputed accordingly (the
+    digest covers every solution field except itself). The `.txt` mirror was updated
+    identically; `verify_seni142_benchmark.py` still reports 41/41 PASS. The frozen
+    versioned archives are unaffected.
+13. **Radial (bridge) branches and the unitary catalog.** Seventeen branches of the
+    released graph are topological bridges; sixteen of them carry isolated load
+    pockets — 611.6 MW in aggregate — if an entire corridor is lost. The 215-element
+    unitary N-1 catalog screens circuit-level outages on consolidated corridors, so a
+    pocket stays fed through the surviving circuit under the corrective stage; a
+    full-corridor loss of a radially fed pocket is a common-mode event handled by the
+    corrective reserve doctrine, and storage resources do not participate in the
+    unitary screening.
+14. **The ten Law 368-22 regions are planning-governance demarcations, not
+    electrically islandable microgrids.** Audited connectivity of the released graph:
+    no region induces a connected subgraph (internal component counts range 2–6), and
+    six of the ten regions contain no generation bus; at macro-domain level,
+    Omega_Este is connected while Metro, South and North split into 2/2/3 components.
+    The Schur condensation does not require connected blocks (the block-diagonal
+    structure of A holds regardless), and "microgrid" throughout this release must be
+    read as the Law 368-22 planning-region terminology; quantified autonomy indices
+    (internal connectivity, local generation balance) are computable directly from
+    the released census.
+15. **Reactive-limit regularization (formal statement).** The manuscript formulation
+    is φ_ε(Q_max − Q, ΔV⁻) = 0 and φ_ε(Q − Q_min, ΔV⁺) = 0 with
+    ΔV⁺ = max(0, V − V_ref), ΔV⁻ = max(0, V_ref − V) and
+    φ_ε(a,b) = a + b − √(a²+b²+ε²) (smoothed Fischer–Burmeister). For finite ε the
+    pair is solved as a coupled residual system with a floor of order ε²/√2; the
+    measured regularization error over the validation horizon is 5.32e-12.
 
 ## Verification
 
