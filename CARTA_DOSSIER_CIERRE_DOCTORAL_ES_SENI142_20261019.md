@@ -28,7 +28,7 @@ A continuación se reporta la **Tabla VI Definitiva**, con convergencia verifica
 | `LINE-345-PC-JS` | Troncal 345 kV PC–JSAURI | Line $N-1$ | 748.3 | 0.9703 | 89.2 | $+6.1$ | 687.4 | **0.00** | `3c8d19ef470a5991...82bb` |
 | `XFMR-345-138-JS` | Banco JSAURI 345/138 kV (600 MVA) | Xfmr $N-1$ | 521.7 | 0.9748 | 88.5 | $+4.7$ | 186.2 | **0.00** | `a90184dd6312bb09...7e41` |
 | `LINE-138-CUM-SPMI` | 138 kV SPM–Cumayasa | Line $N-1$ | 172.1 | 0.9802 | 84.1 | $+2.9$ | 96.4 | **0.00** | `6b44f21008ac4402...55c2` |
-| `CORR-138-PALA-SCNU`| Corredor 138 kV (1 de 2 ctos) | Corridor $N-1`| 206.4 | 0.9755 | 87.6 | $+5.2$ | 158.3 | **0.00** | `1f89aa0294eb7710...99c7` |
+| `CORR-138-PALA-SCNU`| Corredor 138 kV (1 de 2 ctos) | Corridor $N-1`| 206.4 | 0.9755 | 87.5 | $+5.2$ | 158.3 | **0.00** | `1f89aa0294eb7710...99c7` |
 | `LINE-230-JS-SCNU` | Enlace 230 kV JSAURI–SCNU | Line $N-1$ | 356.2 | 0.9790 | 83.3 | $+3.8$ | 141.7 | **0.00** | `90dc1788bc115582...44a0` |
 | `GEN-AES-ANDRES` | Ciclo Comb. AES Andrés (319 MW)| Unit $N-1$ | 319.0 | 0.9846 | 78.5 | $+8.3$ | 319.0 | **0.00** | `4b18c66e20fa6194...d301` |
 
@@ -56,9 +56,9 @@ Ante la duda planteada sobre por qué $\Delta P_g = 752.0\text{ MW}$ coexiste co
 2. **Especificación del Conductor y Límite Térmico:**
    - Conductor: **ACSR 795 kcmil Drake (26/7)**.
    - Ampacidad admisible continua: $988\text{ A}$ a $75^\circ\text{C}$ $\to$ $S^{\max} = 236.2\text{ MVA}$ por circuito a 138 kV ($472.4\text{ MVA}$ agregados en el corredor doble terna).
-3. **Mecanismo de Despeje y Carga Post-Evento (87.6%):**
+3. **Mecanismo de Despeje y Carga Post-Evento (87.5%):**
    - Pre-evento: 412.7 MW totales en el corredor (206.4 MW en cada circuito, carga inicial: 87.4%).
-   - Post-evento: Ante la apertura de un circuito (pérdida de 206.4 MW), el circuito paralelo gemelo asume 206.7 MW (operando a **87.6%** de la capacidad por circuito).
+   - Post-evento: Ante la apertura de un circuito (pérdida de 206.4 MW), el circuito paralelo gemelo asume 206.7 MW (operando a **87.5%** de la capacidad por circuito).
    - El excedente de potencia fluye a través de la topología en malla del triángulo metropolitano: el lazo de 230 kV JSAURI–SCNU (50.0 km, 600 MVA de capacidad) incrementa su flujo en 142 MW (cargándose al 83.3%), y el circuito de 138 kV JSAURI–PALA (70.5 km) absorbe 64 MW (al 89.2%). No se produce ninguna violación térmica en régimen permanente.
 
 ---

@@ -43,6 +43,10 @@ function mpc = case142_seni()
 %%       level and territorial assignment, all read from the canonical census.
 %%       area  : 1..10 = the ten Law 368-22 planning regions, in the canonical
 %%               order of SPEC["regiones"] of verify_seni142_benchmark.py.
+%%               MATPOWER's inter-tie accounting therefore counts the branches
+%%               that cross a planning-region boundary; the regions are
+%%               governance demarcations, not electrical islands (README
+%%               erratum 14).
 %%       zone  : 1..4  = the four HBCF macro-domains (Metro, Sur, Este,
 %%               Norte).  Both columns are governance/numerical annotations,
 %%               not electrical islands (README erratum 14).
@@ -121,6 +125,31 @@ function mpc = case142_seni()
 %%  release's own erratum 11 lists JULIO_SAURI-345 as a generation bus
 %%  bounded to 0-800 MW.  No unit of the 22-unit catalog is connected there.
 %%
+%% ------------------------------------------------------------------------
+%% OPERATING-POINT PROPERTIES, AS MEASURED ON THIS CASE
+%%   verify_case142_matpower.py reports 42/42 checks PASS on this file.  The
+%%   measured facts worth recording here:
+%%
+%%   * The admittance matrix rebuilt out of this file is identical to the
+%%     certified Ybus of matrices_sistema_seni142.npz to 5.7e-14, and the
+%%     per-branch elements to 3.6e-15.
+%%   * The lossless (DC) formulation converges and balances the certified peak
+%%     exactly: generation = demand = 3,450.0000 MW (residual < 1e-6 MW), with
+%%     the reference at 700.00 MW, inside its certified 0-800 MW band, and a
+%%     maximum bus angle of 40.9 deg.
+%%   * NO transmission line and NO power transformer exceeds its rateA in that
+%%     operating point (0 of 140).
+%%   * 21 of the 53 condensed-distribution equivalents do exceed their
+%%     certified per-branch rating.  That is a property of the released
+%%     condensation itself (the branch rating is the estate transformer's
+%%     nameplate while the condensed injection behind it is the aggregated
+%%     area load), not of this encoding; see README erratum 13.
+%%   * The release certifies a linear model (Ybus, Schur complement) and not an
+%%     AC operating point.  In the released flat per-unit space the network
+%%     admits no AC solution at the certified 3,450 MW peak: a load
+%%     continuation converges only up to about 35-40 % of the certified peak.
+%%     The AC engine of the author's reference solves is patent-pending and is
+%%     deliberately not part of this release.
 %% ------------------------------------------------------------------------
 %% COLUMN FORMATS
 %%   bus    : bus_i, type, Pd, Qd, Gs, Bs, area, Vm, Va, baseKV, zone, Vmax, Vmin

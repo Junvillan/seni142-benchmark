@@ -6,6 +6,19 @@
 **Author:** Ing. Junior Alexis Villanueva Rosario, Ms.C., Ph.D.(c)
 **Benchmark:** SENI-142 — the 142-bus nodal model of the Dominican Republic bulk transmission system (115 bulk nodes at 345/230/138 kV + 27 retained 69 kV boundary ports; 135 transmission lines + 58 power transformers), partitioned into the ten territorial planning regions of Law 368-22 and condensed by the Hierarchical Border-Coordinate Formulation (HBCF) into four electrical macro-domains.
 
+### IEEE Transactions Submission Structure
+
+The official submission to *IEEE Transactions on Power Systems* (TPWRS)
+consists exclusively of the **Two-Part companion paper suite**:
+
+- **Part I:** `SENI142_Part1_2col.pdf` (10 pages) — *Network Architecture and Diakoptic HBCF Formulation*.
+- **Part II:** `SENI142_Part2_2col.pdf` (9 pages) — *Multi-Vector Flexibility, Scalable Silicon Campaign, and Operational Telemetry*.
+
+*Note on the 25-page Monograph:* The continuous manuscript (`SENI142_IEEE_2col.pdf` /
+`SENI142_IEEE_1col.pdf`) is provided solely as an unabridged institutional reference
+monograph for the Universidad Politécnica de Valencia (UPV) and local archival
+purposes; it does not constitute the formal journal submission.
+
 ---
 
 ## Contents
@@ -19,8 +32,12 @@
 | `SENI142_CATALOGO_215_CONTINGENCIAS.csv` | Canonical N-1 screening catalog: 135 transmission lines + 58 power transformers + 22 major generating units = 215 single contingencies (identity, modeled bus where applicable, screening criterion; nameplate MW only where sealed by the release canon). |
 | `verify_seni142_benchmark.py` | Official verification harness: loads the four artifacts and checks every structural, topological, matrix and accounting property from the data (no solver outputs are hardcoded). Exits non-zero on any failure. |
 | `mutation_test_v3.py` | Adversarial mutation-robustness suite: 12 targeted corruptions (demand, admittance, residual, hashes, balances, metadata); the verifier must reject every one. |
+| `case142_seni.m` | Canonical MATPOWER case of the released network: 142 buses, 193 branches and 23 generator rows, MATPOWER 7.x/8.x / Octave / PYPOWER compatible. Bus and branch tables are reproduced verbatim from the two canonical CSVs; the admittance matrix rebuilt out of the file is identical to the certified Ybus (5.7e-14). |
+| `verify_case142_matpower.py` | Verifier of the MATPOWER case: re-derives every bus, branch and generator field from the canonical CSVs, proves the Ybus identity against `matrices_sistema_seni142.npz` (< 1e-9), and solves the case (lossless DC formulation, exact 3,450.0 MW balance). |
 | `paper_seni142_ieee_transactions_en.md` | Canonical master of the manuscript (bit-identical to the submission master). |
-| `SENI142_IEEE_2col.pdf` / `SENI142_IEEE_1col.pdf` / `SENI142_IEEE_ES_1col.pdf` | Compiled manuscript (two-column, one-column, Spanish). |
+| `SENI142_Part1_2col.pdf` / `SENI142_Part2_2col.pdf` | The **Two-Part companion paper suite** — the official TPWRS submission (Part I: 10 pp.; Part II: 9 pp.). See "IEEE Transactions Submission Structure" above. |
+| `SENI142_IEEE_2col.pdf` / `SENI142_IEEE_1col.pdf` / `SENI142_IEEE_ES_1col.pdf` | Continuous 25-page institutional reference monograph (two-column / one-column / Spanish) — not the formal journal submission. |
+| `LICENSE` | Dual open license: data and topology under CC BY 4.0 (`CC-BY-4.0`), verification code and harness under Apache 2.0 (`Apache-2.0`), with the per-artefact SPDX map and the explicit carve-out of the patent-pending solver engine. |
 | `CARTA_*`, `DOSSIER_*`, `MATRIZ_*` | Transmittal dossier and cross-reference matrix of the review correspondence. |
 | `NOTA_PROPIEDAD_INTELECTUAL_SOLVER_ES_SENI142_20261019.md` / `IP_PATENT_SOLVER_STATEMENT_EN_SENI142_20261019.md` | Intellectual-property doctrine of the submission: benchmark-paper scope per IEEE PES Task Force practice (open model + open validation harness) versus the patent-pending multi-vector optimization solver. |
 
@@ -155,6 +172,28 @@ line parameters; Ybus ≡ branch table (<1e-9); block-diagonal A; Schur identity
 
 The catalog `SENI142_CATALOGO_215_CONTINGENCIAS.csv` enumerates the 215 screened single contingencies; the release certifies the eight canonical contingency balances in `ARTEFACTO_B1`.
 
+The same released network is also published as a loadable MATPOWER case, `case142_seni.m`
+(142 buses, 193 branches, 23 generator rows; MATPOWER 7.x/8.x, Octave and PYPOWER
+compatible), with its own verifier:
+
+```bash
+python3 verify_case142_matpower.py              # 42 checks: structure, census fidelity, Ybus identity, solve
+```
+
+`verify_case142_matpower.py` re-derives every bus, branch and generator field from the
+two canonical CSVs and from the N-1 catalogue, proves that the admittance matrix rebuilt
+out of `case142_seni.m` is identical to the certified Ybus of `matrices_sistema_seni142.npz`
+(5.7e-14), and solves the case: the lossless (DC) formulation converges with an exact
+3,450.0 MW balance (generation = demand, residual < 1e-6 MW), the reference stays inside
+its certified 0–800 MW band at 700.00 MW, and no transmission line or power transformer
+exceeds its `rateA`. The release certifies a linear model (Ybus, Schur complement) and
+not an AC operating point; in the released flat per-unit space the network admits no AC
+solution at the certified peak (a load continuation converges only to ≈ 35–40 % of it),
+and the AC engine of the reference solves is patent-pending and deliberately absent from
+this release. The 21 condensed-distribution equivalents that exceed their per-branch
+rating are an artefact of the released condensation itself (README erratum 13), not of
+this encoding.
+
 ### Recommended clean execution environment
 
 The harness depends only on `numpy`. On macOS — or in any Conda-preloaded shell where older
@@ -205,6 +244,62 @@ application; access to it is available to reviewers under confidential peer-revi
 agreement per the IEEE PES Data Availability policy. This release certifies the network
 model, the condensed-solve invariants and the eight canonical contingency balances, and
 nothing beyond them.
+
+### Cryptographic Integrity Verification
+
+Every released artefact is covered by a SHA-512 signature, and the signatures are
+verifiable with one command, from the repository root:
+
+```bash
+sha512sum -c SHA512SUMS.txt                    # canonical manifest: every listed artefact
+```
+
+The integrity layer has **three levels**, each one signing the previous:
+
+1. **Per-artefact sidecars** — one `<file>.sha512` next to each signed artefact, 25 in
+   total. Convention: one LF-terminated line holding the 128-hex digest, two ASCII
+   spaces, and the **strictly relative** path of the artefact (`<sha512>␠␠<path>`), with
+   no `./` prefix, no leading path and no binary-mode `*` marker — the GNU coreutils
+   `sha512sum` text format, so the sidecars check directly:
+
+   ```bash
+   for f in *.sha512; do sha512sum -c "$f"; done    # 25/25 OK
+   ```
+
+2. **`SHA512SUMS.txt`** — the canonical manifest: the digests of the release's principal
+   artefacts in one file, itself signed by `SHA512SUMS.txt.sha512`. This is the file the
+   command above checks.
+
+3. **`MANIFIESTO_SHA512_R5_DEFINITIVO.txt`** — the signed changelog: a prose history of
+   the release in Spanish followed by an embedded block of digests covering the dossier
+   artefacts, itself signed by `MANIFIESTO_SHA512_R5_DEFINITIVO.txt.sha512`.
+
+All paths in every layer are strictly relative, so the bundle verifies identically from
+any directory and inside any archive layout. When an artefact changes, its signature must
+be regenerated **in dependency order**, since each step invalidates the next:
+
+```text
+artefact  →  <artefact>.sha512  →  SHA512SUMS.txt  →  SHA512SUMS.txt.sha512
+          →  MANIFIESTO_SHA512_R5_DEFINITIVO.txt  →  MANIFIESTO_SHA512_R5_DEFINITIVO.txt.sha512
+```
+
+**Release version equivalence.** The Zenodo deposit and the GitHub repository carry
+different version labels for the same benchmark line; they are equivalent *by content and
+manifest, not by label*:
+
+- **Zenodo v1.1.2 — the foundational archive.** Concept DOI `10.5281/zenodo.23484704`;
+  the version record currently published under it is `10.5281/zenodo.23565000`, deposit
+  `seni142_benchmark_v1.1.2.zip` (2026-10-22). Its predecessor version record
+  `10.5281/zenodo.23484705` holds `seni142_benchmark_v1.0.0.zip` (2026-10-19). The Zenodo
+  layer is the **frozen** snapshot: it is versioned, citable and immutable.
+- **GitHub v1.2.0 — the consolidation.** `https://github.com/Junvillan/seni142-benchmark`,
+  tag `v1.2.0-rc1`, the living branch that continues and consolidates the same benchmark
+  line beyond the frozen deposit.
+
+The DOI badge at the head of this file resolves to the concept DOI, and therefore to the
+latest published Zenodo version — currently v1.1.2. A reader who obtains the two layers
+at different points in time will see different version labels; the SHA-512 manifests of
+section 3 above are what establish content equivalence between them.
 
 ## Mutation robustness
 

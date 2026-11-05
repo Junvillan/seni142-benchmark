@@ -28,7 +28,7 @@ The **Definitive Table VI** is reported below, with verified Newton–Raphson co
 | `LINE-345-PC-JS` | 345 kV Trunk PC–JSAURI | Line $N-1$ | 748.3 | 0.9703 | 89.2 | $+6.1$ | 687.4 | **0.00** | `3c8d19ef470a5991...82bb` |
 | `XFMR-345-138-JS` | JSAURI 345/138 kV Bank (600 MVA) | Xfmr $N-1$ | 521.7 | 0.9748 | 88.5 | $+4.7$ | 186.2 | **0.00** | `a90184dd6312bb09...7e41` |
 | `LINE-138-CUM-SPMI` | 138 kV SPM–Cumayasa | Line $N-1$ | 172.1 | 0.9802 | 84.1 | $+2.9$ | 96.4 | **0.00** | `6b44f21008ac4402...55c2` |
-| `CORR-138-PALA-SCNU` | 138 kV Corridor (1 of 2 ccts) | Corridor $N-1$ | 206.4 | 0.9755 | 87.6 | $+5.2$ | 158.3 | **0.00** | `1f89aa0294eb7710...99c7` |
+| `CORR-138-PALA-SCNU` | 138 kV Corridor (1 of 2 ccts) | Corridor $N-1$ | 206.4 | 0.9755 | 87.5 | $+5.2$ | 158.3 | **0.00** | `1f89aa0294eb7710...99c7` |
 | `LINE-230-JS-SCNU` | 230 kV JSAURI–SCNU Tie | Line $N-1$ | 356.2 | 0.9790 | 83.3 | $+3.8$ | 141.7 | **0.00** | `90dc1788bc115582...44a0` |
 | `GEN-AES-ANDRES` | AES Andrés Combined Cycle (319 MW) | Unit $N-1$ | 319.0 | 0.9846 | 78.5 | $+8.3$ | 319.0 | **0.00** | `4b18c66e20fa6194...d301` |
 
@@ -56,9 +56,9 @@ Regarding the question raised as to why $\Delta P_g = 752.0\text{ MW}$ coexists 
 2. **Conductor Specification and Thermal Limit:**
    - Conductor: **ACSR 795 kcmil Drake (26/7)**.
    - Admissible continuous ampacity: $988\text{ A}$ at $75^\circ\text{C}$ $\to$ $S^{\max} = 236.2\text{ MVA}$ per circuit at 138 kV ($472.4\text{ MVA}$ aggregate for the double-circuit corridor).
-3. **Clearing Mechanism and Post-Event Loading (87.6%):**
+3. **Clearing Mechanism and Post-Event Loading (87.5%):**
    - Pre-event: 412.7 MW total in the corridor (206.4 MW per circuit, initial loading: 87.4%).
-   - Post-event: Upon the opening of one circuit (loss of 206.4 MW), the twin parallel circuit assumes 206.7 MW (operating at **87.6%** of the per-circuit capacity).
+   - Post-event: Upon the opening of one circuit (loss of 206.4 MW), the twin parallel circuit assumes 206.7 MW (operating at **87.5%** of the per-circuit capacity).
    - The surplus power flows through the meshed topology of the metropolitan triangle: the 230 kV JSAURI–SCNU loop (50.0 km, 600 MVA capacity) increases its flow by 142 MW (loading to 83.3%), and the 138 kV JSAURI–PALA circuit (70.5 km) absorbs 64 MW (at 89.2%). No steady-state thermal violation occurs.
 
 ---
