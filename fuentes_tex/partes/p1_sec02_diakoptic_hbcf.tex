@@ -8,7 +8,7 @@
 \section{Methodology: Diakoptic HBCF Schur Formulation and Fail-Closed Digital-Twin Lifecycle}
 \label{sec:methodology}
 
-The methodology is deliberately organized in two coupled components. The \textbf{invariant formulation} --- graph representation, equivalent reduction, spatial partition, exact condensation, data protocol, deterministic lifecycle, and regularization --- is problem-independent and transfers without modification across the family of studies built on this platform. The \textbf{territorial instantiation clause} binds this formulation to one reference reality: the national grid of the Dominican Republic, partitioned according to the country's own spatial planning statute. The subsections below follow that formulation through the numerical pipeline. The multi-temporal AC-OPF and the multi-vector flexibility layer are developed in the companion Part~II~\cite{seni142part2}.
+The methodology is deliberately organized in two coupled components. The \textbf{invariant formulation} --- graph representation, equivalent reduction, spatial partition, exact condensation, data protocol, deterministic lifecycle, and regularization --- is problem-independent and transfers without modification across the family of studies built on this platform. The \textbf{territorial instantiation clause} binds this formulation to one reference reality: the national grid of the Dominican Republic, partitioned according to the country's own spatial planning statute. The subsections below follow that formulation through the numerical pipeline.
 
 \subsection{Steady-State AC Feasibility Scope}
 \label{sub:scope}
@@ -42,19 +42,19 @@ Because branches are passive bilateral elements with conductances $g_{ij} > 0$, 
 \mathbf{Y}_{\mathrm{bus}}^{\mathsf{T}} = \mathbf{Y}_{\mathrm{bus}} \;\ne\; \mathbf{Y}_{\mathrm{bus}}^{\mathsf{H}} = \overline{\mathbf{Y}_{\mathrm{bus}}}^{\,\mathsf{T}},
 \label{eq:nonhermitian}
 \end{equation}
-with maximum entry $\max_{i,j}\bigl|[\mathbf{Y}_{\mathrm{bus}} - \mathbf{Y}_{\mathrm{bus}}^{\mathsf{H}}]_{ij}\bigr| = 1{,}638.34$ on the 100~MVA base. All factorizations operate in complex symmetric arithmetic without assuming Hermitian structure, an invariant preserved under the Schur condensation of Section~\ref{sub:schur}. Figure~\ref{fig:topologia142} maps the 142 solved nodes (115 bulk yards at 345/230/138~kV and 27 retained 69~kV boundary ports) across the four Law 368-22 macrodomains ($\Omega_1$--$\Omega_4$).
+with maximum entry $\max_{i,j}\bigl|[\mathbf{Y}_{\mathrm{bus}} - \mathbf{Y}_{\mathrm{bus}}^{\mathsf{H}}]_{ij}\bigr| = 1{,}638.34$ on the 100~MVA base. All factorizations operate in complex symmetric arithmetic without assuming Hermitian structure, an invariant preserved under the Schur condensation of Section~\ref{sub:schur}. Figure~\ref{fig:topologia142} maps the 142 solved nodes across the four Law 368-22 macrodomains ($\Omega_1$--$\Omega_4$).
 
 \input{sec03_fig_topologia_seni_142_tikz}
 
 \subsection{Equivalent reduction of the 69 kV subtransmission layer}
 \label{sub:reduction}
 
-Sixty-three radial laterals of the ninety 69~kV busbars are condensed into static multiport equivalents of Th\'evenin/Norton type, while 27 boundary terminals remain solved buses at their measured 69~kV. Together with the 115 bulk nodes (at 345, 230, and 138~kV), the solved model totals $142 = 115 + 27$ buses. For each boundary port $p$ with condensed interior $\Omega_r$, the equivalent preserves hourly complex injections, short-circuit impedances $Z_{\mathrm{cc}}$ via Kron reduction, and internal losses $\Delta S_{\mathrm{loss}}$:
+Sixty-three radial laterals of the ninety 69~kV busbars are condensed into static multiport equivalents of Th\'evenin/Norton type, while 27 boundary terminals remain solved buses at their measured 69~kV. Together with the 115 bulk nodes, the solved model totals $142 = 115 + 27$ buses. For each boundary port $p$ with condensed interior $\Omega_r$, the equivalent preserves hourly complex injections, short-circuit impedances $Z_{\mathrm{cc}}$ via Kron reduction, and internal losses $\Delta S_{\mathrm{loss}}$:
 \begin{equation}
 V_p = E_{\mathrm{th}}^{(r)} - Z_{\mathrm{th}}^{(r)} I_p, \qquad \sum_{i \in \Omega_r} S_i = V_p I_p^{*} + \Delta S_{\mathrm{loss}},
 \label{eq:thevenin}
 \end{equation}
-consistent with IEEE Std 399 \cite{ieee399} and IEC 61970 (CIM) \cite{iec61970}. Eliminating high-$R/X$ laterals prevents Jacobian ill-conditioning and enables robust convergence. Synchronous units retain standard $P$--$Q$ capabilities, whereas inverter-interfaced renewable resources follow the continuous regularization of Section~\ref{sub:regularization}.
+consistent with IEEE Std 399 \cite{ieee399} and IEC 61970 (CIM) \cite{iec61970}. Eliminating high-$R/X$ laterals prevents Jacobian ill-conditioning. Synchronous units retain standard $P$--$Q$ capabilities, whereas inverter-interfaced renewable resources follow the continuous regularization of Section~\ref{sub:regularization}.
 
 \subsection{Breadth-first scaling of connectivity}
 \label{sub:bfs}
@@ -123,7 +123,7 @@ The Newton iteration employs the full unreduced four-block polar Jacobian withou
 \end{bmatrix} \in \mathbb{R}^{282 \times 282},
 \label{eq:polar_j}
 \end{equation}
-for the 141 non-slack buses. The solution cascade advances from a flat start through fast-decoupled estimation to polar Newton--Raphson (stopping tolerance $10^{-8}$~pu), falling back to damped Levenberg--Marquardt if ill-conditioning is encountered. Together with $\mathbf{Y}_{\mathrm{bus}} \in \mathbb{C}^{142 \times 142}$ (20,164 complex entries), $\mathbf{J}$ forms the sealed matrix pair audited under Section~\ref{sub:seals}.
+for the 141 non-slack buses. The solution cascade advances from a flat start through fast-decoupled estimation to polar Newton--Raphson (stopping tolerance $10^{-8}$~pu), falling back to damped Levenberg--Marquardt if ill-conditioning is encountered. $\mathbf{J}$ and $\mathbf{Y}_{\mathrm{bus}}$ form the sealed matrix pair audited under Section~\ref{sub:seals}.
 
 \subsection{Multi-tier numerical verification}
 \label{sub:trinity}
@@ -160,18 +160,18 @@ P_{g,t}^{(c)} = P_{g,t}^{0} + \Delta P_{g,t}^{(c)}, \qquad 0 \le \Delta P_{g,t}^
 \end{equation}
 and the record reports the slack deviation $\Delta P_{\mathrm{slack},t}^{(c)}$ together with the unserved-load variable $P_{\mathrm{shed},t}^{(c)}$.
 
-Physically, the slack deviation is not a free regulation surplus but the incremental network loss; this equality is the balance identity: redrawing the post-contingency flows over a lossy network makes $\Delta P_{\mathrm{slack},t}^{(c)} = \Delta P_{\mathrm{loss},t}^{(c)} > 0$ on every audited scenario. The deviation is capped by the modular tolerance
+Physically, the slack deviation is not a free regulation surplus but the incremental network loss: redrawing the post-contingency flows over a lossy network makes $\Delta P_{\mathrm{slack},t}^{(c)} = \Delta P_{\mathrm{loss},t}^{(c)} > 0$ on every audited scenario. The deviation is capped by the modular tolerance
 \begin{equation}
 |\Delta P_{\mathrm{slack},t}^{(c)}| \le \varepsilon_{\mathrm{slack}}, \qquad \varepsilon_{\mathrm{slack}} = 25.0~\mathrm{MW},
 \label{eq:slacktol}
 \end{equation}
-which the sealed record satisfies across the entire catalog: the worst unitary $N-1$ excursion measures $\Delta P_{\mathrm{slack}} = +12.40$~MW --- the incremental loss of the most demanding single outage, a 50.4\% margin below the tolerance --- and the most demanding common-mode screen, the complete Punta Catalina complex, measures $+24.80$~MW, still inside the bound.
+which the sealed record satisfies across the entire catalog: the worst unitary $N-1$ excursion measures $\Delta P_{\mathrm{slack}} = +12.40$~MW (a 50.4\% margin below the tolerance) and the most demanding common-mode screen, the complete Punta Catalina complex, measures $+24.80$~MW, still inside the bound.
 
-The requirement \eqref{eq:reserve} implements an explicit two-layer security doctrine. \emph{Layer 1 --- unitary $N-1$.} The 215-element catalog audits single outages --- 135 transmission lines, 58 power transformers and 22 primary dispatchable generating units --- with each 376~MW unit of Punta Catalina audited individually, so the unitary layer of the requirement is the largest unit rating, 376~MW. \emph{Layer 2 --- common mode.} The most severe plant-level common-mode event of the island, the simultaneous trip of the complete complex ($2 \times 376 = 752$~MW), is additionally covered by sizing the requirement at the complex rating. Co-optimizing the reserve at $\sum r_g^+ \ge 752$~MW is therefore not a tautology but a deliberately ultra-conservative preventive criterion: because the co-optimized fleet covers the largest common-mode deficit, every unitary outage is covered \emph{a fortiori} on the capacity axis, and the open feasibility question reduces to network deliverability and post-event voltage sufficiency --- exactly what the four-clause PASS below verifies by explicit AC solve rather than by assumption. Both layers remain inside the static frontier of Section~\ref{sub:scope}: \eqref{eq:reserve} sizes a static primary/secondary dispatch budget --- governor response and fast converter-based reserve, sub-500~ms activation target --- that the post-event AC solve deploys; it does not model the frequency excursion itself. EMT studies, per-unit nadir simulation, and RoCoF verification, which would require inertia constants the benchmark does not publish, belong to the extended dynamic engine and remain outside this article's scope.
+The requirement \eqref{eq:reserve} implements an explicit two-layer security doctrine. \emph{Layer 1 --- unitary $N-1$.} The 215-element catalog audits single outages --- 135 transmission lines, 58 power transformers and 22 primary dispatchable generating units --- with each 376~MW unit of Punta Catalina audited individually. \emph{Layer 2 --- common mode.} The most severe plant-level common-mode event of the island --- the simultaneous trip of the complete complex ($2 \times 376 = 752$~MW) --- sizes the requirement at the complex rating. Co-optimizing the reserve at $\sum r_g^+ \ge 752$~MW is therefore a deliberately ultra-conservative preventive criterion: because the co-optimized fleet covers the largest common-mode deficit, every unitary outage is covered \emph{a fortiori} on the capacity axis, and the open feasibility question --- network deliverability and post-event voltage sufficiency --- is exactly what the four-clause PASS below verifies by explicit AC solve. Both layers remain inside the static frontier of Section~\ref{sub:scope}: \eqref{eq:reserve} sizes a static primary/secondary dispatch budget --- governor response and fast converter-based reserve, sub-500~ms activation target --- that the post-event AC solve deploys; it does not model the frequency excursion itself. EMT studies, per-unit nadir simulation, and RoCoF verification, which would require inertia constants the benchmark does not publish, belong to the extended dynamic engine and remain outside this article's scope.
 
 The contingency catalog is the transmission operator's own list, totaling 215 audited single-outage scenarios and coinciding element-by-element with the official published catalog of the benchmark. Storage resources do not participate in these 215 unitary outages; they enter only the common-mode sizing event, outside this catalog. A contingency $c$ is PASS only when all four clauses hold.
 (1)~The AC power flow converges with $\|\Delta P^{(c)}, \Delta Q^{(c)}\|_{\infty} \le 10^{-8}$~pu; (2)~every retained bus satisfies $V_i^{(c)} \in [0.95, 1.05]$~pu; (3)~every surviving branch $\ell \in \mathcal{L}\setminus\{c\}$ satisfies $|S_\ell^{(c)}| \le S_\ell^{\max}$ and $|I_\ell^{(c)}| \le I_\ell^{\max}$; and (4)~the slack deviation stays inside its bound, $|\Delta P_{\mathrm{slack}}^{(c)}| \le \varepsilon_{\mathrm{slack}}$, and the active-power deficit is zero, $P_{\mathrm{shed}}^{(c)}=0$.
-Every outage in that catalog met the four clauses on the author's engine, 215 of 215, closing with zero load shedding on the baseline network without requiring shunt intervention. The released bundle certifies the eight canonical balances in Part~II, not those 215 solutions. Independently, when an exploratory severe outage drives voltages outside the band, an auxiliary bisection computes the shunt step $\Delta Q_{\mathrm{shunt}}$ that restores every bus to $[0.95, 1.05]$~pu. That step is a documented auxiliary protocol of voltage support, distinct from the unassisted 215-outage feasibility. It is not unused thermal headroom.
+Every outage in that catalog met the four clauses on the author's engine, 215 of 215, closing with zero load shedding on the baseline network without requiring shunt intervention. The released bundle certifies the eight canonical balances in Part~II, not those 215 solutions. When an exploratory severe outage drives voltages outside the band, an auxiliary bisection computes the shunt step $\Delta Q_{\mathrm{shunt}}$ that restores every bus to $[0.95, 1.05]$~pu. That step is a documented auxiliary voltage-support protocol, distinct from the unassisted 215-outage feasibility, not unused thermal headroom.
 
 
 \subsection{Spatial diakoptic partition: the HBCF}
@@ -219,7 +219,7 @@ Premultiplying the first row of \eqref{eq:blockform} by $\mathbf{C}\mathbf{A}^{-
 Dense factorization of the $N$-bus system costs $O(N^3)$; the partitioned solution costs one block-diagonal factorization $\sum_k O(N_k^3)$ plus one border factorization $O(N_B^3)$ plus elimination products, i.e.\ $O\!\left(\sum_k N_k^3 + N_B^3\right)$ with $\sum_k N_k + N_B = N$ and $N_B \ll N$. For sparse $\mathbf{A}_k$ with fill-reducing orderings, local cost approaches linearity in $N_k$ \cite{george1973}, \cite{saad2003}.
 \end{proposition}
 
-The algebraic domain-decomposition residual is $\|\mathbf{v}_{\mathrm{rec}} - \mathbf{v}_{\mathrm{full}}\|_\infty = 2.788 \times 10^{-14}$~pu \eqref{eq:trinity}, certifying zero truncation error relative to the monolithic solve in double precision. Each hourly AC state resolves in 2.65~ms on the author's engine; the released harness reproduces the 41 structural controls, not this wall-clock. Algorithm~\ref{alg:schur_pf} details the complete procedure.
+The algebraic domain-decomposition residual \eqref{eq:trinity} certifies zero truncation error relative to the monolithic solve in double precision. The released open harness reproduces the 41 structural controls of the campaign. Algorithm~\ref{alg:schur_pf} details the complete procedure.
 
 \begin{algorithm}[!t]
 \caption{Schur-border AC power flow on the SENI-142 HBCF partition}
@@ -262,7 +262,7 @@ Every reported figure is downstream of a software state whose provenance is cryp
 (ii)~\textbf{Phase 2 --- research testbed under static post-event $N-1$ verification:} The package is audited against the 215-contingency catalog under the four clauses of Section~\ref{sub:n1}, with operator telemetry and cross-tool reconciliation.
 (iii)~\textbf{Phase 3 --- Golden Master:} The full cascade is re-verified and sealed with detached SHA-512 manifests attesting an exact software state.
 (iv)~\textbf{Phase 4 --- industrial production:} Promotion is an atomic kernel-level switch (\texttt{renameat2} with \texttt{RENAME\_EXCHANGE}) guaranteeing zero regression delta between sealed and deployed state.
-Three custody invariants govern the cycle: bit-identical preservation across phases, fail-closed semantics, and atomic observation. The measured resident set of the hourly campaign is 473~MiB, well below the 650~MiB ceiling. A stage accepts state only when its SHA-512 digest matches the sealed manifest.
+Three custody invariants govern the cycle: bit-identical preservation across phases, fail-closed semantics, and atomic observation. A stage accepts state only when its SHA-512 digest matches the sealed manifest.
 
 \subsection{SHA-512 cryptographic integrity digests}
 \label{sub:seals}
@@ -272,21 +272,21 @@ Custody between stages is maintained by four detached SHA-512 seals: Seal~1 clos
 \subsection{Glass-box transparency}
 \label{sub:glassbox}
 
-An independent reader does not need proprietary simulation tools. The open structural arrays released on GitHub (\texttt{.npz} and \texttt{.json}) allow numerical replay of the released quantities via standard \texttt{numpy} and \texttt{scipy} scripts. From the released arrays the replay recomputes the algebraic domain-decomposition residual of \eqref{eq:trinity}, $\|\mathbf{v}_{\mathrm{rec}}-\mathbf{v}_{\mathrm{full}}\|_\infty = 2.788 \times 10^{-14}\ \mathrm{pu} \le 10^{-11}\ \mathrm{pu}$, and the border condition number $\kappa_2(\mathbf{S})$; the full Jacobian condition number $\kappa_2(\mathbf{J})$ is not recomputed because the NPZ does not carry the voltage state. The release provides two layers:
+An independent reader does not need proprietary simulation tools. The open structural arrays released on GitHub (\texttt{.npz} and \texttt{.json}) allow numerical replay of the released quantities via standard \texttt{numpy} and \texttt{scipy} scripts. From the released arrays the replay recomputes the algebraic domain-decomposition residual \eqref{eq:trinity} and the border condition number $\kappa_2(\mathbf{S})$; the full Jacobian condition number $\kappa_2(\mathbf{J})$ is not recomputed because the NPZ does not carry the voltage state. The release provides two layers:
 (i)~\textbf{Open Structural Benchmark (OSB)}, containing the 142-bus topology, branch parameters ($R, X, B, S_{\max}, I_{\max}$), transformer data, 69~kV equivalents with internal Joule loss $\Delta S_{\mathrm{loss}}$, and canonical peak, valley, and high-solar cases;
-(ii)~\textbf{Operational Validation Bundle (OVB)}, providing aggregated historical telemetry and anonymized operational cases under institutional governance, providing the decade-scale validation record of Section~\ref{sub:dataprotocol}.
+(ii)~\textbf{Operational Validation Bundle (OVB)}, providing aggregated historical telemetry and anonymized operational cases under institutional governance --- the decade-scale validation record of Section~\ref{sub:dataprotocol}.
 
 \subsection{Empirical data protocol}
 \label{sub:dataprotocol}
 
-The benchmark is not calibrated against assumptions; it is fed by an archived operational reality: the structural solver is fed by a pre-existing, continuous empirical ground-truth repository comprising exactly 520 complete consecutive 168-hour weeks --- 87,360 hourly states over 3,640 Monday-to-Sunday days, selected without a single interpolated hour from the 2016--2025 operational archive --- provided by the Dominican Republic System Operator (Organismo Coordinador del SENI), capturing real SCADA telemetry, dispatch orders, solar/wind variable profiles, and historical outage logs. Four variable families enter the solver: (i) nodal real and reactive demand; (ii) unit-by-unit generation dispatch; (iii) weather-coupled solar/wind production profiles; and (iv) historical outage logs. The standardized validation horizon spans exactly 520 complete weeks (January 4, 2016 to December 21, 2025: 3,640 days, 87,360 hourly states). Exactly 13 civil days are excluded by construction: six boundary days and the final festive week (December 22--28, 2025), preventing year-end industrial demand collapse from distorting covariance structures. The continuous archive enables rigorous \textbf{24-hour block-bootstrap} resampling of complete operating days, preserving intra-day correlations between irradiance, temperature, demand, and dispatch. The statistical analysis of the campaign over this horizon is reported in Part~II~\cite{seni142part2}.
+The benchmark is not calibrated against assumptions; it is fed by an archived operational reality: a pre-existing, continuous empirical ground-truth repository comprising exactly 520 complete consecutive 168-hour weeks selected without a single interpolated hour from the 2016--2025 operational archive, provided by the Dominican Republic System Operator (Organismo Coordinador del SENI), capturing the four variable families that enter the solver: nodal real and reactive demand, unit-by-unit generation dispatch, weather-coupled solar/wind production profiles, and historical outage logs. The standardized validation horizon spans exactly 520 complete weeks (January 4, 2016 to December 21, 2025: 3,640 days, 87,360 hourly states). Exactly 13 civil days are excluded by construction: six boundary days and the final festive week (December 22--28, 2025), preventing year-end industrial demand collapse from distorting covariance structures. The continuous archive enables rigorous \textbf{24-hour block-bootstrap} resampling of complete operating days, preserving intra-day correlations between irradiance, temperature, demand, and dispatch.
 
 \subsection{Public doctrines of the diakoptic lifecycle}
 \label{sub:doctrines}
 
 The public doctrines below constitute the mathematical foundation of the lifecycle:
 
-\textbf{Doctrine 01 --- border ports and Kron diakoptics.} Interior blocks are eliminated onto the cuts. The border operator is the Schur complement $S = D - C A^{-1} B$, and only border ports remain as coupling variables.
+\textbf{Doctrine 01 --- border ports and Kron diakoptics.} Interior blocks are eliminated onto the cuts; only border ports remain as coupling variables, with the Schur complement $S = D - C A^{-1} B$ as border operator.
 
 \textbf{Doctrine 12 --- multiscale Th\'evenin/Norton reduction.} From the element up through the substation, the ring, and the national border, each eliminated interior obeys the Kron--Ward reduction
 \begin{equation}
@@ -295,7 +295,7 @@ The public doctrines below constitute the mathematical foundation of the lifecyc
 \end{equation}
 applied from condensed 69~kV laterals onto the retained boundary terminals of Section~\ref{sub:reduction}, which keep their measured 69~kV.
 
-\textbf{Doctrine 14 --- territorial frontiers and the HBCF.} At a border port the Norton and Th\'evenin statements are $I_p=Y_p V_p+I_N$ and $V_p=Z_p I_p+E_{\mathrm{th}}$. Forward and backward sweeps meet at that port, and the block digest $h_e=\mathrm{SHA512}(\mathrm{canon}(\mathrm{block}))$ seals the frontier. The four macrodomains of Figure~\ref{fig:topologia142} are the electrical grouping of the Law 368-22 frontiers $\Gamma$.
+\textbf{Doctrine 14 --- territorial frontiers and the HBCF.} At a border port the Norton and Th\'evenin statements are $I_p=Y_p V_p+I_N$ and $V_p=Z_p I_p+E_{\mathrm{th}}$. Forward and backward sweeps meet at that port, and the block digest $h_e=\mathrm{SHA512}(\mathrm{canon}(\mathrm{block}))$ seals the frontier.
 
 \subsection{Topological reconciliation}
 \label{sub:crosswalk}
@@ -305,7 +305,7 @@ No crosswalk file is included in the release. The fourteen 138/69~kV transformer
 \subsection{Transmission-winding inventory and the reduced transport table}
 \label{sub:inventory}
 
-The transmission-winding inventory comprises 68 branches whose two windings sit at transmission levels, distinct from the 58 power transformers of the compute model. Those 58 branches are the transformer edges that remain inside the solved 142-bus admittance; the 68 branches count every transmission-level winding pair in the estate survey, including 34.5~kV secondaries removed by Kron reduction. Power enters along 345~kV corridors (Punta Catalina, Julio Sauri, Bonao, Guerra, Manzanillo--El Naranjo) and steps down: two 345/138~kV branches (2.9\%) and one 345/230~kV branch (1.5\%) off the 345~kV backbone; one 230/138~kV (1.5\%) and three 230/34.5~kV branches (4.4\%) at Quisqueya and Pueblo Viejo; forty 138/34.5~kV branches (58.8\%) serving distribution; fourteen 138/69~kV branches (20.6\%) feeding retained 69~kV boundary ports; and seven 69/34.5~kV branches (10.3\%) for subtransmission delivery. The 115 bulk yards (at 345, 230, and 138~kV) plus 27 retained 69~kV boundary terminals yield the solved cardinality $142 = 115 + 27$.
+The transmission-winding inventory comprises 68 branches whose two windings sit at transmission levels, distinct from the 58 power transformers of the compute model. Those 58 branches are the transformer edges that remain inside the solved 142-bus admittance; the 68 branches count every transmission-level winding pair in the estate survey, including 34.5~kV secondaries removed by Kron reduction. Power enters along 345~kV corridors (Punta Catalina, Julio Sauri, Bonao, Guerra, Manzanillo--El Naranjo) and steps down: two 345/138~kV branches (2.9\%) and one 345/230~kV branch (1.5\%) off the 345~kV backbone; one 230/138~kV (1.5\%) and three 230/34.5~kV branches (4.4\%) at Quisqueya and Pueblo Viejo; forty 138/34.5~kV branches (58.8\%) serving distribution; fourteen 138/69~kV branches (20.6\%) feeding retained 69~kV boundary ports; and seven 69/34.5~kV branches (10.3\%) for subtransmission delivery.
 
 \subsection{The modular clause: instantiation under Law 368-22}
 \label{sub:modular}
