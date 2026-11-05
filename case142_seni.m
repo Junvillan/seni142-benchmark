@@ -1,5 +1,5 @@
 function mpc = case142_seni()
-%% CASE142_SENI  SENI-142 canonical MATPOWER case (142 buses / 193 branches / 23 generators)
+%% CASE142_SENI  SENI-142 canonical MATPOWER case (142 buses / 193 branches / 22 generators)
 %%
 %%   SENI-142: An Open-Access Resilient Insular Transmission Benchmark of the
 %%   Dominican Republic with Diakoptic Territorial Decomposition under Spatial
@@ -57,8 +57,8 @@ function mpc = case142_seni()
 %%     * generator identities and connection buses, and the nameplate of the
 %%       three units the canon seals (GEN-PC1 = 376 MW, GEN-PC2 = 376 MW,
 %%       GEN-AES-ANDRES = 319 MW), all read from the N-1 screening catalog.
-%%     * the reference band of the system slack (0-800 MW) and the seven
-%%       generation buses (README erratum 11).
+%%     * the seven generation buses of the reference solves (README
+%%       erratum 11) and the 0-800 MW reference band of the system slack.
 %%
 %%  TIER B -- derived by the declared rules below.
 %%     * Generator connection buses for the four units the catalog publishes
@@ -95,39 +95,65 @@ function mpc = case142_seni()
 %%     * Pmax(u) = the sealed catalog nameplate for GEN-PC1, GEN-PC2 and
 %%       GEN-AES-ANDRES (Tier A, NOT rescaled); for the other 19 units,
 %%       Pmax(u) = kappa x (published plant nameplate rating of the unit),
-%%       with the single release-wide factor kappa = 1.580966, giving a
+%%       with the single release-wide factor kappa = 2.236629, giving a
 %%       declared installed capability of the 22-unit principal fleet of
-%%       3000.0 MW.
+%%       3800.0 MW.
 %%     * The scaling is forced, not cosmetic: at the published ratings the
-%%       22 units total 2,291.14 MW, so even with the reference generator at
-%%       its full certified 800 MW the fleet cannot reach the certified
-%%       3,450.0 MW peak.  The declared 3000.0 MW capability
-%%       closes that gap and keeps the reference inside its certified band.
-%%     * Base dispatch: Pg(u) = theta x Pmax(u) with theta = 0.916667,
-%%       so the 22 units dispatch 2750.0 MW and the reference
-%%       generator carries the balance at Pg = 700.00 MW (certified
-%%       band 0-800 MW).  Total generation = 3,450.0 MW = the certified
-%%       national peak, so the case balances in a lossless (DC) solution and
-%%       the reference absorbs the transmission losses in an AC solution.
+%%       22 units total 2,291.14 MW, so the fleet cannot reach the
+%%       certified 3,450.0 MW peak.  The declared 3800.0 MW
+%%       capability closes that gap.
+%%     * Base dispatch: the 22 units dispatch exactly the certified national
+%%       peak, 3450.0 MW.  The unit that carries the
+%%       balancing adjustment is declared at 0.75 of its own
+%%       capability (Pg = 282.00 MW on the bus that the solver
+%%       promotes to reference), leaving headroom for the transmission
+%%       losses of an AC solution; the other 21 units share the remaining
+%%       3168.00 MW in proportion to their declared capability
+%%       (theta = 0.925234).  Total generation = 3,450.0 MW = the
+%%       certified national peak, so the case balances exactly in a lossless
+%%       (DC) solution.
 %%     * Qmax = +tan(acos(0.95)) x Pmax and Qmin = -tan(acos(0.95)) x Pmax
 %%       (declared 0.95 power-factor capability envelope).  Qg = 0 is only
 %%       the solver's starting value.  Pmin = 0 (no must-run constraint is
 %%       encoded in the released benchmark).  mBase = 100 MVA.  status = 1.
-%%     * Vg is the host bus voltage setpoint: 1.02 pu at the reference,
-%%       1.01 pu at the six PV generation buses, 1.00 pu at the buses where
-%%       generation is embedded in a PQ node.
+%%     * Vg is the host bus voltage setpoint: 1.01 pu at the six PV
+%%       generation buses, 1.00 pu at the buses where generation is embedded
+%%       in a PQ node.
 %%
-%%  NOTE ON THE NUMBER OF GENERATOR ROWS.  The certified N-1 catalog
-%%  publishes 22 generating units (CONT-194..CONT-215) and this file lists
-%%  them as rows 1..22, in catalog order.  Row 23 is the reference
-%%  generator at the certified system slack BUS-345-JULIO_SAURI: MATPOWER,
-%%  Octave and PYPOWER all require a generator at the reference bus, and the
-%%  release's own erratum 11 lists JULIO_SAURI-345 as a generation bus
-%%  bounded to 0-800 MW.  No unit of the 22-unit catalog is connected there.
+%%  NOTE ON THE REFERENCE BUS AND THE NUMBER OF GENERATOR ROWS.
+%%  mpc.gen lists the 22 generating units of the certified N-1 catalog
+%%  (CONT-194..CONT-215) as rows 1..22, in catalog order, and nothing
+%%  else: the certified 215-element catalog identity
+%%  (135 lines + 58 transformers + 22 generating units) is preserved
+%%  exactly.  The census designates BUS-345-JULIO_SAURI as the system
+%%  reference (bus type 3) and README erratum 11 lists JULIO_SAURI-345 as
+%%  a generation bus bounded to 0-800 MW, but no unit of the 22-unit
+%%  catalog is connected there, so that bus carries no generator row in
+%%  this file.
+%%
+%%  This is not a defect: MATPOWER, Octave and PYPOWER share one universal
+%%  rule for it.  Their common `bustypes` step selects as reference the
+%%  buses of type REF that carry an ON-LINE GENERATOR, treats a REF bus
+%%  without one as a PQ bus, and, when no such REF bus remains, promotes
+%%  the FIRST PV bus that carries an on-line generator.  In this case that
+%%  is BUS-345-PUNTA_CATALINA (bus 6), where GEN-PC1 sits; the
+%%  certified slack BUS-345-JULIO_SAURI therefore behaves as a transmission
+%%  node (it carries no load and no generation in the census) and the
+%%  balancing adjustment falls on GEN-PC1, whose declared Pg is set
+%%  accordingly.  Consequences, stated so that a reader is never misled:
+%%    - the DC (lossless) solution is INVARIANT to the choice of angle
+%%      reference, so the certified network flows of this case are exactly
+%%      those of the released model;
+%%    - the certified 0-800 MW band of JULIO_SAURI-345 is a property of the
+%%      author's closed reference solves, not of this table, and it is not
+%%      representable in a 22-row gen table that is fully occupied by the
+%%      certified N-1 fleet.  Adding a 23rd row for a dedicated reference
+%%      generator at BUS-345-JULIO_SAURI would restore it, at the cost of
+%%      the 22-row identity above.
 %%
 %% ------------------------------------------------------------------------
 %% OPERATING-POINT PROPERTIES, AS MEASURED ON THIS CASE
-%%   verify_case142_matpower.py reports 42/42 checks PASS on this file.  The
+%%   verify_case142_matpower.py reports 43/43 checks PASS on this file.  The
 %%   measured facts worth recording here:
 %%
 %%   * The admittance matrix rebuilt out of this file is identical to the
@@ -135,8 +161,8 @@ function mpc = case142_seni()
 %%     per-branch elements to 3.6e-15.
 %%   * The lossless (DC) formulation converges and balances the certified peak
 %%     exactly: generation = demand = 3,450.0000 MW (residual < 1e-6 MW), with
-%%     the reference at 700.00 MW, inside its certified 0-800 MW band, and a
-%%     maximum bus angle of 40.9 deg.
+%%     the balancing unit at its declared dispatch and a maximum bus angle
+%%     of about 41 deg.
 %%   * NO transmission line and NO power transformer exceeds its rateA in that
 %%     operating point (0 of 140).
 %%   * 21 of the 53 condensed-distribution equivalents do exceed their
@@ -312,29 +338,28 @@ mpc.bus = [
 %% generator data
 %%	bus	Pg	Qg	Qmax	Qmin	Vg	mBase	status	Pmax	Pmin
 mpc.gen = [
-    6	344.67	0	123.59	-123.59	1.01	100	1	376	0;
-    91	344.67	0	123.59	-123.59	1.01	100	1	376	0;
-    8	162.31	0	58.2	-58.2	1.01	100	1	177.07	0;
-    9	162.31	0	58.2	-58.2	1.01	100	1	177.07	0;
-    13	150.72	0	54.04	-54.04	1.01	100	1	164.42	0;
-    104	292.42	0	104.85	-104.85	1	100	1	319	0;
-    57	34.78	0	12.47	-12.47	1	100	1	37.94	0;
-    57	34.78	0	12.47	-12.47	1	100	1	37.94	0;
-    41	61.16	0	21.93	-21.93	1	100	1	66.72	0;
-    41	61.16	0	21.93	-21.93	1	100	1	66.72	0;
-    77	15.61	0	5.6	-5.6	1	100	1	17.03	0;
-    77	15.61	0	5.6	-5.6	1	100	1	17.03	0;
-    15	173.91	0	62.36	-62.36	1	100	1	189.72	0;
-    73	57.97	0	20.79	-20.79	1	100	1	63.24	0;
-    46	213.03	0	76.39	-76.39	1	100	1	232.4	0;
-    46	75.36	0	27.02	-27.02	1	100	1	82.21	0;
-    111	72.46	0	25.98	-25.98	1.01	100	1	79.05	0;
-    108	124.92	0	44.79	-44.79	1	100	1	136.28	0;
-    71	114.49	0	41.05	-41.05	1	100	1	124.9	0;
-    44	150.72	0	54.04	-54.04	1	100	1	164.42	0;
-    79	39.86	0	14.29	-14.29	1	100	1	43.48	0;
-    10	47.08	0	16.88	-16.88	1	100	1	51.36	0;
-    4	700	0	262.95	-262.95	1.02	100	1	800	0;
+    6	281.99	0	123.59	-123.59	1.01	100	1	376	0;
+    91	347.89	0	123.59	-123.59	1.01	100	1	376	0;
+    8	231.77	0	82.34	-82.34	1.01	100	1	250.5	0;
+    9	231.77	0	82.34	-82.34	1.01	100	1	250.5	0;
+    13	215.22	0	76.46	-76.46	1.01	100	1	232.61	0;
+    104	295.15	0	104.85	-104.85	1	100	1	319	0;
+    57	49.67	0	17.64	-17.64	1	100	1	53.68	0;
+    57	49.67	0	17.64	-17.64	1	100	1	53.68	0;
+    41	87.33	0	31.02	-31.02	1	100	1	94.39	0;
+    41	87.33	0	31.02	-31.02	1	100	1	94.39	0;
+    77	22.29	0	7.92	-7.92	1	100	1	24.09	0;
+    77	22.29	0	7.92	-7.92	1	100	1	24.09	0;
+    15	248.33	0	88.22	-88.22	1	100	1	268.4	0;
+    73	82.78	0	29.41	-29.41	1	100	1	89.47	0;
+    46	304.2	0	108.06	-108.06	1	100	1	328.78	0;
+    46	107.6	0	38.23	-38.23	1	100	1	116.3	0;
+    111	103.47	0	36.76	-36.76	1.01	100	1	111.83	0;
+    108	178.39	0	63.37	-63.37	1	100	1	192.8	0;
+    71	163.48	0	58.08	-58.08	1	100	1	176.69	0;
+    44	215.22	0	76.46	-76.46	1	100	1	232.61	0;
+    79	56.91	0	20.22	-20.22	1	100	1	61.51	0;
+    10	67.25	0	23.89	-23.89	1	100	1	72.68	0;
 ];
 
 %% branch data

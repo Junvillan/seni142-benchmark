@@ -32,7 +32,7 @@ purposes; it does not constitute the formal journal submission.
 | `SENI142_CATALOGO_215_CONTINGENCIAS.csv` | Canonical N-1 screening catalog: 135 transmission lines + 58 power transformers + 22 major generating units = 215 single contingencies (identity, modeled bus where applicable, screening criterion; nameplate MW only where sealed by the release canon). |
 | `verify_seni142_benchmark.py` | Official verification harness: loads the four artifacts and checks every structural, topological, matrix and accounting property from the data (no solver outputs are hardcoded). Exits non-zero on any failure. |
 | `mutation_test_v3.py` | Adversarial mutation-robustness suite: 12 targeted corruptions (demand, admittance, residual, hashes, balances, metadata); the verifier must reject every one. |
-| `case142_seni.m` | Canonical MATPOWER case of the released network: 142 buses, 193 branches and 23 generator rows, MATPOWER 7.x/8.x / Octave / PYPOWER compatible. Bus and branch tables are reproduced verbatim from the two canonical CSVs; the admittance matrix rebuilt out of the file is identical to the certified Ybus (5.7e-14). |
+| `case142_seni.m` | Canonical MATPOWER case of the released network: 142 buses, 193 branches and 22 generator rows (the 22 certified N-1 units), MATPOWER 7.x/8.x / Octave / PYPOWER compatible. Bus and branch tables are reproduced verbatim from the two canonical CSVs; the admittance matrix rebuilt out of the file is identical to the certified Ybus (5.7e-14). |
 | `verify_case142_matpower.py` | Verifier of the MATPOWER case: re-derives every bus, branch and generator field from the canonical CSVs, proves the Ybus identity against `matrices_sistema_seni142.npz` (< 1e-9), and solves the case (lossless DC formulation, exact 3,450.0 MW balance). |
 | `paper_seni142_ieee_transactions_en.md` | Canonical master of the manuscript (bit-identical to the submission master). |
 | `SENI142_Part1_2col.pdf` / `SENI142_Part2_2col.pdf` | The **Two-Part companion paper suite** — the official TPWRS submission (Part I: 10 pp.; Part II: 9 pp.). See "IEEE Transactions Submission Structure" above. |
@@ -173,20 +173,30 @@ line parameters; Ybus ≡ branch table (<1e-9); block-diagonal A; Schur identity
 The catalog `SENI142_CATALOGO_215_CONTINGENCIAS.csv` enumerates the 215 screened single contingencies; the release certifies the eight canonical contingency balances in `ARTEFACTO_B1`.
 
 The same released network is also published as a loadable MATPOWER case, `case142_seni.m`
-(142 buses, 193 branches, 23 generator rows; MATPOWER 7.x/8.x, Octave and PYPOWER
+(142 buses, 193 branches, 22 generator rows; MATPOWER 7.x/8.x, Octave and PYPOWER
 compatible), with its own verifier:
 
 ```bash
-python3 verify_case142_matpower.py              # 42 checks: structure, census fidelity, Ybus identity, solve
+python3 verify_case142_matpower.py              # 43 checks: structure, census fidelity, Ybus identity, solve
 ```
 
 `verify_case142_matpower.py` re-derives every bus, branch and generator field from the
 two canonical CSVs and from the N-1 catalogue, proves that the admittance matrix rebuilt
 out of `case142_seni.m` is identical to the certified Ybus of `matrices_sistema_seni142.npz`
 (5.7e-14), and solves the case: the lossless (DC) formulation converges with an exact
-3,450.0 MW balance (generation = demand, residual < 1e-6 MW), the reference stays inside
-its certified 0–800 MW band at 700.00 MW, and no transmission line or power transformer
-exceeds its `rateA`. The release certifies a linear model (Ybus, Schur complement) and
+3,450.0 MW balance (generation = demand, residual < 1e-6 MW) and no transmission line or
+power transformer exceeds its `rateA`.
+
+`mpc.gen` carries exactly the 22 generating units of the certified N-1 catalog, so the
+identity 135 lines + 58 transformers + 22 generating units = 215 is preserved. The census
+designates `BUS-345-JULIO_SAURI` as the system reference and README erratum 11 gives it a
+0–800 MW reference band, but no catalog unit is connected there; MATPOWER, Octave and
+PYPOWER share one rule for that situation (a reference bus without an on-line generator is
+treated as a PQ bus and the first PV bus carrying one is promoted to reference, which here
+is `BUS-345-PUNTA_CATALINA`, where GEN-PC1 sits). The case header states the consequence
+explicitly: the lossless solution is invariant to the choice of angle reference, so the
+certified network flows are unchanged, and a dedicated reference row would restore the
+certified 0–800 MW band at the cost of the 22-row identity. The release certifies a linear model (Ybus, Schur complement) and
 not an AC operating point; in the released flat per-unit space the network admits no AC
 solution at the certified peak (a load continuation converges only to ≈ 35–40 % of it),
 and the AC engine of the reference solves is patent-pending and deliberately absent from

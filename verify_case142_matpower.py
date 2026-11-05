@@ -37,9 +37,8 @@ CASE = "case142_seni.m"
 
 # ---- constantes de especificacion (manuscrito), no resultados de computo ----
 SPEC = {
-    "buses": 142, "branch": 193, "gen": 23,
+    "buses": 142, "branch": 193, "gen": 22,
     "peak_mw": 3450.0,
-    "ref_pmax_mw": 800.0, "ref_pmin_mw": 0.0,
     "regiones": ["Ozama-Metropolitana", "Valdesia", "Higuamo", "Yuma", "Del Valle",
                  "Enriquillo", "Cibao Norte", "Cibao Sur", "Cibao Nordeste",
                  "Cibao Noroeste"],
@@ -209,7 +208,7 @@ def main():
     # --- dimensiones -------------------------------------------------------
     chk("mpc.bus = 142 filas x 13 columnas", bus.shape == (SPEC["buses"], 13), str(bus.shape))
     chk("mpc.branch = 193 filas x 13 columnas", branch.shape == (SPEC["branch"], 13), str(branch.shape))
-    chk("mpc.gen = 23 filas x 10 columnas", gen.shape == (SPEC["gen"], 10), str(gen.shape))
+    chk("mpc.gen = 22 filas x 10 columnas", gen.shape == (SPEC["gen"], 10), str(gen.shape))
 
     # --- integridad estructural -------------------------------------------
     chk("bus_i = 1..142 en orden", np.array_equal(bus[:, 0], np.arange(1, 143)))
@@ -261,15 +260,30 @@ def main():
     inv = {v: k for k, v in idx.items()}
     bus_ok = all(int(egen[i][0]) == int(gen[i][0]) for i in range(22))
     chk("filas 1..22 en orden de catalogo con su barra declarada", bus_ok)
-    n_gen_ref = int((gen[:, 0] == int(np.argmax(bus[:, 1] == 3) + 1)).sum())
-    chk("una sola fila de generador en la barra de referencia", n_gen_ref == 1, f"{n_gen_ref}")
-    ref_row = gen[gen[:, 0] == int(np.argmax(bus[:, 1] == 3) + 1)][0]
-    chk("banda de potencia activa de la referencia en 0..800 MW",
-        ref_row[9] == SPEC["ref_pmin_mw"] and ref_row[8] == SPEC["ref_pmax_mw"],
-        f"Pmin={ref_row[9]:g} Pmax={ref_row[8]:g}")
+    ref_bus = int(np.argmax(bus[:, 1] == 3) + 1)
+    n_gen_ref = int((gen[:, 0] == ref_bus).sum())
+    chk("la barra de referencia certificada no lleva fila de generador "
+        "(las 22 filas son la flota N-1 certificada)", n_gen_ref == 0, f"{n_gen_ref}")
     chk("las 6 barras PV tienen al menos un generador",
         all(int((gen[:, 0] == b).sum()) >= 1 for b in pv_buses),
         f"{len(pv_buses)} barras PV")
+    # regla universal de bustypes (MATPOWER / Octave / PYPOWER): la referencia
+    # es la barra REF con generador en servicio; si no hay ninguna, la primera
+    # barra PV con generador en servicio es promovida a referencia.
+    promoted = [b for b in sorted(pv_buses) if int((gen[:, 0] == b).sum()) >= 1][0]
+    chk("el solver promueve a referencia la primera barra PV con generador",
+        promoted == 6, f"bus {promoted} ({rows[promoted - 1]['Bus_ID']})")
+    try:
+        from pypower.bustypes import bustypes
+        b0t = bus.copy(); b0t[:, 0] -= 1
+        g0t = gen.copy(); g0t[:, 0] -= 1
+        ref, pv, pq = bustypes(b0t, g0t)
+        chk("bustypes confirma la promocion y degrada el slack certificado a PQ",
+            int(ref[0]) + 1 == promoted and (ref_bus - 1) in pq.tolist(),
+            f"ref = bus {int(ref[0]) + 1}")
+    except Exception as exc:
+        chk("bustypes confirma la promocion y degrada el slack certificado a PQ",
+            False, f"{exc.__class__.__name__}: {exc}")
 
     # capacidades selladas (Tier A) intactas
     seal_ok = True
@@ -280,14 +294,15 @@ def main():
     chk("capacidades selladas por el catalogo intactas (PC1/PC2/AES-Andres)",
         seal_ok, "376 / 376 / 319 MW")
 
-    chk("Pmin <= Pg <= Pmax en las 23 unidades",
+    chk("Pmin <= Pg <= Pmax en las 22 unidades",
         np.all(gen[:, 9] <= gen[:, 1] + 1e-9) and np.all(gen[:, 1] <= gen[:, 8] + 1e-9))
-    chk("Qmin <= Qmax en las 23 unidades", np.all(gen[:, 4] <= gen[:, 3] + 1e-9))
-    chk("Qmin <= Qg <= Qmax en las 23 unidades",
+    chk("Qmin <= Qmax en las 22 unidades", np.all(gen[:, 4] <= gen[:, 3] + 1e-9))
+    chk("Qmin <= Qg <= Qmax en las 22 unidades",
         np.all(gen[:, 4] - 1e-9 <= gen[:, 2]) and np.all(gen[:, 2] <= gen[:, 3] + 1e-9))
-    chk("mBase = 100 MVA en las 23 unidades", np.all(gen[:, 6] == 100.0))
-    chk("Pg de la referencia dentro de su banda certificada 0..800 MW",
-        SPEC["ref_pmin_mw"] <= ref_row[1] <= SPEC["ref_pmax_mw"], f"{ref_row[1]:g} MW")
+    chk("mBase = 100 MVA en las 22 unidades", np.all(gen[:, 6] == 100.0))
+    bal = gen[gen[:, 0] == promoted][0]
+    chk("la unidad que balancea dentro de su capacidad declarada",
+        bal[9] <= bal[1] <= bal[8], f"Pg={bal[1]:g} MW  Pmax={bal[8]:g} MW")
 
     sp = float(bus[:, 2].sum())
     chk("suma Pd = pico nacional certificado (3450.0 MW)", abs(sp - SPEC["peak_mw"]) < 1e-6, f"{sp:.4f}")
@@ -349,10 +364,10 @@ def main():
                 abs(gdc - ldc) < 1e-6 and abs(gdc - SPEC["peak_mw"]) < 1e-6,
                 f"gen={gdc:.4f} load={ldc:.4f}")
 
-            refb = int(np.argmax(bus[:, 1] == 3) + 1)
-            pgref = float(rdc["gen"][rdc["gen"][:, 0] == refb - 1, 1][0])
-            chk("referencia dentro de su banda certificada 0..800 MW en el despacho DC",
-                SPEC["ref_pmin_mw"] <= pgref <= SPEC["ref_pmax_mw"], f"{pgref:.4f} MW")
+            refb = promoted - 1
+            pgref = float(rdc["gen"][rdc["gen"][:, 0] == refb, 1][0])
+            chk("la unidad que balancea queda dentro de su capacidad en el despacho DC",
+                0.0 <= pgref <= bal[8] + 1e-9, f"{pgref:.4f} MW  Pmax={bal[8]:g} MW")
 
             # calidad termica del estado base, por subtipo de rama
             s = np.abs(rdc["branch"][:, 0])
