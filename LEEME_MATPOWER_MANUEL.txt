@@ -1,0 +1,48 @@
+================================================================================
+CASO DE PRUEBA MATPOWER ESTÁNDAR: BENCHMARK SENI-142
+Para: Dr. Manuel Alcázar Ortega y equipo doctoral / docente UPV
+De:   Ing. Junior Alexis Villanueva Rosario, Ms.C., Ph.D.(c)
+Fecha: Noviembre 2026 · Valencia
+================================================================================
+
+Estimado Profesor Manuel:
+
+Este directorio contiene el caso de red completo del Sistema Eléctrico Nacional
+Interconectado de la República Dominicana (SENI-142) formateado según el estándar
+internacional de MATPOWER (versión 2), listo para su uso directo en MATLAB, Octave
+o Python (PyPower / PandaPower).
+
+CONTENIDO DEL PAQUETE:
+--------------------------------------------------------------------------------
+1. case142_seni.m
+   Archivo canónico de función MATPOWER. Se carga en MATLAB/Octave mediante:
+     mpc = case142_seni();
+   Contiene las 142 barras (mpc.bus), 193 ramas de transmisión y transformación
+   (mpc.branch), y las unidades generadoras principales (mpc.gen).
+
+2. case142_seni.mat
+   Estructura binaria nativa de MATLAB. Para quienes prefieren cargar sin correr
+   la función:
+     load('case142_seni.mat');  % Carga directamente la estructura mpc
+
+3. case142_seni.py
+   Módulo nativo de Python para su uso directo con NumPy y PyPower:
+     from case142_seni import case142_seni
+     mpc = case142_seni()
+
+4. demo_matpower.m / demo_pypower.py
+   Scripts de 15 líneas listos para ejecutar que cargan el caso, verifican la
+   matriz de admitancias Ybus y resuelven el flujo de cargas DC sin errores.
+
+CARACTERÍSTICAS DEL MODELO:
+--------------------------------------------------------------------------------
+- Barras:        142 nodos (115 troncales 345/230/138 kV + 27 puertos frontera 69 kV).
+- Ramas:         193 circuitos (135 líneas de transmisión + 58 transformadores).
+- Demanda Pico:  3,450.0 MW / 932.9 MVAR (base horaria oficial auditada).
+- Regiones:      Columna 'area' codifica las 10 regiones de la Ley 368-22.
+- Macrodominios: Columna 'zone' codifica los 4 macrodominios eléctricos Diakópticos.
+- Capacidad:     Columna 'rateA' refleja la capacidad total por corredor (Circuitos x Smax).
+
+Licencia de Datos: Creative Commons Attribution 4.0 International (CC-BY-4.0).
+Citable bajo la autoría doctoral en la Universitat Politècnica de València.
+================================================================================
